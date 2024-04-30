@@ -1,0 +1,40 @@
+{% extends "cdosstream/main.html" %}
+
+{% block local_scripts %}
+<script>
+const bgm = new Audio();
+
+$(document).ready(function (){
+    //return true; // DEBUG
+    bgm.src = "/static/cdosstream/scene/outro/vol-napping_on_a_cloud.ogg";
+    bgm.loop = true;
+    bgm.volume = 0.5;
+    bgm.play();
+});
+</script>
+<!--<script src="/static/cdosstream/js/outro.js"></script>-->
+{% endblock %}
+
+{% block body %}
+<div>
+    Thanks 2
+</div>
+
+<div id="text-wrapper">
+    <div id="outro-credits" class="active flashing"></div>
+</div>
+<div class="pos-hud block">
+    <div class="info-card">
+        <div id="stream-card" class="cp437 ega-darkblue-bg" data-card-pk="{{card.pk}}">
+            <div>
+                <h1><span class="heading-letter ega-gray-bg">♫</span>Now Playing:</h1>
+                <div class="indented-block">"Napping On A Cloud" by congusbongus</div>
+            </div>
+            <div>
+                <h1><span class="heading-letter ega-darkcyan-bg">∞</span>Link:</h1>
+                <div class="indented-block">https://opengameart.org/<br>content/napping-on-a-cloud</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

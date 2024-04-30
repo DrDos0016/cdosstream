@@ -1,0 +1,67 @@
+:root {
+    --ega-blue: #55F;
+    --ega-green: #5F5;
+    --ega-cyan: #5FF;
+    --ega-red: #F55;
+    --ega-purple: #F5F;
+    --ega-yellow: #FF5;
+    --ega-white: #FFF;
+    --ega-gray: #AAA;
+    --ega-black: #000;
+    --ega-darkblue: #00A;
+    --ega-darkgreen: #0A0;
+    --ega-darkcyan: #0AA;
+    --ega-darkred: #A00;
+    --ega-darkpurple: #A0A;
+    --ega-darkyellow: #A50;
+    --ega-darkgray: #555;
+    --card-width:464px;
+    --card-height:322px;
+}
+
+.ega-blue { color:var(--ega-blue); }
+.ega-green { color:var(--ega-green); }
+.ega-cyan { color:var(--ega-cyan); }
+.ega-red { color:var(--ega-red); }
+.ega-purple { color:var(--ega-purple); }
+.ega-yellow { color:var(--ega-yellow); }
+.ega-white { color:var(--ega-white); }
+.ega-gray { color:var(--ega-gray); }
+.ega-black { color:var(--ega-black); }
+.ega-darkblue { color:var(--ega-darkblue); }
+.ega-darkgreen { color:var(--ega-darkgreen); }
+.ega-darkcyan { color:var(--ega-darkcyan); }
+.ega-darkred { color:var(--ega-darkred); }
+.ega-darkpurple { color:var(--ega-darkpurple); }
+.ega-darkyellow { color:var(--ega-darkyellow); }
+.ega-darkgray { color:var(--ega-darkgray); }
+.ega-blue-bg { background-color:var(--ega-blue); }
+.ega-green-bg { background-color:var(--ega-green); }
+.ega-cyan-bg { background-color:var(--ega-cyan); }
+.ega-red-bg { background-color:var(--ega-red); }
+.ega-purple-bg { background-color:var(--ega-purple); }
+.ega-yellow-bg { background-color:var(--ega-yellow); }
+.ega-white-bg { background-color:var(--ega-white); }
+.ega-gray-bg { background-color:var(--ega-gray); }
+.ega-black-bg { background-color:var(--ega-black); }
+.ega-darkblue-bg { background-color:var(--ega-darkblue); }
+.ega-darkgreen-bg { background-color:var(--ega-darkgreen); }
+.ega-darkcyan-bg { background-color:var(--ega-darkcyan); }
+.ega-darkred-bg { background-color:var(--ega-darkred); }
+.ega-darkpurple-bg { background-color:var(--ega-darkpurple); }
+.ega-darkyellow-bg { background-color:var(--ega-darkyellow); }
+.ega-darkgray-bg { background-color:var(--ega-darkgray); }
+.ega-transparent-bg { background-color:transparent; }
+
+@font-face
+{
+    /* http://int10h.org/oldschool-pc-fonts/readme/ */
+    font-family: 'cp437';
+    src: url('/static/cdosstream/font/PxPlus_IBM_EGA_8x14.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.l { text-align:left; }
+.c { text-align:center; }
+.r { text-align:right; }

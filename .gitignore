@@ -1,0 +1,16 @@
+__pycache__
+venv
+private.py
+service.json
+
+# Repo is only for Worlds of ZZT
+dosmeow/
+otgw/
+pokyfriends/
+tcn/
+
+db.sqlite3
+backup/*
+cdosstream/static/cdosstream/js/patrons.js
+cdosstream/static/cdosstream/image/game-media/*
+cdosstream/static/cdosstream/image/archives/*

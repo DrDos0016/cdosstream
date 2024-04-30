@@ -1,0 +1,296 @@
+
+.pos-hud
+{
+    position:absolute;
+    top:380px;
+    left:1440px;
+    background-color:var(--ega-darkblue);
+}
+
+div { box-sizing: border-box; }
+
+body
+{
+    width:1920px;
+    background:#86C7EC;
+    color:#FFF;
+    font-family:cp437;
+    font-size:28px;
+    margin:0;
+}
+
+#main
+{
+    width:1920px;
+    height:1080px;
+    display:grid;
+    grid-template-areas:
+    "header header"
+    "focus card"
+    "focus hud"
+    "focus chat";
+}
+
+.block
+{
+    /* Approx 33x13 */
+    width:480px;
+    height:350px;
+    max-width:480px;
+    max-height:350px;
+    image-rendering: pixelated;
+    border-image-slice: 14 8 14 8;
+    border-image-source: url("/static/cdosstream/image/border.png");
+    border-style: solid;
+    border-width:14px 8px;
+    background-color:var(--ega-darkblue);
+}
+
+#header
+{
+    width:1920px;
+    height:30px;
+    grid-area:header;
+    overflow:none;
+}
+
+#focus
+{
+    grid-area:focus;
+    width:1440px;
+    height:1050px;
+    background-color:#000;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+#focus > div { display:none }
+#focus > div.active { display:flex }
+
+#scene-none {
+    text-align:center;
+}
+#scene-intro {
+    background:red;
+    flex:1;
+    overflow:hidden;
+    height:1050px;
+}
+
+#intro-video
+{
+    width:1920px;
+    height:1080px;
+    margin-top:-15px;
+}
+
+#card-wrapper {
+    grid-area:card;
+}
+
+#hud {
+    grid-area:hud;
+}
+
+.layout-divider
+{
+    width:1920px;
+    height:14px;
+    background:var(--ega-purple);
+}
+
+#debug
+{
+    width:81ch;
+    height:10ch;
+}
+
+.card
+{
+    display:none;
+    width:var(--card-width);
+    height:var(--card-height);
+    opacity:0;
+    background-color:var(--ega-darkblue);
+    font-size:16pt;
+}
+
+
+.card.active
+{
+    display:flex;
+    flex-direction:column;
+    justify-content:space-evenly;
+}
+
+
+#header
+{
+    display:flex;
+    justify-content: space-between;
+    font-size: 28px;
+    line-height:30px;
+    height:30px;
+    background-color:var(--ega-darkblue);
+}
+
+#header-left
+{
+    overflow:scroll;
+    flex:1;
+}
+
+#header-left > div { display:none; }
+#header-left > .active {
+    display:flex;
+    align-items:center;
+    column-gap:1ch;
+}
+
+.plugs > div { display:none; }
+.plugs > div.active-plug { display:block; }
+
+
+#header-right
+{
+    flex:0 0 480px;
+    display:flex;
+}
+
+#wozzt-name { flex:0 0 222px; }
+#wozzt-name span {
+    padding-left:20px;
+    padding-right:20px;
+}
+
+#event-queue {
+    flex:0 0 7ch;
+    overflow:hidden;
+    text-overflow:"";
+    margin-left:1ch;
+    margin-right:1ch;
+    border-bottom:1px solid #FFF;
+}
+
+#clock-wrapper { flex:0 0 128px; }
+
+
+
+.entry
+{
+    flex:0 0 100%;
+}
+
+.entry div
+{
+    display:inline-block;
+}
+
+.entry .key
+{
+    padding-left:1ch;
+    padding-right:1ch;
+    background-color:#0AA;
+}
+.entry:nth-child(2n) .key { background-color:#AAA; }
+
+.entry .label
+{
+    color:#FF5;
+}
+
+.entry .val
+{
+    color:#FFF;
+    padding-left:7ch;
+}
+
+form textarea
+{
+    height:80px;
+    width:32ch;
+}
+
+#card-md
+{
+    height:316px;
+}
+
+.cutoff
+{
+    display:inline-block;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis "...";
+}
+
+.cutoff-chars-38 { max-width:38ch; }
+.cutoff-chars-45 { max-width:45ch; }
+
+#header-left { overflow:hidden; }
+
+#info-card.card { opacity:1; }
+
+.info-card
+{
+    display:flex;
+    flex-direction:column;
+}
+.info-card h2
+{
+    font-size:28px;
+    font-weight:normal;
+    margin:0px;
+    color:var(--ega-yellow);
+}
+
+#debug.show
+{
+    position:absolute;
+    top:30px;
+    left:10px;
+    width:1000px;
+    height:800px;
+}
+
+
+#now-playing
+{
+    position:absolute;
+    top:30px;
+    left:1440px;
+}
+
+#event-card
+{
+    /*position:absolute;
+    top:44px;
+    left:1448px;
+    z-index:99;*/
+}
+
+#hud
+{
+    position:absolute;
+    top:380px;
+    left:1440px;
+}
+
+/*#chat
+{
+    position:absolute;
+    top:730px;
+    left:1440px;
+}*/
+
+/*#card-wrapper
+{
+    position:absolute;
+    top:30px;
+    left:1440px;
+}*/
+
+#chat
+{
+}

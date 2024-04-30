@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title|default:"NO TITLE"}}</title>
+<link rel="shortcut icon" href="/static/cdosstream/favicon.png">
+{% block global_css %}<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-global.css">{% endblock %}
+{% block local_css %}{% endblock %}
+{% block staff_css %}{% endblock %}
+<script src="/static/cdosstream/js/jquery-3.6.1.min.js"></script>
+{% block global_scripts %}{% endblock %}
+{% block local_scripts %}{% endblock %}
+{% block staff_scripts %}{% endblock %}
+</head>
+
+<body>
+{% block body %}
+    {% block content %}{% endblock %}
+{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,33 @@
+body {
+    background-color: rgb(0, 0, 170);
+    overflow: hidden;
+    margin:0;
+    padding:0;
+    width:640px;
+}
+
+::-webkit-scrollbar {
+  visibility: hidden;
+}
+
+#chat_box {
+    font-family:"Less Perfect Dos VGA";
+    font-size:28px;
+}
+
+.chat_line {
+    line-height:20px
+}
+
+.chat_line .nick {
+    color:#FFFF55;
+    font-weight:normal;
+}
+
+.chat_line .message {
+    color:FFFFFF;
+}
+
+img
+{
+}

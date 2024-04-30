@@ -1,0 +1,21 @@
+{% extends "cdosstream/main.html" %}
+{% load static %}
+
+{% block local_css %}
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/event-player.css">
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-layout.css">
+<style>
+.block
+{
+    max-width: 1920px;
+    max-height: 1080px;
+}
+</style>
+{% endblock %}
+
+{% block local_scripts %}
+{% endblock %}
+
+{% block body %}
+<div class="block" style="width:{{request.GET.w|default:480}}px;height:{{request.GET.h|default:350}}px"></div>
+{% endblock %}

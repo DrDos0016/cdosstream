@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="/static/wozzt/css/wozzt-stream.css">
+<script src="/static/wozzt/js/jquery-3.6.1.min.js"></script>
+
+<script>
+const sound = new Audio();
+
+$(document).ready(function (){
+    sound.src = "{{audio}}";
+    sound.loop = true;
+    sound.volume = 0.5;
+    sound.play();
+});
+</script>
+
+
+<style>
+#focus audio { display:none; }
+#focus {
+    max-width:1440px; overflow:hidden;
+    background:url("/static/wozzt/image/ad-break.png");
+}
+</style>
+</head>
+<body>
+
+<div id="main">
+    <div id="header">
+        <div id="header-left"></div>
+        <div id="header-right"><img src="/static/wozzt/image/heading.png"></div>
+    </div>
+    <div id="focus">
+        {% comment %}<audio src="{{audio}}" autoplay="autoplay" loop=True volume="0.2"></audio>{% endcomment %}
+    </div>
+    <div id="overview" class="block">
+    </div>
+    <div id="hud" class="block">
+        <div id="stream-card" class="cp437 ega-darkblue-bg">
+            <h1><span class="heading-letter ega-black ega-gray-bg">♫</span>Now Playing:</h1>
+            <p>"Aurora" by Cal McEachern</p>
+
+            <h1><span class="heading-letter ega-darkcyan-bg">∞</span>Link:</h1>
+            <p>https://opengameart.org/<br>content/aurora-0</p>
+        </div>
+    </div>
+    <div id="chat" class="block"></div>
+</div>
+
+</body>
+</html>

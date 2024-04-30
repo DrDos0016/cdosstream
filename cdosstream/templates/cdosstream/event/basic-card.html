@@ -1,0 +1,9 @@
+{% extends "cdosstream/event/card.html" %}
+
+{% block card_body %}
+<div id="live-event" class="basic-card" data-func="{{event_func}}"{% if hour %} data-hour="{{hour}}"{% endif %}>
+    <div class="card-user">{{username}}</div>
+    <div class="card-image"><img src="{{image}}"></div>
+    <div class="card-text">{{text|safe}}</div>
+</div>
+{% endblock %}

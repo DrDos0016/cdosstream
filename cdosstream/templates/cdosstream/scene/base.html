@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="/static/wozzt/css/wozzt-stream.css">
+{% block scripts %}
+<script src="/static/wozzt/js/jquery-3.6.1.min.js"></script>
+<script src="/static/wozzt/js/wozzt-event-handler.js"></script>
+<script src="/static/wozzt/js/events.js"></script>
+<script src="/static/wozzt/js/utils.js"></script>
+{% endblock %}
+{% block local_scripts %}{% endblock %}
+{% block local_style %}{% endblock %}
+</head>
+
+<body>
+<div id="main">
+    <div id="header">
+        <div id="header-left">
+            <div id="subscriber-info" class="">
+                <div id="sub-wrapper"><span class="ega-purple">♀</span> <span id="sub-count">--</span><span class="ega-darkgray">/80</span>&nbsp;</div>
+                <div id="sub-reward" class="cutoff">Bonus Stream: <span class="ega-yellow">The Game Master Shareware CD</span></div>
+                <div id="latest-subscriber" class="cutoff cutoff-chars-38">Latest Subscriber: <span id="latest-subscriber-name" class="ega-yellow"></span></div>
+            </div>
+            <div id="cheer-info" class="active">
+                <div id="cheer-wrapper"><span class="ega-green">♦</span> <span id="cheer-count">-----</span><span class="ega-darkgray">x&nbsp;</span></div>
+                <div id="latest-cheer" class="cutoff cutoff-chars-38">Latest Cheer: <span id="latest-cheer-name" class="ega-yellow"></span>&nbsp;</div>
+                <div id="record-cheer" class="cutoff cutoff-chars-45">Record Cheer: <span class="ega-green">♦</span> <span id="record-cheer-amount"></span> <span id="record-cheer-name" class="ega-yellow"></span></div>
+            </div>
+            <div class="plugs">
+                <div class="">Visit the Museum of ZZT Today! <span class="ega-cyan">https://museumofzzt.com</span></div>
+                <div class="">Say hello in the Worlds of ZZT Discord! <span class="ega-cyan">https://museumofzzt.com/discord/</span></div>
+                <div class="">Missed a stream? Catch the VODs! <span class="ega-cyan">https://youtube.com/@WorldsofZZT</span></div>
+                <div class="">Follow <span class="ega-cyan">@WorldsofZZT</span> on Twitter/Tumblr/Botsin.Space for announcements and bot posted ZZT boards!</div>
+            </div>
+        </div>
+        <div id="header-right">
+            <div id="wozzt-name" class="ega-darkred"><span class="ega-gray-bg">Worlds of ZZT</span></div>
+            <div id="clock-wrapper"><span id="current-time">00:00:00</span></div>
+        </div>
+    </div>
+    <div id="focus">
+        {% block focus %}
+        <div id="scene-none" class="active">
+            <div>
+                <img src="/static/wozzt/image/zzthink-8x.png">
+                <p>- Scene Missing -</p>
+            </div>
+        </div>
+        {% endblock %}
+    </div>
+    <div id="card-wrapper" class="block">
+        <div class="card active info-card" id="info-card"></div>
+        <div class="card" id="event-card">{% block live_event %}{% endblock %}</div>
+    </div>
+    <div id="hud" class="block">{% block hud %}{% endblock %}</div>
+    <div id="chat" class="block">
+    </div>
+</div>
+<div class="layout-divider"></div>
+
+<div style="display:flex;align-items:flex-start;column-gap:8px;">
+    <div>
+        <b id="event-queue-size">-</b> queued events.<br>
+    </div>
+    <div><textarea id="debug"></textarea></div>
+</div>
+</body>
+
+</html>

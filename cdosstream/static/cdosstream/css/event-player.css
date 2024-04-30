@@ -1,0 +1,71 @@
+* { box-sizing:border-box; }
+
+body
+{
+    width:1920px;
+    height:auto;
+    overflow:hidden;
+    color:#FFF;
+    font-family:cp437;
+    font-size:28px;
+    margin:0;
+    background-color:rgba(0,255,0,0) !important; /* I feel like important shouldn't be needed here, but it makes/breaks OBS transparency */
+}
+
+#event-queue {
+    position:absolute;
+    top:0px;
+    left:1676px;
+    width:7ch;
+    overflow:hidden;
+    text-overflow:"";
+    border-bottom:1px solid #FFF;
+    height:30px;
+}
+
+#event-card {
+    background-color:rgba(0,0,0,0);
+    position:absolute;
+}
+
+#event-card.transparent {
+    opacity: 0;
+}
+
+
+#event-card.position-standard
+{
+    top:44px;
+    left:1448px;
+    max-width:472px;
+}
+
+#event-card.position-centered
+{
+    top:30px;
+    left:0px;
+    width:1440px;
+    height:1050px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.position-centered .basic-card
+{
+    width:auto;
+    min-width:480px;
+    height:auto;
+    image-rendering: pixelated;
+    border-image-slice: 14 8 14 8;
+    border-image-source: url("/static/cdosstream/image/border.png");
+    border-style: solid;
+    border-width:14px 8px;
+    background-color:var(--ega-darkblue);
+}
+
+#event-card.position-centered #live-event .zzt-scroll
+{
+    font-size:32pt;
+
+}

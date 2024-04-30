@@ -1,0 +1,51 @@
+{% extends "cdosstream/event/card.html" %}
+{% load zzt_tags %}
+
+{% block local_css %}<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-events.css">
+<style>
+#live-event .zzt-scroll
+{
+    font-size:16pt;
+    color:var(--ega-yellow);
+    background-color:var(--ega-darkblue);
+    text-align:left;
+}
+
+.zzt-scroll .name
+{
+    text-align:center;
+}
+
+.zzt-scroll .plaintext
+{
+    background-color:var(--ega-darkblue);
+}
+
+.zzt-scroll .white
+{
+    text-align:center;
+    color:var(--ega-white);
+    min-height:14px;
+}
+
+.zzt-scroll .hypertext
+{
+background-repeat: no-repeat;
+background-position:16px;
+background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAOCAYAAAASVl2WAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAZdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuMTJDBGvsAAAAQ0lEQVQoU5WMQQoAIAzD9kn//5SqSNmEOPAQBk1YSGrBsRIa64AwJ2iiDB7RHUDIgfn/UITJAOTmBCAMjhUcKzgmigkcKlhhXdQ3uAAAAABJRU5ErkJggg==);
+color:var(--ega-white);
+padding-left:40px;
+background-color:var(--ega-darkblue);
+min-width:296px;
+display:inline-block;
+}
+</style>
+{% endblock %}
+
+{% block card_body %}
+<div id="live-event" class="basic-card" data-func="{{event_func}}">
+{% scroll %}@Scroll {{scroll.pk}}
+{{scroll_content_as_text}}
+{% endscroll %}
+</div>
+{% endblock %}

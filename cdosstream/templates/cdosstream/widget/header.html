@@ -1,0 +1,43 @@
+{% extends "cdosstream/main.html" %}
+{% load static %}
+
+{% block local_css %}
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/header.css">
+{% endblock %}
+
+{% block local_scripts %}
+<script async src="{% static 'cdosstream/js/widget-header.js' %}?{{TIMESTAMP}}" type="module"></script>
+<script src="/static/cdosstream/js/utils.js?{{TIMESTAMP}}"></script>
+<script>
+var WEBSOCKET_SERVER_HOST = "{{WEBSOCKET_SERVER_HOST}}";
+var WEBSOCKET_SERVER_PORT = "{{WEBSOCKET_SERVER_PORT}}";
+</script>
+{% endblock %}
+
+{% block body %}
+<div id="header">
+        <div id="header-left" title="Rotating Header">
+            <div id="subscriber-info" class="">
+                <div id="sub-wrapper"><span class="ega-purple">♀</span> <span id="sub-count">---</span><span class="ega-darkgray">/200</span>&nbsp;</div>
+                <div id="sub-reward" class="cutoff">Bonus Stream: <span class="ega-yellow">Geight Streamin</span></div>
+                <div id="latest-subscriber" class="cutoff cutoff-chars-38">Latest Subscriber: <span id="latest-subscriber-name" class="ega-yellow"></span></div>
+            </div>
+            <div id="cheer-info" class="active">
+                <div id="cheer-wrapper"><span class="ega-green">♦</span> <span id="cheer-count">-----</span><span class="ega-darkgray">x&nbsp;</span></div>
+                <div id="latest-cheer" class="cutoff cutoff-chars-38">Latest Cheer: <span id="latest-cheer-name" class="ega-yellow"></span>&nbsp;</div>
+                <div id="record-cheer" class="cutoff cutoff-chars-45">Record Cheer: <span class="ega-green">♦</span> <span id="record-cheer-amount"></span> <span id="record-cheer-name" class="ega-yellow"></span></div>
+            </div>
+            <div class="plugs">
+                <div class="">Visit the Museum of ZZT Today! <span class="ega-cyan">https://museumofzzt.com</span></div>
+                <div class="">Say hello in the Worlds of ZZT Discord! <span class="ega-cyan">https://museumofzzt.com/discord/</span></div>
+                <div class="">Missed a stream? Catch the VODs! <span class="ega-cyan">https://youtube.com/@WorldsofZZT</span></div>
+                <div class="">Follow <span class="ega-cyan">@WorldsofZZT</span> on Twitter/Tumblr/Botsin.Space for announcements and bot posted ZZT boards!</div>
+            </div>
+        </div>
+        <div id="header-right" title="Static Header">
+            <div id="wozzt-name" class="ega-darkred"><span class="ega-gray-bg">Worlds of ZZT</span></div>
+            <div id="event-queue"></div>
+            <div id="clock-wrapper"><span id="current-time">00:00:00</span></div>
+        </div>
+</div>
+{% endblock %}

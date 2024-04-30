@@ -1,0 +1,50 @@
+body
+{
+    margin:0px;
+    overflow:hidden;
+}
+
+#header
+{
+    width:1920px;
+    height:30px;
+    overflow:hidden;
+    background-color:var(--ega-darkblue);
+    color:#FFF;
+    font-family:cp437;
+    font-size:28px;
+    display:flex;
+    align-items:center;
+}
+
+#header-left
+{
+    overflow:hidden;
+    flex:1;
+}
+
+#header-left > div { display:none; }
+#header-left > .active {
+    display:flex;
+    align-items:center;
+    column-gap:1ch;
+}
+
+.plugs > div { display:none; }
+.plugs > div.active-plug { display:block; }
+
+
+#header-right
+{
+    flex:0 0 480px;
+    display:flex;
+    justify-content:space-between;
+}
+
+
+#wozzt-name
+{
+    background-color:var(--ega-gray);
+    padding-left:1ch;
+    padding-right:1ch;
+}

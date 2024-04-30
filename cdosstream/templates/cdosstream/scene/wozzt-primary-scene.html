@@ -1,0 +1,65 @@
+{% extends "cdosstream/main.html" %}
+{% load static %}
+
+{% block local_css %}
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-layout.css">
+{% endblock %}
+
+{% block local_scripts %}
+<script src="/static/cdosstream/js/wozzt-event-handler.js"></script>
+<script src="/static/cdosstream/js/events.js"></script>
+<script src="/static/cdosstream/js/utils.js"></script>
+{% endblock %}
+
+{% block body %}
+<div id="main">
+    <div id="focus">
+        {% block focus %}
+        <div id="scene-none" class="active">
+            <div>
+                <img src="/static/cdosstream/image/zzthink-8x.png">
+                <p>- Scene Missing -</p>
+            </div>
+        </div>
+        {% endblock %}
+    </div>
+    <!--<div id="now-playing" class="block" title="Now Playing"></div>-->
+    <div id="card-wrapper" class="block">
+        <div class="card active" id="info-card"></div>
+        <div class="card" id="event-card">{% block live_event %}{% endblock %}</div>
+    </div>
+</div>
+<div class="layout-divider"></div>
+
+<div style="display:flex;align-items:flex-start;column-gap:8px;">
+    <div>
+        <b id="event-queue-size">-</b> queued events.<br>
+    </div>
+    <div><textarea id="debug"></textarea></div>
+</div>
+
+<hr>
+<p style="background:red;margin:0px;">ABC</p>
+
+<div class="block">
+    <span>█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█</span><br>
+    <span>█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█</span><br>
+    <span>█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█</span><br>
+    <span>█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█</span><br>
+    <span>█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█</span><br>
+    <span>█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█</span><br>
+    <span>█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█</span><br>
+    <span>█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█</span><br>
+    <span>█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█</span><br>
+    <span>█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█</span><br>
+    <span>█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█</span><br>
+    <span>█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█</span><br>
+    <span>█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█▄█</span><br>
+</div>
+
+<!--New Sidebar-->
+<div id="hud" class="block">{% block hud %}{% endblock %}</div>
+<div id="chat" class="block" style="display:none"></div>
+
+<hr>
+{% endblock %}

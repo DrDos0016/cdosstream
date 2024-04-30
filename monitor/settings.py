@@ -1,0 +1,15 @@
+import os
+
+APP_ID = os.environ.get("TWITCH_APP_ID", "-UNDEFINED-")
+APP_SECRET = os.environ.get("TWITCH_APP_SECRET", "-UNDEFINED-")
+USERNAME = os.environ.get("TWITCH_USERNAME", "-UNDEFINED-")
+
+WEBSERVER_URL = "http://django.pi:8000/"
+WS_PORT = 8765
+
+USERNAME = os.environ.get("TWITCH_USERNAME", "-UNDEFINED-")
+NGROK_PORT = 8080
+NGROK_TOKEN = os.environ.get("NGROK_TOKEN", "-UNDEFINED-")
+
+WEBSOCKET_SERVER_HOST = os.environ.get("WEBSOCKET_SERVER_HOST", "-UNDEFINED-")
+WEBSOCKET_SERVER_PORT = os.environ.get("WEBSOCKET_SERVER_PORT", "-UNDEFINED-")

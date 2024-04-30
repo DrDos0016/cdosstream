@@ -1,0 +1,22 @@
+{% extends "cdosstream/main.html" %}
+{% load static %}
+
+{% block local_css %}
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-layout.css">
+{% endblock %}
+
+{% block local_scripts %}
+<script src="/static/cdosstream/js/card.js?{{TIMESTAMP}}" type="module"></script>
+<script src="/static/cdosstream/js/utils.js?{{TIMESTAMP}}"></script>
+<script>
+var WEBSOCKET_SERVER_HOST = "{{WEBSOCKET_SERVER_HOST}}";
+var WEBSOCKET_SERVER_PORT = "{{WEBSOCKET_SERVER_PORT}}";
+</script>
+{% endblock %}
+
+{% block body %}
+<div id="card-wrapper" class="block">
+    <div class="card active" id="info-card"></div>
+    <div class="card" id="event-card">{% block live_event %}{% endblock %}</div>
+</div>
+{% endblock %}

@@ -1,0 +1,175 @@
+body
+{
+    margin:0px;
+    background-color:#111;
+    font-family:monospace;
+    font-size:12pt;
+    box-sizing:border-box;
+    width:1520px;
+    height:665px;
+    display:grid;
+    grid-template-areas:
+    "header header header"
+    "chat events events"
+    "chat cards forms"
+    "chat notes stream";
+
+    grid-template-columns:350px 1fr 640px;
+    grid-template-rows:20px 1fr 150px 360px;
+}
+
+#header { grid-area: header; width:1520px; background: #D67FFF; border-bottom:1px solid #000; display:flex; gap:1px; color:#FFA;}
+#header > div { background:#00A; padding-left:2px; padding-right:2px; min-width:2ch;}
+
+#chat-frame { grid-area: chat; }
+#event-log { grid-area: events; padding-left:6px; overflow:auto; border-bottom:1px solid #000; background: #FFE97F; }
+#stream { grid-area: stream; }
+#forms { grid-area: forms; background-color:#7FC9FF; overflow:auto; }
+#notes { grid-area: notes; }
+#cards { grid-area: cards; overflow:auto; background-color: #A5FF7F; }
+
+iframe
+{
+    border:0px;
+    background:#222;
+    display:block;
+}
+
+form
+{
+    border-bottom:1px solid #000;
+    display:flex;
+    gap:4px;
+    align-items:flex-end;
+    max-width:530px;
+    padding:2px;
+    flex-wrap:wrap;
+}
+
+form + form
+{
+    margin-top:2px;
+}
+
+.field-wrapper
+{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex:1;
+}
+
+.field-wrapper input, .field-wrapper select, .field-wrapper button
+{
+    width:200px;
+    max-width:200px;
+}
+
+.submit-wrapper
+{
+    flex:0 0 100px;
+}
+
+.submit-wrapper input[type="submit"]
+{
+    width:100px;
+}
+
+table td
+{
+    border-bottom:1px solid #000;
+    padding:2px 6px 2px 6px;
+}
+
+#event-log th
+{
+    text-align:left;
+}
+
+#event-log tr + tr
+{
+    border-top:1px solid #000;
+}
+
+.event-pk { width:5ch; }
+.event-time { width:9ch; }
+.event-kind { }
+
+#notepad
+{
+    border:0px;
+    width:99%;
+    height:100%;
+    resize:none;
+}
+
+.highlight
+{
+    background:#B0AEFF;
+}
+
+#card-overview
+{
+    width:100%;
+}
+
+#event-overview
+{
+    width:100%;
+
+}
+
+.event-kind
+{
+    width:26ch;
+}
+
+.row-channelsubscriptionmessage
+{
+    background:#00A;
+    color:#FF5;
+}
+
+#stream-viewers
+{
+    width:4ch;
+    text-align:center;
+}
+
+.max-ch-20 { max-width:20ch; overflow:hidden; }
+.max-ch-60 { max-width:60ch; overflow:hidden; }
+
+button.shortcut-button
+{
+    width:auto;
+    margin-bottom:2px;
+}
+
+#send-command-form .field-wrapper
+{
+    flex:1 0 100%;
+}
+
+#send-command-form .submit-wrapper
+{
+    flex:1;
+    text-align:right;
+}
+
+
+#header select, #header input {
+    font-family:monospace;
+    height:100%;
+    margin:0px;
+    margin-top:-1px;
+    border:0px;
+    font-size:12px;
+}
+
+.flex-centered-wrapper
+{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100%;
+}

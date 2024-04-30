@@ -1,0 +1,45 @@
+{% extends "cdosstream/main.html" %}
+
+{% block local_css %}
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-layout.css">
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-events.css">
+<style>
+body
+{
+    background:url("/static/cdosstream/scene/ad/ad-break-bg.png");
+    background-repeat:no-repeat;
+    background-position:0px 30px;
+}
+</style>
+{% endblock %}
+
+{% block local_scripts %}
+<script>
+const bgm = new Audio();
+
+$(document).ready(function (){
+    bgm.src = "/static/cdosstream/scene/ad/aurora.wav";
+    bgm.loop = true;
+    bgm.volume = 0.5;
+    bgm.play();
+});
+</script>
+{% endblock %}
+
+
+{% block body %}
+<div class="pos-hud block">
+    <div class="info-card">
+        <div id="stream-card" class="cp437 ega-darkblue-bg" data-card-pk="{{card.pk}}">
+            <div>
+                <h1><span class="heading-letter ega-gray-bg">♫</span>Now Playing:</h1>
+                <div class="indented-block">"Aurora" by Cal McEachern</div>
+            </div>
+            <div>
+                <h1><span class="heading-letter ega-darkcyan-bg">∞</span>Link:</h1>
+                <div class="indented-block">https://opengameart.org/<br>content/aurora-0</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

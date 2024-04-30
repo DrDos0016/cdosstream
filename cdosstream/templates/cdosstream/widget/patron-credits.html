@@ -1,0 +1,37 @@
+{% extends "cdosstream/main.html" %}
+{% load static %}
+
+{% block local_css %}
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-layout.css">
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-events.css">
+<style>
+#text-wrapper
+{
+    width:1440px;
+    text-align:center;
+    background:#000;
+}
+
+#outro-credits
+{
+    padding-left:24px;
+    padding-right:24px;
+    font-size:36pt;
+    line-height:42px;
+    height:42px;
+    width:1440px;
+}
+
+</style>
+{% endblock %}
+
+{% block local_scripts %}
+<script src="/static/cdosstream/js/patrons.js?{{TIMESTAMP}}"></script>
+<script src="/static/cdosstream/js/outro.js?{{TIMESTAMP}}"></script>
+{% endblock %}
+
+{% block body %}
+<div id="text-wrapper">
+    <div id="outro-credits" class="active flashing"></div>
+</div>
+{% endblock %}
