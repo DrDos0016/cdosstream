@@ -1,8 +1,9 @@
 {% extends "cdosstream/main.html" %}
 {% load static %}
+{% load cdosstream_tags %}
 
 {% block global_css %}
-<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-scp.css">
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-scp-small.css">
 {% endblock %}
 
 {% block local_scripts %}
@@ -16,69 +17,94 @@ var WEBSOCKET_SERVER_PORT = "{{WEBSOCKET_SERVER_PORT}}";
 {% endblock %}
 
 {% block content %}
-<header id="header">
-    <div id="ws-connection" title="Disconnected">❌</div>
-    <div id="stream-viewers">---</div>
-    <div id="stream-title" class="max-ch-80"></div>
-    <div id="stream-category" class="max-ch-20"></div>
-    <div id="event-position">
-        <select id="event-position-select" title="Redeem Position">
-            <option value="position-standard">Standard</option>
-            <option value="position-centered">Center</option>
-        </select>
-    </div>
-    <div id="channel-select"><input name="twitch-channel-name" value="WorldsOfZZT" title="Twitch Channel Name"></div>
-</header>
-<div id="chat-frame">
-    <div class="flex-centered-wrapper">
-        <button class="iframe-launcher" data-url="https://twitch.tv/[CHANNEL]/chat" data-target="#chat-frame" data-width="350px" data-height="646px">
-            <img src="/static/cdosstream/image/twitch-16px.png"><br>Open Chat
-        </button>
-    </div>
-</div>
-<div id="forms">
-{% for form in forms %}
-    <form id="{{form.identifier}}">
-    {% csrf_token %}
-    {% for field in form.visible_fields %}
-    <div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
-        {{field.errors}}
-        {{field.label_tag}}
-        <div class="field-value">
-            {{field}}
+<main>
+    <header id="header">
+        <div id="ws-connection" title="Disconnected">❌</div>
+        <div id="stream-viewers">---</div>
+        <div id="stream-title" class="max-ch-80"></div>
+        <div id="stream-category" class="max-ch-20"></div>
+        <div id="event-position">
+            <select id="event-position-select" title="Redeem Position">
+                <option value="position-standard">Standard</option>
+                <option value="position-centered">Center</option>
+            </select>
         </div>
-        {% if field.help_text %}
-        <p class="field-help">{{field.help_text|safe}}</p>
-        {% endif %}
+        <div id="channel-select"><input name="twitch-channel-name" value="WorldsOfZZT" title="Twitch Channel Name"></div>
+        <div id="widget-select-wrapper">
+            <select name="widget-select">
+                <option value="#notes">Notepad</option>
+                <option value="#cards">Cards</option>
+                <option value="#forms">Forms</option>
+            </select>
+        </div>
+    </header>
+    <div id="chat-frame">
+        <div class="flex-centered-wrapper">
+            <button class="iframe-launcher" data-url="https://twitch.tv/[CHANNEL]/chat" data-target="#chat-frame" data-width="240px" data-height="440px">
+                <img src="/static/cdosstream/image/twitch-16px.png"><br>Open Chat
+            </button>
+        </div>
     </div>
-    {% endfor %}
-    {% for field in form.hidden_fields %}
-    {{field}}
-    {% endfor %}
-    <div class="submit-wrapper">
-        <input type="submit" id="submit-{{form.identifier}}" value="{{form.submit_text|default:'Set'}}">
+
+<!--Widgets-->
+    <div id="notes" class="widget">
+        <section class="controls">Cntrl.</section>
+        <textarea id="notepad" placeholder="Notes...">{{notes}}</textarea>
     </div>
-    </form>
-{% endfor %}
-</div>
-<div id="notes">
-    <textarea id="notepad" placeholder="Notes...">{{notes}}</textarea>
-</div>
-<div id="cards">
-    <table id="card-overview">
-        {% for card in cards %}
-            <tr data-pk="{{card.pk}}"><td>{{card.title.value|safe}}<br>{{card.authors.value|safe}}</td><td>{{card.date.value|safe}}<br>{{card.company.value|safe}}</td></tr>
+    <div id="cards" class="widget">
+        <div class="sticky-header">{% display_form set_card_form %}</div>
+        <table id="card-overview">
+            {% for card in cards %}
+                <tr data-pk="{{card.pk}}">
+                    <td>
+                        <div class="card-title">{{card.title.value|striptags}}</div>
+                        <div class="card-author">{{card.authors.value|striptags}}</div>
+                        <div class="card-company">{{card.companies.value|striptags}}</div>
+                    </td>
+                    <td class="card-date">
+                        {{card.date.value|striptags}}<br><a href="" id="card-url-{{card.pk}}" target="_blank">View</a>
+                        <!-- {{card.title}} -->
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div id="forms" class="widget">
+    {% for form in forms %}
+        <form id="{{form.identifier}}">
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+        <div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
+            {{field.errors}}
+            {{field.label_tag}}
+            <div class="field-value">
+                {{field}}
+            </div>
+            {% if field.help_text %}
+            <p class="field-help">{{field.help_text|safe}}</p>
+            {% endif %}
+        </div>
         {% endfor %}
-    </table>
-</div>
-<div id="event-log">
-    <table id="event-overview"></table>
-</div>
-<div id="stream">
-    <div class="flex-centered-wrapper">
-        <button class="iframe-launcher" data-url="https://twitch.tv/[CHANNEL]/popout" data-target="#stream" data-width="640px" data-height="350px">
-            <img src="/static/cdosstream/image/twitch-16px.png"><br>Open Stream
-        </button>
+        {% for field in form.hidden_fields %}
+        {{field}}
+        {% endfor %}
+        <div class="submit-wrapper">
+            <input type="submit" id="submit-{{form.identifier}}" value="{{form.submit_text|default:'Set'}}">
+        </div>
+        </form>
+    {% endfor %}
     </div>
-</div>
+    <div id="event-log">
+        <table id="event-overview"></table>
+    </div>
+    {% comment %}
+    <div id="stream" class="widget">
+        <div class="flex-centered-wrapper">
+            <button class="iframe-launcher" data-url="https://twitch.tv/[CHANNEL]/popout" data-target="#stream" data-width="640px" data-height="350px">
+                <img src="/static/cdosstream/image/twitch-16px.png"><br>Open Stream
+            </button>
+        </div>
+    </div>
+    {% endcomment %}
+</main>
 {% endblock %}

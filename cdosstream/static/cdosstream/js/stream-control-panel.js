@@ -73,6 +73,11 @@ $(document).ready(function (){
 
     notepad = new Notepad();
     $("#notepad")[0].addEventListener("keyup", (event) => notepad.restart_timer(event));
+
+    $("select[name=widget-select]").change(change_widget);
+    $("#card-overview tr").click(prep_card);
+    clean_card_select();
+    change_widget();
 });
 
 
@@ -161,4 +166,38 @@ function launch_iframe()
     let w = $(this).data("width");
     let h = $(this).data("height");
     $(target_str).html(`<iframe src="${url}" width="${w}" height="${h}"></iframe>`);
+}
+
+function change_widget()
+{
+    console.log("Changing widget");
+    $(".widget.active").removeClass("active");
+    let widget_id = $("select[name=widget-select]").val();
+    $(widget_id).addClass("active");
+}
+
+function prep_card()
+{
+    let pk = $(this).data("pk");
+    $("#id_card").val(pk);
+}
+
+function clean_card_select()
+{
+    // Hacky, but I'd rather rewrite this widget to be custom inputs later so this will do for now
+    $("#id_card option").each(function (){
+        let text = $(this).text();
+        let pk = $(this).val();
+
+        if (text.indexOf("<a href=") == 0)
+        {
+            let sliced = text.slice(text.indexOf(">") + 1, -4);
+            $(this).text(sliced);
+
+            let url = text.slice(9, text.indexOf(">") - 1);
+            console.log(url);
+            $(`#card-url-${pk}`).attr("href", "https://museumofzzt.com" + url);
+        }
+
+    });
 }
