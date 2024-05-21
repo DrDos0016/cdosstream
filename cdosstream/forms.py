@@ -37,7 +37,6 @@ class Set_Card_Form(forms.Form):
 
     def process(self):
         new_card = self.cleaned_data["card"]
-        print("NEW CARD IS", new_card)
         event_data = create_new_event_dict(kind="Set Card")
         event_data["event"]["card_pk"] = new_card.pk
         event = Event(raw=event_data)
