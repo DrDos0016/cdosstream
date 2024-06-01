@@ -71,6 +71,7 @@ $(document).ready(function (){
     ws = new SCP_Websocket_Connection(WEBSOCKET_SERVER_HOST, WEBSOCKET_SERVER_PORT);
     ws.init();
 
+
     notepad = new Notepad();
     $("#notepad")[0].addEventListener("keyup", (event) => notepad.restart_timer(event));
 
@@ -107,24 +108,13 @@ function post_form(e)
         $("#id_command").val("");
         $("#id_params").val("");
     }
+    else if (form_id == "custom-card-form")
+    {
+        ws.ws_send({"command": "set-custom-card", "basic": $("#id_basic_params").text(), "extras": $("#id_extra_params").text()});
+    }
     else
     {
-        $.ajax({
-            url:"/form/process/" + form_id +  "/",
-            method:"POST",
-            data:$(form).serializeArray()
-        }).done(function (response){
-            if (response.success)
-            {
-                console.log(response.response);
-                if (form_id == "set-card-form")
-                    highlight_active_card();
-            }
-            else
-            {
-                console.log(response);
-            }
-        });
+        console.log("Form handling has not been defined!!");
     }
 }
 
@@ -179,7 +169,22 @@ function change_widget()
 function prep_card()
 {
     let pk = $(this).data("pk");
-    $("#id_card").val(pk);
+    let params = "";
+
+    let keys = ["World", "Author", "Company", "Date"];
+    let attrs = ["title", "author", "company", "date"];
+    for (let idx = 0; idx < keys.length; idx++)
+    {
+        let key = keys[idx];
+        let attr = attrs[idx]
+        params += key + "=" + $(`tr[data-pk=${pk}] .card-${attr}`).text() + "\r\n";
+    }
+    // URLs need href attribute
+    params += "URL=" + $(`tr[data-pk=${pk}] .card-url`).attr("href") + "\r\n";
+
+    $("#id_basic_params").text(params);
+    $("#card-overview .selected").removeClass("selected");
+    $(this).addClass("selected");
 }
 
 function clean_card_select()

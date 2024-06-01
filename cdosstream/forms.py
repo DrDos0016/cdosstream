@@ -28,6 +28,25 @@ def get_card_choices():
     return choices
 
 
+class Custom_Card_Form(forms.Form):
+    identifier = "custom-card-form"
+    use_required_attribute = False
+    response = ""
+
+    basic_params = forms.CharField(label="Params", widget=forms.Textarea, initial="#BLANK\r\nWorld=\r\nAuthor=\r\nCompany=\r\nDate=\r\nURL=\r\n")
+    extra_params = forms.CharField(label="Extras", widget=forms.Textarea)
+
+    def process(self):
+        new_card = self.cleaned_data["card"]
+        event_data = create_new_event_dict(kind="Set Card")
+        event_data["event"]["card_pk"] = new_card.pk
+        event = Event(raw=event_data)
+        event.prepare()
+        event.save()
+
+        self.response = str(event)
+
+
 class Set_Card_Form(forms.Form):
     identifier = "set-card-form"
     use_required_attribute = False

@@ -56,7 +56,7 @@ iframe { border:0px; }
 
 .card-author, .card-company { text-align:right; }
 
-.card-date
+.cramped
 {
     width:7ch;
     vertical-align:top;
@@ -218,3 +218,13 @@ button.shortcut-button
     justify-content:center;
     height:100%;
 }
+
+
+.selected
+{
+    background-color:#B591FF;
+}
+
+/* Custom Cards */
+#custom-card-form textarea { padding:0px; max-width:275px; margin-right:15px; height:3ch;}
+#custom-card-form textarea:focus { height:12ch; }

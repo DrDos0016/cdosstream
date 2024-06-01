@@ -61,9 +61,8 @@ var WEBSOCKET_SERVER_PORT = "{{WEBSOCKET_SERVER_PORT}}";
                         <div class="card-author">{{card.authors.value|striptags}}</div>
                         <div class="card-company">{{card.companies.value|striptags}}</div>
                     </td>
-                    <td class="card-date">
-                        {{card.date.value|striptags}}<br><a href="" id="card-url-{{card.pk}}" target="_blank">View</a>
-                        <!-- {{card.title}} -->
+                    <td class="cramped">
+                        <div class="card-date">{{card.date.value|striptags}}</div><a href="" class="card-url" id="card-url-{{card.pk}}" target="_blank">View</a>
                     </td>
                 </tr>
             {% endfor %}

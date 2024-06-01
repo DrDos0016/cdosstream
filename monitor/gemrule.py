@@ -12,6 +12,9 @@ REGISTERED_COMMANDS = [
 CALL_AND_RESPONSE_COMMANDS = {
     "discord": "Visit the Museum of ZZT Discord: https://museumofzzt.com/discord/",
     "patreon": "Support Worlds of ZZT: https://museumofzzt.com/patreon",
+    "social": "Follow Worlds of ZZT Everywhere: https://museumofzzt.com/follow/",
+    "twitter": "Follow WorldsOfZZT on Twitter: https://twitter.com/worldsofzzt",
+    "tumblr": "Follow WorldsOfZZT on Tumblr:  https://tumblr.com/worldsofzzt",
 }
 
 

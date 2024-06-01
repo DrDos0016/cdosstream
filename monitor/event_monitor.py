@@ -139,6 +139,15 @@ class Event_Monitor():
                 pk = data["pk"]
                 resp = requests.get(WEBSERVER_URL + "get-event/?pk={}".format(pk))
                 websockets.broadcast(self.connections, resp.text)
+            elif data["command"] == "set-custom-card":
+                card_data = {
+                    "subscription": {"type": "Set Custom Card"},
+                    "event": {
+                        "title": "Set Custom Card", "basic": data["basic"], "extras": data["extras"]
+                    },
+                    "manual": True,
+                }
+                await self.log_event(card_data)
             elif data["command"] == "set-card":
                 # Create an event to indicate the card change
                 card_data = {"subscription": {"type": "Set Card"}, "event": {"title": "Set Card", "card_pk": data["pk"]}, "manual": True}
