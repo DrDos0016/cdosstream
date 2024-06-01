@@ -64,6 +64,7 @@ def stream_control_panel(request):
     context["forms"] = [
         Replay_Event_Form(),
         Send_Command_Form(),
+        Timer_Form(),
     ]
 
     # Get cards from Musuem

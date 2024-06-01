@@ -1,4 +1,14 @@
+/* THIS FILE SHOULD BE UNUSED ACTUALLY */
+
 var speed = {"event_fade": 250};
+
+function tick_timer()
+{
+    let current = $("#stream-timer").data("value");
+    console.log("Tick timer", current);
+    current -= 1;
+    $("#stream-timer").html(current);
+}
 
 export async function bip_bo_beep(event)  /* Ref: #69 */
 {
@@ -174,6 +184,23 @@ export async function undefined_event(event)  /* Ref: #1009 */
     $("#live-event").animate({opacity: 1}, speed.event_fade, async function (){
         fade_out_event_card(event);
     });
+}
+
+export async function timer_start(event) /* Ref: ?? */
+{
+    console.log("DOING TIMER STUFF");
+    console.log(event);
+    $("#stream-timer").remove();
+    $("body").append(`<div id="stream-timer" data-value=""><span class="timer-hours">00</span>:<span class="timer-minutes">00</span>:<span class="timer-seconds">00</span>`);
+
+    let [hours, minutes, seconds] = event.body.event.start_value.split(":");
+    let raw_seconds = (hours * 60 * 60) + (minutes * 60) + seconds;
+
+    $("#stream-timer").data("mode", event.body.event.mode);
+    $("#stream-timer").data("value", raw_seconds);
+    setInterval(tick_timer, 1000);
+    conclude_event(event);
+    console.log("CONCLUDED?");
 }
 
 export function fade_out_event_card(event)

@@ -168,6 +168,25 @@ export async function random_scroll(event)  /* Ref: #2511 */
     });
 }
 
+export async function timer_start(event) /* Ref: ?? */
+{
+    console.log("DOING TIMER STUFF");
+    console.log(event);
+    $("#stream-timer").remove();
+    $("body").append(`<div id="stream-timer" data-value=""><span class="timer-hours">00</span>:<span class="timer-minutes">00</span>:<span class="timer-seconds">00</span>`);
+
+    let [hours, minutes, seconds] = event.body.event.start_value.split(":");
+    console.log("H,M,S", hours, minutes, seconds); //  H,M,S 2 24 00
+    let raw_seconds = parseInt(hours * 60 * 60) + parseInt(minutes * 60) + parseInt(seconds);
+    console.log("RAW SECS", raw_seconds);
+
+    $("#stream-timer").data("mode", event.body.event.mode);
+    $("#stream-timer").data("value", raw_seconds);
+    setInterval(tick_timer, 1000);
+    conclude_event(event);
+    console.log("CONCLUDED?");
+}
+
 export async function undefined_event(event)  /* Ref: #1009 */
 {
     $("#live-event").animate({opacity: 1}, speed.event_fade, async function (){
@@ -196,4 +215,22 @@ export function conclude_event(event)
     remove_event_icon(event.meta.pk);
     $("#event-card").data("finished", true);
     console.log("6. [" + event.meta.pk + "] Fade Out Complete.");
+}
+
+
+function tick_timer()
+{
+    let current = $("#stream-timer").data("value");
+    current -= 1;
+    $("#stream-timer").data("value", current);
+    let temp = current;
+    let hours = parseInt(temp / 60 / 60);
+    temp -= (hours * 60 * 60);
+    let minutes = parseInt(temp / 60);
+    temp -= (minutes * 60);
+    let seconds = temp;
+
+    $(".timer-hours").html(("" + hours).padStart(2, "0"));
+    $(".timer-minutes").html(("" + minutes).padStart(2, "0"));
+    $(".timer-seconds").html(("" + seconds).padStart(2, "0"));
 }

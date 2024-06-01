@@ -86,7 +86,10 @@ function post_form(e)
 {
     e.preventDefault();
     if (ws.websocket == null)
+    {
+        console.log("No Websocket Connection Found. Form cannot post.");
         return false;
+    }
 
     console.log("Posting form");
 
@@ -114,7 +117,11 @@ function post_form(e)
     }
     else
     {
-        console.log("Form handling has not been defined!!");
+        let form_data = $(form).serializeArray();
+        form_data = list_to_object(form_data);
+        form_data["command"] = form_id;
+        console.log("SENDING", form_data);
+        ws.ws_send(form_data);
     }
 }
 
@@ -205,4 +212,16 @@ function clean_card_select()
         }
 
     });
+}
+
+function list_to_object(data)
+{
+    let output = {};
+    for (let idx=0; idx < data.length; idx++)
+    {
+        if (data[idx].name == "csrfmiddlewaretoken")
+            continue;
+        output[data[idx].name] = data[idx].value;
+    }
+    return output;
 }

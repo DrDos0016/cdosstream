@@ -4,8 +4,6 @@ import { Websocket_Connection } from "/static/cdosstream/js/modules/websocket_co
 import * as Registered_Events from "/static/cdosstream/js/modules/events.js";
 
 var ws = null;
-//var EVENTS = []; // Event queue
-//var HANDLING = false;
 var speed = {
     "event_check": 125,
     "event_fade": 250,
@@ -76,6 +74,13 @@ class Event_Player_Websocket_Connection extends Websocket_Connection
         let event = this.EVENTS.shift();
         console.log("2. [" + event.meta.pk + "] Processing event:", event.meta.kind);
 
+        if (event.meta.kind == "timer") // TODO I don't like this living here
+        {
+            console.log(Registered_Events);
+            Registered_Events["timer_start"](event);
+            return true;
+        }
+
         // Pull relevant HTML for event
         $.ajax({
             url:"/event/" + event.meta.pk + "/",
@@ -121,7 +126,8 @@ async function check_event_queue()
 
 async function run_card(event)
 {
-    console.log("3. [" + event.meta.pk + "] Running card w/ requested function:", event.meta.js_func);
-    console.log(Registered_Events);
-    return await Registered_Events[event.meta.js_func](event);
+    let func_name = (event.meta.js_func) ? event.meta.js_func : "undefined_event";
+    console.log("3. [" + event.meta.pk + "] Running card w/ requested function:", func_name);
+    console.log(event);
+    return await Registered_Events[func_name](event);
 }

@@ -103,8 +103,10 @@ class Replay_Event_Form(forms.Form):
 
         self.response = str(event)
 
+
 class Shortcut_Field(forms.BooleanField):
     required = False
+
 
 class Shortcut_Button_Widget(forms.TextInput):
     template_name = "cdosstream/widget/shortcut-button-widget.html"
@@ -121,3 +123,23 @@ class Send_Command_Form(forms.Form):
 
     def process(self):
         self.response = "Send command form?"
+
+
+class Timer_Form(forms.Form):
+    identifier = "timer-form"
+    use_required_attribute = False
+    response = ""
+    submit_text = "Launch"
+
+    mode = forms.ChoiceField(label="Mode", widget=forms.RadioSelect, choices=(("DOWN", "Count Down From"), ("UP", "Count Up To")), initial="DOWN")
+    start_value = forms.CharField(label="Start Value")
+
+    def process(self):
+        new_card = self.cleaned_data["card"]
+        event_data = create_new_event_dict(kind="Set Card")
+        event_data["event"]["card_pk"] = new_card.pk
+        event = Event(raw=event_data)
+        event.prepare()
+        event.save()
+
+        self.response = str(event)

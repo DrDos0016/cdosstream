@@ -69,3 +69,13 @@ body
     font-size:32pt;
 
 }
+
+#stream-timer
+{
+    position:absolute;
+    width:8ch;
+    text-align:center;
+    top:150px;
+    left:1550px;
+    font-size:56pt;
+}

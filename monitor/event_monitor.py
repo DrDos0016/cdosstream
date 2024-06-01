@@ -179,6 +179,9 @@ class Event_Monitor():
                 print("{} active connections:".format(len(self.connection_names)))
                 for k, v in self.connection_names.items():
                     print("{} -- {}".format(k, v))
+            elif data["command"] == "timer-form":
+                card_data = {"subscription": {"type": "Timer"}, "event": {"title": "Timer", "mode": data["mode"], "start_value": data["start_value"]}, "manual": True}
+                await self.log_event(card_data)
             else:
                 print("Unknown command: {}".format(data["command"]))
 
