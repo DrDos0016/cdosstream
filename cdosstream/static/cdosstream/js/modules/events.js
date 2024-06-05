@@ -170,21 +170,17 @@ export async function random_scroll(event)  /* Ref: #2511 */
 
 export async function timer_start(event) /* Ref: ?? */
 {
-    console.log("DOING TIMER STUFF");
-    console.log(event);
+    if ($("#stream-timer").attr("data-timer-id"))
+        clearInterval($("#stream-timer").attr("data-timer-id"));
     $("#stream-timer").remove();
-    $("body").append(`<div id="stream-timer" data-value=""><span class="timer-hours">00</span>:<span class="timer-minutes">00</span>:<span class="timer-seconds">00</span>`);
 
     let [hours, minutes, seconds] = event.body.event.start_value.split(":");
-    console.log("H,M,S", hours, minutes, seconds); //  H,M,S 2 24 00
     let raw_seconds = parseInt(hours * 60 * 60) + parseInt(minutes * 60) + parseInt(seconds);
-    console.log("RAW SECS", raw_seconds);
 
-    $("#stream-timer").data("mode", event.body.event.mode);
-    $("#stream-timer").data("value", raw_seconds);
-    setInterval(tick_timer, 1000);
+    $("body").append(`<div id="stream-timer" data-value="${raw_seconds}" data-mode="${event.body.event.mode}" data-timer-id=""><span class="timer-hours">00</span>:<span class="timer-minutes">00</span>:<span class="timer-seconds">00</span>`);
+    let timer_id = setInterval(tick_timer, 1000);
+    $("#stream-timer").attr("data-timer-id", timer_id);
     conclude_event(event);
-    console.log("CONCLUDED?");
 }
 
 export async function undefined_event(event)  /* Ref: #1009 */
@@ -220,9 +216,10 @@ export function conclude_event(event)
 
 function tick_timer()
 {
-    let current = $("#stream-timer").data("value");
+    let current = $("#stream-timer").attr("data-value");
+    let mode = $("#stream-timer").data("mode");
     current -= 1;
-    $("#stream-timer").data("value", current);
+    $("#stream-timer").attr("data-value", current);
     let temp = current;
     let hours = parseInt(temp / 60 / 60);
     temp -= (hours * 60 * 60);
