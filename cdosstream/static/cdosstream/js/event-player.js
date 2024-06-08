@@ -39,7 +39,7 @@ class Event_Player_Websocket_Connection extends Websocket_Connection
         }
 
         // Discard irrelevant events
-        if ((event.meta.kind == "set-card") || (event.meta.kind == "stream-info"))
+        if ((event.meta.kind == "set-card") || (event.meta.kind == "stream-info") || (event.meta.kind == "set-custom-card"))
             return false;
 
         this.queue_event(event);
