@@ -113,7 +113,7 @@ function post_form(e)
     }
     else if (form_id == "custom-card-form")
     {
-        ws.ws_send({"command": "set-custom-card", "basic": $("#id_basic_params").text(), "extras": $("#id_extra_params").text()});
+        ws.ws_send({"command": "set-custom-card", "basic": $("#id_basic_params")[0].innerHTML, "extras": $("#id_extra_params").text()});
     }
     else
     {
