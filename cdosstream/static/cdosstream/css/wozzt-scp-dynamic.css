@@ -1,0 +1,284 @@
+* { box-sizing:border-box; }
+
+body
+{
+    margin:0px;
+    background-color:#111;
+    font-family:monospace;
+    font-size:10pt;
+}
+
+main
+{
+    display:grid;
+    gap:1px;
+    background:#000;
+    grid-template-areas:
+        "header header"
+        "chat events"
+        "chat widget"
+        "touch touch";
+
+
+    max-width:1510px;
+    height:100vh;
+    grid-template-columns:360px 1fr;
+    grid-template-rows:20px 300px 300px 1fr;
+}
+
+@media (max-width:899px) {
+    main
+    {
+        grid-template-columns:240px 1fr;
+    }
+
+    #touch-frame { display:none; }
+}
+
+#header { grid-area:header; }
+#chat-frame { grid-area:chat; background-color:#A0A; }
+#event-log { grid-area:events; }
+#touch-frame { grid-area:touch; }
+
+#event-log { background-color:#0DE; padding-left:6px; overflow:auto; }
+
+#header { background: #D67FFF; display:flex; gap:1px; color:#FFA;}
+#header > div { background:#00A; padding-left:2px; padding-right:2px; min-width:2ch;}
+
+.wiget { grid-area:widget; }
+.widget:not(.active) { display:none; }
+#notes.active { display:flex; }
+
+iframe { border:0px; }
+
+#cards {
+    background:#B5FF91;
+    overflow:auto;
+}
+
+#card-overview td > div + div
+{
+    border-top:1px solid #0A0;
+}
+
+.card-title
+{
+    font-style:oblique;
+}
+
+.card-author, .card-company { text-align:right; }
+
+.cramped
+{
+    width:7ch;
+    vertical-align:top;
+    text-align:right;
+    padding-left:1ch;
+    padding-right:1ch;
+}
+
+.sticky-header
+{
+    position:sticky;
+    top:0px;
+    background:#FFD700;
+}
+
+#forms
+{
+    background:#F33;
+}
+
+form
+{
+    border-bottom:1px solid #000;
+    display:flex;
+    gap:4px;
+    align-items:flex-end;
+    max-width:530px;
+    padding:2px;
+    flex-wrap:wrap;
+}
+
+form + form
+{
+    margin-top:2px;
+}
+
+.field-wrapper
+{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex:1;
+}
+
+.field-wrapper input, .field-wrapper select, .field-wrapper button
+{
+    width:200px;
+    max-width:200px;
+}
+
+.submit-wrapper
+{
+    flex:0 0 100px;
+}
+
+.submit-wrapper input[type="submit"]
+{
+    width:100px;
+}
+
+table { border-collapse:collapse; }
+
+table td
+{
+    border-bottom:2px solid #000;
+}
+
+#event-log th
+{
+    text-align:left;
+}
+
+#event-log tr + tr
+{
+    border-top:1px solid #000;
+}
+
+.event-pk { width:5ch; }
+.event-time { width:9ch; }
+.event-kind { }
+
+
+#notes {
+    flex-direction:column;
+    background-color:#FFD700;
+    padding:0px 3px 3px 3px;
+}
+
+#notes .controls { flex:0 0 auto; }
+
+#notepad
+{
+    border:1px solid #000;
+    flex:1;
+    resize:none;
+    margin:0px;
+}
+
+.highlight
+{
+    background:#B0AEFF;
+}
+
+#event-overview
+{
+    width:100%;
+}
+
+.event-kind
+{
+    width:26ch;
+}
+
+.row-channelsubscriptionmessage
+{
+    background:#00A;
+    color:#FF5;
+}
+
+#stream-viewers
+{
+    width:4ch;
+    text-align:center;
+}
+
+#stream-category
+{
+    width:10ch;
+    text-align:center;
+}
+
+#stream-title
+{
+    width:20ch;
+}
+
+.truncate-text { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+
+button.shortcut-button
+{
+    width:auto;
+    margin-bottom:2px;
+}
+
+#send-command-form .field-wrapper
+{
+    flex:1 0 100%;
+}
+
+#send-command-form .submit-wrapper
+{
+    flex:1;
+    text-align:right;
+}
+
+
+#header select, #header input {
+    font-family:monospace;
+    height:100%;
+    margin:0px;
+    margin-top:-1px;
+    border:0px;
+    font-size:12px;
+}
+
+.flex-centered-wrapper
+{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    height:100%;
+}
+
+
+.selected
+{
+    background-color:#B591FF;
+}
+
+#touch-frame
+{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    padding:10px;
+}
+
+.touch-button
+{
+    flex:0 0 90px;
+    display:flex;
+    height:100px;
+    border-radius:8px;
+    border:4px solid #FFF;
+    flex-direction:column;
+    text-align:center;
+    justify-content:space-around;
+    padding:4px;
+    background-color:#666;
+    color:#FFF;
+    cursor:pointer;
+}
+
+.touch-blue { background-color:#116; border-color:#33F; }
+
+.touch-icon
+{
+    font-size:24pt;
+}
+
+/* Custom Cards */
+#custom-card-form textarea { padding:0px; max-width:275px; margin-right:15px; height:3ch;}
+#custom-card-form textarea:focus { height:12ch; }

@@ -3,7 +3,7 @@
 {% load cdosstream_tags %}
 
 {% block global_css %}
-<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-scp-small.css">
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-scp-dynamic.css">
 {% endblock %}
 
 {% block local_scripts %}
@@ -21,8 +21,8 @@ var WEBSOCKET_SERVER_PORT = "{{WEBSOCKET_SERVER_PORT}}";
     <header id="header">
         <div id="ws-connection" title="Disconnected">❌</div>
         <div id="stream-viewers">---</div>
-        <div id="stream-title" class="max-ch-80"></div>
-        <div id="stream-category" class="max-ch-20"></div>
+        <div id="stream-category" class="truncate-text"></div>
+        <div id="stream-title" class="truncate-text"></div>
         <div id="event-position">
             <select id="event-position-select" title="Redeem Position">
                 <option value="position-standard">Standard</option>
@@ -40,9 +40,26 @@ var WEBSOCKET_SERVER_PORT = "{{WEBSOCKET_SERVER_PORT}}";
     </header>
     <div id="chat-frame">
         <div class="flex-centered-wrapper">
-            <button class="iframe-launcher" data-url="https://twitch.tv/[CHANNEL]/chat" data-target="#chat-frame" data-width="240px" data-height="440px">
-                <img src="/static/cdosstream/image/twitch-16px.png"><br>Open Chat
+            <button class="iframe-launcher" data-url="https://twitch.tv/[CHANNEL]/chat" data-target="#chat-frame" data-width="360px" data-height="600px">
+                <img src="/static/cdosstream/image/twitch-16px.png"><br>Open Chat (XL)
             </button>
+            <button class="iframe-launcher" data-url="https://twitch.tv/[CHANNEL]/chat" data-target="#chat-frame" data-width="240px" data-height="440px">
+                <img src="/static/cdosstream/image/twitch-16px.png"><br>Open Chat (S)
+            </button>
+        </div>
+    </div>
+    <div id="touch-frame">
+        <div class="touch-button touch-blue">
+            <div class="touch-icon">📝</div>
+            <div class="touch-text">Notepad</div>
+        </div>
+        <div class="touch-button touch-blue">
+            <div class="touch-icon">📇</div>
+            <div class="touch-text">Cards</div>
+        </div>
+        <div class="touch-button touch-blue">
+            <div class="touch-icon">⚙️</div>
+            <div class="touch-text">Forms</div>
         </div>
     </div>
 
