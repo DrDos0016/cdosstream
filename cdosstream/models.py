@@ -56,3 +56,21 @@ class Event(models.Model):
     def get_queue_icon(self):
         event_info = REGISTERED_EVENTS.get(self.kind, {})
         return event_info.get("icon", {"fg": "ega-white", "bg": "", "char": "?"})
+
+
+class Gemrule_Response(models.Model):
+    command = models.CharField(max_length=100)
+    response = models.CharField(max_length=255)
+
+    def __str__(self):
+        return "!{} -- {}...".format(self.command, self.response[:50])
+
+
+class Audio_Info(models.Model):
+    key = models.CharField(max_length=100)
+    artist = models.CharField(max_length=100)
+    track = models.CharField(max_length=100)
+    url = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return "[{}] {} - {}".format(self.key, self.artist, self.track)

@@ -1,3 +1,14 @@
+import os
+import sys
+
+import django
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "stream.settings")
+django.setup()
+
+from cdosstream.models import *  # noqa: E402
+
 from twitchAPI.types import ChatEvent
 from twitchAPI.chat import Chat, EventData, ChatMessage, ChatSub, ChatCommand
 #from private import USERNAME
@@ -5,33 +16,53 @@ USERNAME = "WorldsOfZZT"
 
 from websockets.sync.client import connect
 
+#from asgiref.sync import sync_to_async
+
+def populate_call_and_response_commands():
+    print("[Gemrule] Populating Call and Response Commands.")
+    qs = Gemrule_Response.objects.all()
+    output = {}
+    for gr in qs:
+        output[gr.command] = gr.response
+    return output
+
+def populate_audio_info():
+    print("[Gemrule] Populating Audio Info.")
+    qs = Audio_Info.objects.all().order_by("id")
+    output = []
+    for ai in qs:
+        output.append({"pk": ai.pk, "artist": ai.artist, "track": ai.track, "url": ai.url})
+    return output
+
 REGISTERED_COMMAND_KEYS = ["reply"]
 REGISTERED_COMMANDS = [
-    {"command": "reply", "func": "test_command"}
+    {"command": "reply", "func": "test_command"},
+    {"command": "audio", "func": "get_audio_link"},
 ]
-CALL_AND_RESPONSE_COMMANDS = {
-    "discord": "Visit the Museum of ZZT Discord: https://museumofzzt.com/discord/",
-    "patreon": "Support Worlds of ZZT: https://museumofzzt.com/patreon",
-    "social": "Follow Worlds of ZZT Everywhere: https://museumofzzt.com/follow/",
-    "twitter": "Follow WorldsOfZZT on Twitter: https://twitter.com/worldsofzzt",
-    "tumblr": "Follow WorldsOfZZT on Tumblr:  https://tumblr.com/worldsofzzt",
-}
+CALL_AND_RESPONSE_COMMANDS = populate_call_and_response_commands()
+AUDIO_INFO = populate_audio_info()
 
 
 async def gemrule_launch(twitch):
-    #await gemrule_bot(twitch)
+    print("[Gemrule] Booting up Gemrule")
     chat = await Chat(twitch)
+
+    print("[Gemrule] Registering Complex Commands")
     chat.register_event(ChatEvent.READY, on_ready)
     chat.register_event(ChatEvent.MESSAGE, on_message)
-    #chat.register_command("reply", test_command)
+    chat.register_command("audio", get_audio_link)
+
+    print("[Gemrule] Populating Call and Response Commands")
+
     for k in CALL_AND_RESPONSE_COMMANDS.keys():
+        print(" - Registering !" + k)
         chat.register_command(k, command_call_and_response)
     chat.start()
-    print("Gemrule launched.")
+    print("[Gemrule] Launched.")
 
 
 async def on_ready(ready_event: EventData):
-    print("Gemrule Ready")
+    print("[Gemrule] Ready.")
     await ready_event.chat.join_room(USERNAME)
 
 
@@ -52,9 +83,22 @@ async def test_command(cmd: ChatCommand):
     await cmd.reply('Hello I am replying.')
 
 
-
 async def command_call_and_response(cmd: ChatCommand):
     response = CALL_AND_RESPONSE_COMMANDS.get(cmd.name, "")
     if response:
         await cmd.reply(response)
     return True
+
+
+async def get_audio_link(cmd: ChatCommand):
+    try:
+        idx = int(cmd.parameter) - 1
+    except ValueError:
+        return False
+
+    if (idx < 0 or idx > len(AUDIO_INFO)):
+        return False
+
+    info = AUDIO_INFO[idx]
+    response = "{} - {} {}".format(info["artist"], info["track"], info["url"])
+    await cmd.reply(response)
