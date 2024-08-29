@@ -9,6 +9,9 @@ from proj.settings import BASE_DIR
 
 STREAM_NOTES_FILE_PATH = os.path.join(BASE_DIR, "cdosstream", "static", "cdosstream", "stream-notes.txt")
 
+SUB_GOAL = 111
+SUB_GOAL_REWARD = "Bonus Stream: <span class='ega-yellow'>MZX: Chronos Statis</span>"
+
 
 def get_stream_entries():
     print("Acquiring stream entry cards from Museum of ZZT")
@@ -89,6 +92,11 @@ REGISTERED_EVENTS = {
         "js_func": "streeeeeeeeeetch",
         "icon": {"fg": "ega-yellow", "bg": "ega-blue-bg", "char": "☺"},
     },
+    "sub-goal": {  # Ref: X
+        "view": "Sub_Goal_View",
+        "js_func": "sub_goal",
+        "icon": {"fg": "ega-red", "bg": "", "char": "♥"},
+    },
     "use-the-3d-talk-engine": {  # Ref: 1033
         "view": "Use_The_3D_Talk_Engine_View",
         "js_func": "use_the_3d_talk_engine",
@@ -105,6 +113,48 @@ REGISTERED_EVENTS = {
         "icon": {"fg": "ega-white", "bg": "", "char": "∩"},
     },
 }
+
+def get_stub_event_data(event_title):
+    STUB_EVENT_DATA = {
+        "subscription": {
+            "id": "",
+            "status": "enabled",
+            "type": "",
+            "version": "1",
+            "condition": {
+                "broadcaster_user_id": "",
+                "reward_id": ""
+            },
+            "transport": {
+                "method": "webhook",
+                "callback": ""
+            },
+            "created_at": "",
+            "cost": 0
+        },
+        "event": {
+            "broadcaster_user_id": "",
+            "broadcaster_user_login": "",
+            "broadcaster_user_name": "",
+            "id": "",
+            "user_id": "",
+            "user_login": "",
+            "user_name": "",
+            "user_input": "",
+            "status": "",
+            "redeemed_at": "",
+            "reward": {
+                "id": "",
+                "title": "",
+                "prompt": "",
+                "cost": 0
+            }
+        }
+    }
+
+    event_data = STUB_EVENT_DATA
+    event_data["event"]["reward"]["title"] = event_title
+    return event_data
 
 
 def read_stream_notes():

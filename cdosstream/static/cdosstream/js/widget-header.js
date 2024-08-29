@@ -1,4 +1,6 @@
 "use strict";
+//var HEADER_SPEED = 30000;
+var HEADER_SPEED = 2000;
 
 import { Websocket_Connection } from "/static/cdosstream/js/modules/websocket_connection.js";
 
@@ -55,7 +57,7 @@ $(document).ready(function (){
     update_cheer_info();
     ws = new Header_Websocket_Connection(WEBSOCKET_SERVER_HOST, WEBSOCKET_SERVER_PORT);
     ws.init();
-    setInterval(advance_header, 30000);
+    setInterval(advance_header, HEADER_SPEED);
     setInterval(update_clock, 1000);
 });
 
@@ -90,6 +92,12 @@ function update_sub_info()
     $.ajax({
         url:"/query/get-subscriber-info/"
     }).done(function (data){
+        let goal_str = $("#sub-goal").text();
+        let sub_goal;
+        if (goal_str != "???")
+            sub_goal = parseInt(goal_str);
+        else
+            sub_goal = 999999;
         var count = data.sub_count;
         if (count > 999)
             count = "!!!";
@@ -97,7 +105,12 @@ function update_sub_info()
             count = "0" + ("" + count);
         $("#sub-count").html(count);
         $("#latest-subscriber-name").html(data.latest_subscriber);
-        console.log("Subs updated", count, data.latest_subscriber);
+        console.log("Subs updated", count, "/", sub_goal, data.latest_subscriber);
+
+        if (count >= sub_goal)
+        {
+            sub_goal_met();
+        }
     });
 }
 
@@ -123,4 +136,18 @@ function update_clock()
     var now = new Date();
     var time = now.toTimeString();
     $("#current-time").html(time.slice(0,8));
+}
+
+function sub_goal_met()
+{
+    $("#sub-goal").text("???");
+    console.log("Goal reached :3");
+
+    $.ajax({
+        url:"/create-event/goal/"
+    }).done(function (data){
+        //console.log("Event created for reaching goal.");
+        // "Replay" the newly logged event
+        ws.ws_send({"command": "replay", "pk": data.meta.pk});
+    });
 }

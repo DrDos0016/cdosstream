@@ -4,6 +4,7 @@ import time
 import requests
 
 from django.http import HttpResponse, JsonResponse
+from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.shortcuts import redirect
 
@@ -207,6 +208,25 @@ class Streeeeeeeeeetch_View(Event_View):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["image"] = "/static/cdosstream/event/streeeeeeeeeetch/stretch.gif?{}".format(int(time.time()))
+        return context
+
+class Sub_Goal_View(TemplateView):
+    template_name = "cdosstream/event/basic-card.html"
+    text = "Sub Goal Met!<br><span class='ega-cyan'>Bonus Stream Unlocked!</span>"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Goal!"
+        context["image"] = "/static/cdosstream/event/sub-goal/goal.png"
+        context["text"] = self.text
+        context["username"] = ":)"
+
+        """
+        "sub-goal": {  # Ref: X
+        "view": "Sub_Goal_View",
+        "js_func": "sub_goal",
+        "icon": {"fg": "ega-red", "bg": "", "char": "♥"},
+        },"""
         return context
 
 

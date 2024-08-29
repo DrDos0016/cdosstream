@@ -18,8 +18,8 @@ var WEBSOCKET_SERVER_PORT = "{{WEBSOCKET_SERVER_PORT}}";
 <div id="header">
         <div id="header-left" title="Rotating Header">
             <div id="subscriber-info" class="">
-                <div id="sub-wrapper"><span class="ega-purple">♀</span> <span id="sub-count">---</span><span class="ega-darkgray">/250</span>&nbsp;</div>
-                <div id="sub-reward" class="cutoff">Bonus Stream: <span class="ega-yellow">MZX: Chronos Statis</span></div>
+                <div id="sub-wrapper"><span class="ega-purple">♀</span> <span id="sub-count">---</span><span class="ega-darkgray">/</span><span class="ega-darkgray" id="sub-goal">{{SUB_GOAL}}</span>&nbsp;</div>
+                <div id="sub-reward" class="cutoff">{{SUB_GOAL_REWARD|safe}}</div>
                 <div id="latest-subscriber" class="cutoff cutoff-chars-38">Latest Subscriber: <span id="latest-subscriber-name" class="ega-yellow"></span></div>
             </div>
             <div id="cheer-info" class="active">

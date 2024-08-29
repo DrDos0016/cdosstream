@@ -126,6 +126,15 @@ export async function streeeeeeeeeetch(event)  /* Ref: #159 */
     });
 }
 
+export async function sub_goal(event)  /* Ref: #??? */
+{
+    $("#live-event").animate({opacity: 1}, speed.event_fade, async function (){
+        sound.volume = 1;
+        await play_sound("/static/cdosstream/event/sub-goal/newthingget-normalized.mp3");
+        fade_out_event_card(event);
+    });
+}
+
 export async function use_the_3d_talk_engine(event)  /* Ref: #1033 */
 {
     $("#live-event").animate({opacity: 1}, speed.event_fade, async function (){

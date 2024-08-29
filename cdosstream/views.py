@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import *
 from .forms import *
-from .core import get_stream_entries, read_stream_notes
+from .core import get_stream_entries, read_stream_notes, SUB_GOAL, SUB_GOAL_REWARD, get_stub_event_data
 from .event_views import *
 
 from twitchAPI.helper import first
@@ -25,6 +25,14 @@ def capture_event(request):
     event_data = json.loads(request.body)
     event = Event(raw=event_data)
     event.prepare()
+    event.save()
+    return JsonResponse(event.jsonized())
+
+
+def create_event_goal(request):
+    event = Event(raw=get_stub_event_data("sub-goal"))
+    event.prepare()
+    event.kind = "sub-goal"
     event.save()
     return JsonResponse(event.jsonized())
 
@@ -146,23 +154,14 @@ class Card(TemplateView):
         return context
 
 
-"""
-class Chat(TemplateView):
-    template_name =  "cdosstream/widget/chat.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["title"] = "Chat"
-        return context
-"""
-
-
 class Header(TemplateView):
     template_name = "cdosstream/widget/header.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Header"
+        context["SUB_GOAL"] = SUB_GOAL
+        context["SUB_GOAL_REWARD"] = SUB_GOAL_REWARD
         return context
 
 

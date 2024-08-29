@@ -20,7 +20,7 @@ from websockets.sync.client import connect
 
 def populate_call_and_response_commands():
     print("[Gemrule] Populating Call and Response Commands.")
-    qs = Gemrule_Response.objects.all()
+    qs = Gemrule_Response.objects.all().order_by("command")
     output = {}
     for gr in qs:
         output[gr.command] = gr.response
@@ -36,8 +36,9 @@ def populate_audio_info():
 
 REGISTERED_COMMAND_KEYS = ["reply"]
 REGISTERED_COMMANDS = [
-    {"command": "reply", "func": "test_command"},
+    #{"command": "reply", "func": "test_command"},
     {"command": "audio", "func": "get_audio_link"},
+    {"command": "article", "func": "get_article_link"},
 ]
 CALL_AND_RESPONSE_COMMANDS = populate_call_and_response_commands()
 AUDIO_INFO = populate_audio_info()
@@ -49,8 +50,11 @@ async def gemrule_launch(twitch):
 
     print("[Gemrule] Registering Complex Commands")
     chat.register_event(ChatEvent.READY, on_ready)
-    chat.register_event(ChatEvent.MESSAGE, on_message)
+    #chat.register_event(ChatEvent.MESSAGE, on_message)
+    print(" - Registering !audio")
     chat.register_command("audio", get_audio_link)
+    print(" - Registering !article")
+    chat.register_command("article", get_article_link)
 
     print("[Gemrule] Populating Call and Response Commands")
 
@@ -101,4 +105,16 @@ async def get_audio_link(cmd: ChatCommand):
 
     info = AUDIO_INFO[idx]
     response = "{} - {} {}".format(info["artist"], info["track"], info["url"])
+    await cmd.reply(response)
+
+async def get_article_link(cmd: ChatCommand):
+    try:
+        pk = int(cmd.parameter)
+    except ValueError:
+        return False
+
+    if (pk <= 0):
+        return False
+
+    response = "https://museumofzzt.com/article/view/{}".format(pk)
     await cmd.reply(response)
