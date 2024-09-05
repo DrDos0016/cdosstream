@@ -32,7 +32,7 @@ class Event_Monitor():
     shutdown = False
     monitor_stream_info = True
     last_monitor_stream_info_time = 0
-    monitor_stream_interval = 60
+    monitor_stream_interval = 30
 
     async def initialize_twitch_api_connection(self):
         self.twitch = await Twitch(APP_ID, APP_SECRET)
