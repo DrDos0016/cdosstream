@@ -16,14 +16,13 @@ main
     grid-template-areas:
         "header header"
         "chat events"
-        "chat widget"
-        "touch touch";
+        "chat widget";
 
 
     max-width:1510px;
     height:100vh;
     grid-template-columns:360px 1fr;
-    grid-template-rows:20px 300px 300px 1fr;
+    grid-template-rows:20px 200px 1fr;
 }
 
 @media (max-width:899px) {
@@ -40,7 +39,7 @@ main
 #event-log { grid-area:events; }
 #touch-frame { grid-area:touch; }
 
-#event-log { background-color:#0DE; padding-left:6px; overflow:auto; }
+#event-log { background-color:#377; overflow:auto; }
 
 #header { background: #D67FFF; display:flex; gap:1px; color:#FFA;}
 #header > div { background:#00A; padding-left:2px; padding-right:2px; min-width:2ch;}
@@ -136,19 +135,29 @@ table td
     border-bottom:2px solid #000;
 }
 
-#event-log th
+/* Event Log Widget */
+#event-log .event
 {
-    text-align:left;
+    border:1px solid #000;
+    margin-bottom:3px;
 }
 
-#event-log tr + tr
+#event-log .event .event-row
 {
-    border-top:1px solid #000;
+	display:flex;
+	flex-wrap:wrap;
+	gap:4px;
 }
 
-.event-pk { width:5ch; }
-.event-time { width:9ch; }
-.event-kind { }
+#event-log .event:nth-child(odd) { background:#DFF; }
+#event-log .event:nth-child(even) { background:#5FF; }
+
+.event-pk { flex:0 0 4ch; }
+.event-time { flex:0 0 6ch; }
+.event-kind { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
+.event-user { flex:1 0 10ch; text-align:right; }
+.event-message { flex:1; background:#FDF; }
+/* End Event Log Widget */
 
 
 #notes {

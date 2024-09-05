@@ -46,7 +46,7 @@ var WEBSOCKET_SERVER_PORT = "{{WEBSOCKET_SERVER_PORT}}";
             </button>
         </div>
     </div>
-    <div id="touch-frame">
+    {% comment %}<div id="touch-frame">
         <div class="touch-button touch-blue">
             <div class="touch-icon">📝</div>
             <div class="touch-text">Notepad</div>
@@ -59,7 +59,7 @@ var WEBSOCKET_SERVER_PORT = "{{WEBSOCKET_SERVER_PORT}}";
             <div class="touch-icon">⚙️</div>
             <div class="touch-text">Forms</div>
         </div>
-    </div>
+    </div>{% endcomment %}
 
 <!--Widgets-->
     <div id="notes" class="widget">
@@ -109,7 +109,7 @@ var WEBSOCKET_SERVER_PORT = "{{WEBSOCKET_SERVER_PORT}}";
     {% endfor %}
     </div>
     <div id="event-log">
-        <table id="event-overview"></table>
+        <div id="event-overview"></div>
     </div>
 </main>
 {% endblock %}
