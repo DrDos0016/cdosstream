@@ -31,11 +31,9 @@ var WEBSOCKET_SERVER_PORT = "{{WEBSOCKET_SERVER_PORT}}";
         </div>
         <div id="channel-select"><input name="twitch-channel-name" value="WorldsOfZZT" title="Twitch Channel Name"></div>
         <div id="widget-select-wrapper">
-            <select name="widget-select">
-                <option value="#notes">Notepad</option>
-                <option value="#cards">Cards</option>
-                <option value="#forms">Forms</option>
-            </select>
+            <div class="widget-button" data-widget="notes" title="Notepad">📝</div>
+            <div class="widget-button" data-widget="cards" title="Cards">📇</div>
+            <div class="widget-button" data-widget="forms" title="Forms">⚙️</div>
         </div>
     </header>
     <div id="chat-frame">
@@ -113,14 +111,5 @@ var WEBSOCKET_SERVER_PORT = "{{WEBSOCKET_SERVER_PORT}}";
     <div id="event-log">
         <table id="event-overview"></table>
     </div>
-    {% comment %}
-    <div id="stream" class="widget">
-        <div class="flex-centered-wrapper">
-            <button class="iframe-launcher" data-url="https://twitch.tv/[CHANNEL]/popout" data-target="#stream" data-width="640px" data-height="350px">
-                <img src="/static/cdosstream/image/twitch-16px.png"><br>Open Stream
-            </button>
-        </div>
-    </div>
-    {% endcomment %}
 </main>
 {% endblock %}

@@ -75,10 +75,28 @@ $(document).ready(function (){
     notepad = new Notepad();
     $("#notepad")[0].addEventListener("keyup", (event) => notepad.restart_timer(event));
 
-    $("select[name=widget-select]").change(change_widget);
+    $(".widget-button").click(change_widget);
     $("#card-overview tr").click(prep_card);
     clean_card_select();
-    change_widget();
+    //$("#cards").show();
+
+    // Test events
+    use_the_3d_talk_engine({
+        "meta": {"created_at": "2024-01-01 04:20:15.12Z", "kind": "use-the-3d-talk-engine", "pk": 0,  },
+        "body": {"event": {"user_name": "WorldsOfZZT", "user_input":"The doorbell rings..."}},
+    });
+    default_log({
+        "meta": {"created_at": "2024-01-01 04:23:28.12Z", "kind": "bip-bo-beep", "pk": 0,  },
+        "body": {"event": {"user_name": "Snorb Probably", "user_input":""}},
+    });
+    random_scroll({
+        "meta": {"created_at": "2024-01-01 04:23:28.12Z", "kind": "random-scroll", "pk": 0,  },
+        "body": {"event": {"user_name": "TheBigChungus", "user_input":""}},
+    });
+    default_log({
+        "meta": {"created_at": "2024-01-01 04:23:28.12Z", "kind": "channelsubscriptionmessage", "pk": 0,  },
+        "body": {"event": {"user_name": "My_Loyal_Fan", "user_input":"", "message":{"text": "5 Years of Maximum ZZT"}}},
+    });
 });
 
 
@@ -169,8 +187,8 @@ function change_widget()
 {
     console.log("Changing widget");
     $(".widget.active").removeClass("active");
-    let widget_id = $("select[name=widget-select]").val();
-    $(widget_id).addClass("active");
+    let widget_id = $(this).data("widget");
+    $("#" + widget_id).addClass("active");
 }
 
 function prep_card()
