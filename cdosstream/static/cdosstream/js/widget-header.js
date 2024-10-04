@@ -1,6 +1,6 @@
 "use strict";
-//var HEADER_SPEED = 30000;
-var HEADER_SPEED = 2000;
+var HEADER_SPEED = 30000;
+//var HEADER_SPEED = 2000;
 
 import { Websocket_Connection } from "/static/cdosstream/js/modules/websocket_connection.js";
 
