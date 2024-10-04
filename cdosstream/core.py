@@ -9,8 +9,8 @@ from proj.settings import BASE_DIR
 
 STREAM_NOTES_FILE_PATH = os.path.join(BASE_DIR, "cdosstream", "static", "cdosstream", "stream-notes.txt")
 
-SUB_GOAL = 111
-SUB_GOAL_REWARD = "Bonus Stream: <span class='ega-yellow'>MZX: Chronos Statis</span>"
+SUB_GOAL = 300
+SUB_GOAL_REWARD = "Bonus Stream: <span class='ega-yellow'>Geight And Dos Play UF50</span>"
 
 
 def get_stream_entries():
