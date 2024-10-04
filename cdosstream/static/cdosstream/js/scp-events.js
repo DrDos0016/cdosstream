@@ -59,7 +59,9 @@ function default_log(event)
 
     if (event.meta.kind == "channelsubscriptionmessage")
     {
+		let months = (event.body.event.cumulative_months) ? event.body.event.cumulative_months : "-";
          extra_row = `<div class="event-row highlight">
+         <div class="event-months">${months} mo(s).</div>
 			<div class="event-message">&lt;${username}&gt; ${event.body.event.message.text}</div>
          </div>`;
     }

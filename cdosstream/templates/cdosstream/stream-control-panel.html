@@ -29,12 +29,12 @@ var WEBSOCKET_SERVER_PORT = "{{WEBSOCKET_SERVER_PORT}}";
                 <option value="position-centered">Center</option>
             </select>
         </div>
-        <div id="channel-select"><input name="twitch-channel-name" value="WorldsOfZZT" title="Twitch Channel Name"></div>
         <div id="widget-select-wrapper">
             <div class="widget-button" data-widget="notes" title="Notepad">📝</div>
             <div class="widget-button" data-widget="cards" title="Cards">📇</div>
             <div class="widget-button" data-widget="forms" title="Forms">⚙️</div>
         </div>
+        <div id="sub-info" title="{{SUB_GOAL_REWARD}}">Subs: <span id="sub-count-value">----</span>/<span id="sub-goal-value">{{SUB_GOAL}}</span></div>
     </header>
     <div id="chat-frame">
         <div class="flex-centered-wrapper">

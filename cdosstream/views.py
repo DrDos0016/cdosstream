@@ -66,6 +66,8 @@ class Scene_View(TemplateView):
 @csrf_exempt
 def stream_control_panel(request):
     context = {"title": "Stream Control Panel"}
+    context["SUB_GOAL"] = SUB_GOAL
+    context["SUB_GOAL_REWARD"] = SUB_GOAL_REWARD
     #context["set_card_form"] = Set_Card_Form()
     context["set_card_form"] = Custom_Card_Form()
 

@@ -3,6 +3,7 @@
 import { Websocket_Connection } from "/static/cdosstream/js/modules/websocket_connection.js";
 import { Notepad } from "/static/cdosstream/js/modules/notepad.js";
 
+var TWITCH_USERNAME = "WorldsOfZZT";
 var ws = null;
 var notepad = null;
 
@@ -77,7 +78,9 @@ $(document).ready(function (){
 
     $(".widget-button").click(change_widget);
     $("#card-overview tr").click(prep_card);
+    $("#sub-info").click(get_subscriber_count);
     clean_card_select();
+    get_subscriber_count();
     //$("#cards").show();
 
     // Test events
@@ -95,7 +98,7 @@ $(document).ready(function (){
     });
     default_log({
         "meta": {"created_at": "2024-01-01 04:23:28.12Z", "kind": "channelsubscriptionmessage", "pk": 0,  },
-        "body": {"event": {"user_name": "My_Loyal_Fan", "user_input":"", "message":{"text": "5 Years of Maximum ZZT"}}},
+        "body": {"event": {"user_name": "My_Loyal_Fans", "user_input":"", "message":{"text": "5 Years of Maximum ZZT"}}},
     });
 });
 
@@ -177,7 +180,8 @@ function set_event_position()
 function launch_iframe()
 {
     let target_str = $(this).data("target");
-    let url = $(this).data("url").replaceAll("[CHANNEL]", $("input[name=twitch-channel-name]").val());
+    //let url = $(this).data("url").replaceAll("[CHANNEL]", $("input[name=twitch-channel-name]").val());
+    let url = $(this).data("url").replaceAll("[CHANNEL]", TWITCH_USERNAME);
     let w = $(this).data("width");
     let h = $(this).data("height");
     $(target_str).html(`<iframe src="${url}" width="${w}" height="${h}"></iframe>`);
@@ -242,4 +246,15 @@ function list_to_object(data)
         output[data[idx].name] = data[idx].value;
     }
     return output;
+}
+
+
+function get_subscriber_count()
+{
+    $.ajax({
+        url:"/query/get-subscriber-info/"
+    }).done(function (data){
+        var count = data.sub_count;
+        $("#sub-count-value").html(count);
+    });
 }
