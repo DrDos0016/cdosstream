@@ -85,6 +85,17 @@ export async function channelsubscriptiongift(event)  /* Ref: 1565 / 1556 Gift S
 }
 
 
+export async function hahaha(event)  /* Ref: #TBD */
+{
+    $("#live-event").animate({opacity: 1}, speed.event_fade, async function (){
+        sound.volume = 0.30;
+        await play_sound("/static/cdosstream/event/hahaha/hahaha.wav");
+        await delay(1000);
+        fade_out_event_card(event);
+    });
+}
+
+
 export async function hydrate(event)  /* Ref: #991 */
 {
     $("#live-event").animate({opacity: 1}, speed.event_fade, async function (){

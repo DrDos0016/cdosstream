@@ -144,6 +144,11 @@ class Channel_Raid_View(Event_View):
 
     def get_username(self):
         return self.event_json["body"]["event"]["from_broadcaster_user_name"]
+        
+        
+class Hahaha_View(Event_View):
+    image = "hahaha.png"
+    text = "Ha ha ha"
 
 
 class Hydrate_View(Event_View):

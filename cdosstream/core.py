@@ -9,8 +9,8 @@ from proj.settings import BASE_DIR
 
 STREAM_NOTES_FILE_PATH = os.path.join(BASE_DIR, "cdosstream", "static", "cdosstream", "stream-notes.txt")
 
-SUB_GOAL = 300
-SUB_GOAL_REWARD = "Bonus Stream: <span class='ega-yellow'>Geight And Dos Play UF50</span>"
+SUB_GOAL = 350
+SUB_GOAL_REWARD = "Bonus Stream: <span class='ega-yellow'>IDK! Suggestions welcome</span>"
 
 
 def get_stream_entries():
@@ -62,6 +62,11 @@ REGISTERED_EVENTS = {
     "guide-the-raid": {  # Ref: ?
         "js_func": "guide_the_raid",
         "icon": {"fg": "ega-green", "bg": "", "char": "►"},
+    },
+    "hahaha": {  # Ref: ?
+        "view": "Hahaha_View",
+        "js_func": "hahaha",
+        "icon": {"fg": "ega-darkgray", "bg": "", "char": "\""}
     },
     "hydrate": {  # Ref: 991
         "view": "Hydrate_View",
