@@ -1,4 +1,5 @@
 {% extends "cdosstream/main.html" %}
+{% load tz %}
 {% load cdosstream_tags %}
 
 {% block local_css %}
@@ -36,6 +37,33 @@ body {
 {
     top:350px;
 }
+
+#next-stream {
+    background-color:#0000AACC;
+    position:absolute;
+    top:14px;
+    left:8px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+}
+
+#next-stream.block {
+    max-height:initial;
+    height:auto;
+}
+
+#next-stream img {
+    flex: 0 1;
+    max-width:320px;
+    margin:auto;
+    image-rendering:auto;
+    border:1px solid var(--ega-gray);
+    margin-top:4px;
+    margin-bottom:4px;
+}
+
+
 </style>
 {% endblock %}
 
@@ -45,6 +73,24 @@ body {
 {% endblock %}
 
 {% block body %}
+{% if streams %}
+{% with streams.0 as stream %}
+<div id="next-stream" class="block">
+    <div class="c ega-yellow">Next Time On Worlds Of ZZT</div>
+    <div class="c">{{stream.title}}</div>
+    <img src="https://museumofzzt.com/{{stream.preview_image}}">
+    <div class="c ega-cyan">
+        <span class="ega-cyan">
+            {% timezone "America/New_York" %}{{stream.when|date:'l N jS'}}<br>
+            {{stream.when|date:'h:i A e'}}{% endtimezone %} /
+            {% timezone "America/Los_Angeles" %}{{stream.when|date:'h:i A e'}}{% endtimezone %}
+        </span>
+        <br>
+        <span class="ega-blue">{{stream.when|date:'D M jS'}} {{stream.when|date:'H:i e'}}</span>
+    </div>
+</div>
+{% endwith %}
+{% endif %}
 <div id="text-wrapper">
     <div id="outro-credits" class="active flashing"></div>
 </div>
