@@ -61,12 +61,11 @@ class Scene_View(TemplateView):
         context = super().get_context_data(**kwargs)
         context["title"] = self.kwargs.get("slug", "NO TITLE")
 
-        print(self.kwargs)
         if self.kwargs.get("slug") == "outro":
             r = requests.get("https://museumofzzt.com/ajax/get-stream-schedule/")
             context["streams"] = r.json().get("items")
             for stream in context["streams"]:
-                stream["when"] = datetime.fromisoformat(stream["when"] + "+00:00")
+                stream["when"] = datetime.fromisoformat(stream["when"])
         return context
 
 

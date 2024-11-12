@@ -2,6 +2,14 @@ var speed = {"event_fade": 250};
 
 // Audio volume should be between -10 and -15db w/ 100% slider volume in OBS
 
+export async function beautiful_music(event)  /* Ref: #TBD */
+{
+    $("#live-event").animate({opacity: 1}, speed.event_fade, async function (){
+        await delay(5000);
+        fade_out_event_card(event);
+    });
+}
+
 export async function bip_bo_beep(event)  /* Ref: #69 */
 {
     $("#live-event").animate({opacity: 1}, speed.event_fade, async function (){

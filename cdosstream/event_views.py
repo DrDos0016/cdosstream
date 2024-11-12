@@ -64,6 +64,10 @@ class Undefined_Event_View(Event_View):
 
     def get_username(self):
         return "Ü"
+        
+class Beautiful_Music_View(Event_View):
+    image = "beautiful-music.gif"
+    text = "Ahhh. Beautiful music."
 
 
 class Bip_Bo_Beep_View(Event_View):

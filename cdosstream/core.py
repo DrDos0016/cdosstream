@@ -24,6 +24,11 @@ class Event_View(TemplateView):
 
 
 REGISTERED_EVENTS = {
+	"beautiful-music": {  # Ref: TBD
+        "view": "Beautiful_Music_View",
+        "js_func": "beautiful_music",
+        "icon": {"fg": "ega-darkred", "bg": "", "char": "☻"}
+    },
     "bip-bo-beep": {  # Ref: 69
         "view": "Bip_Bo_Beep_View",
         "js_func": "bip_bo_beep",
