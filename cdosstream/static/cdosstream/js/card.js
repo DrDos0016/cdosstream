@@ -53,17 +53,15 @@ async function set_card(event)
 
 async function set_custom_card(event)
 {
-    console.log("GOT A CUSTOM CARD");
-    console.log(event);
     let raw_info = event.body.event.basic;
     let raw_extra = event.body.event.extras;
     let html = `<div id="stream-card" class="cp437 ega-darkblue-bg">`;
     let color = "gray";
 
     // Parse info
-    let lines = raw_info.split("\r\n");
+    let lines = raw_info.split("\n");
     if (raw_extra)
-        lines = lines.concat(raw_extra.split("\r\n"));
+        lines = lines.concat(raw_extra.split("\n"));
 
     for (let idx = 0; idx < lines.length; idx++)
     {

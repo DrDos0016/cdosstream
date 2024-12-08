@@ -134,7 +134,7 @@ function post_form(e)
     }
     else if (form_id == "custom-card-form")
     {
-        ws.ws_send({"command": "set-custom-card", "basic": $("#id_basic_params")[0].innerHTML, "extras": $("#id_extra_params").text()});
+        ws.ws_send({"command": "set-custom-card", "basic": $("#id_basic_params").val(), "extras": $("#id_extra_params").val()});
     }
     else
     {
@@ -211,7 +211,7 @@ function prep_card()
     // URLs need href attribute
     params += "URL=" + $(`tr[data-pk=${pk}] .card-url`).attr("href") + "\r\n";
 
-    $("#id_basic_params").text(params);
+    $("#id_basic_params").val(params);
     $("#card-overview .selected").removeClass("selected");
     $(this).addClass("selected");
 }
