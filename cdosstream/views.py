@@ -1,3 +1,5 @@
+import glob
+import os
 import time
 import random
 import json
@@ -180,3 +182,35 @@ class Patron_Credits(TemplateView):
         context = super().get_context_data(**kwargs)
         context["title"] = "Patron Credits"
         return context
+
+
+def zeoguessr(request):
+    context = {"card": None}
+    context["title"] = "World"
+    
+    puzzles = [
+        {"answer": "MERBOTIA", "directory": "merbotia"},
+        {"answer": "BUG TOWN", "directory": "bugtown"},
+        {"answer": "CAT CAT THAT DAMN CAT", "directory": "cat-cat-that-damn-cat"},
+        {"answer": "DEEP DECEMBER", "directory": "deep-december"},
+        {"answer": "DUNGEONS OF ZZT", "directory": "dungeons-of-zzt"},
+    ]
+    
+    puzzle = puzzles[random.randint(0, len(puzzles) - 1)]
+    
+    images = glob.glob("/home/drdos/projects/stream/cdosstream/static/cdosstream/zeoguessr/{}/*.png".format(puzzle["directory"]))
+    print(len(images))
+    image = images[random.randint(0, len(images) - 1)]
+    
+    # Set up hint
+    hint = ""
+    for ch in puzzle["answer"]:
+        if ch == " ":
+            hint += " "
+        else:
+            hint += random.choice("░▒▓█")
+    
+    puzzle["image"] = "cdosstream/zeoguessr/{}/{}".format(puzzle["directory"], os.path.basename(image))
+    puzzle["hint"] = hint
+    context["puzzle"] = puzzle
+    return render(request, "cdosstream/zeoguessr.html", context)

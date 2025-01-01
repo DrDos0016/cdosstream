@@ -1,0 +1,103 @@
+{% extends "cdosstream/main.html" %}
+{% load cdosstream_tags %}
+{% load static %}
+
+{% block local_css %}
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-layout.css">
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-events.css">
+<style>
+#zeoguessr
+{
+	width:1440px;
+	height:1050px;
+	background:#00A;
+	text-align:center;
+}
+
+#zeoguessr #puzzle-image
+{
+	width:960px;
+	height:700px;
+	overflow:clip;
+	border:2px dashed var(--ega-yellow);
+	margin:14px auto 14px auto;
+}
+
+#zeoguessr img
+{
+	width:1280px;
+	height:700px;
+	image-rendering:pixelated;
+	margin:auto;
+}
+
+#zeoguessr h1 { font-family:"cp437"; font-weight:normal; margin:0px; }
+
+#zeoguessr #hint
+{
+	font-size:56px;
+	letter-spacing:16px;
+	line-height:64px;
+	border:6px double #FFF;
+	padding:14px;
+	width:1280px;
+	margin:auto;
+}
+
+#zeoguessr #timer
+{
+	border:6px double #FFF;
+	width:100px;
+}
+
+.lower { margin-top:14px; }
+.lower div { display:inline-block; }
+</style>
+{% endblock %}
+
+{% block local_scripts %}
+<script>
+var answer = "{{puzzle.answer}}";
+
+function tick()
+{
+	let seconds = parseInt($("#timer").html());
+	seconds--;
+	if (seconds < 0)
+		seconds = 0;
+	$("#timer").html(seconds);
+	if (seconds <= 10)
+	{
+		$("#timer").addClass("ega-red");
+	}
+	else
+	{
+		$("#timer").removeClass("ega-red");
+	}
+	
+	if (seconds == 0)
+	{
+		$("#hint").html(answer);
+		$("#hint").addClass("ega-yellow");
+	}
+}
+	
+$(document).ready(function (){
+	let timer = setInterval(tick, 1000);
+});
+</script>
+{% endblock %}
+
+{% block body %}
+<div id="zeoguessr">
+	<h1>Zeoguessr &mdash; <span class="ega-cyan">Guess the ZZT world in chat!</span></h1>
+	<div id="puzzle-image"><img src="{% static puzzle.image %}"></div>
+	<div id="hint" class="c">
+		{{puzzle.hint}}
+	</div>
+	<div class="lower">
+		<div id="timer">30</div>
+		<div>All screenshots sourced from Worlds of ZZT streams and Museum of ZZT articles</div>
+	</div>
+</div>
+{% endblock %}

@@ -25,6 +25,8 @@ urlpatterns = [
     path("widget/patron-credits/", cdosstream.views.Patron_Credits.as_view()),
 
     path("create-event/goal/", cdosstream.views.create_event_goal),
+    
+    path("zeoguessr", cdosstream.views.zeoguessr),
 
     # Confirm these are used below
 
