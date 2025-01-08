@@ -9,10 +9,7 @@
 <script src="/static/cdosstream/js/event-player.js?{{TIMESTAMP}}" type="module"></script>
 <!--<script src="/static/cdosstream/js/events.js" type="module"></script>-->
 <script src="/static/cdosstream/js/utils.js?{{TIMESTAMP}}"></script>
-<script>
-var WEBSOCKET_SERVER_HOST = "{{WEBSOCKET_SERVER_HOST}}";
-var WEBSOCKET_SERVER_PORT = "{{WEBSOCKET_SERVER_PORT}}";
-</script>
+{% include "cdosstream/subtemplate/websocket-server-info.html" %}
 {% endblock %}
 
 {% block body %}

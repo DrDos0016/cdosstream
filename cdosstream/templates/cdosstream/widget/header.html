@@ -8,10 +8,7 @@
 {% block local_scripts %}
 <script async src="{% static 'cdosstream/js/widget-header.js' %}?{{TIMESTAMP}}" type="module"></script>
 <script src="/static/cdosstream/js/utils.js?{{TIMESTAMP}}"></script>
-<script>
-var WEBSOCKET_SERVER_HOST = "{{WEBSOCKET_SERVER_HOST}}";
-var WEBSOCKET_SERVER_PORT = "{{WEBSOCKET_SERVER_PORT}}";
-</script>
+{% include "cdosstream/subtemplate/websocket-server-info.html" %}
 {% endblock %}
 
 {% block body %}
@@ -31,7 +28,7 @@ var WEBSOCKET_SERVER_PORT = "{{WEBSOCKET_SERVER_PORT}}";
                 <div class="">Visit the Museum of ZZT Today! <span class="ega-cyan">https://museumofzzt.com</span></div>
                 <div class="">Say hello in the Worlds of ZZT Discord! <span class="ega-cyan">https://museumofzzt.com/discord/</span></div>
                 <div class="">Missed a stream? Catch the VODs! <span class="ega-cyan">https://youtube.com/@WorldsofZZT</span></div>
-                <div class="">Follow <span class="ega-cyan">@WorldsofZZT</span> on Twitter/Tumblr/Botsin.Space for announcements and bot posted ZZT boards!</div>
+                <div class="">Follow <span class="ega-cyan">@WorldsofZZT</span> Twitter/Bsky/Mastodon.social/Tumblr for announcements and bot posted ZZT boards!</div>
                 <div class="">Support <span class="ega-cyan">@WorldsofZZT</span> on Patreon! <span class="ega-cyan">https://patreon.com/worldsofzzt</span></div>
             </div>
         </div>

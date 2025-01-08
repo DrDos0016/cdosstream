@@ -9,11 +9,7 @@
 {% block local_scripts %}
 <script async src="{% static 'cdosstream/js/stream-control-panel.js' %}?{{TIMESTAMP}}" type="module"></script>
 <script src="/static/cdosstream/js/scp-events.js"></script>
-
-<script>
-var WEBSOCKET_SERVER_HOST = "{{WEBSOCKET_SERVER_HOST}}";
-var WEBSOCKET_SERVER_PORT = "{{WEBSOCKET_SERVER_PORT}}";
-</script>
+{% include "cdosstream/subtemplate/websocket-server-info.html" %}
 {% endblock %}
 
 {% block content %}
