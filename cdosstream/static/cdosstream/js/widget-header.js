@@ -59,6 +59,8 @@ $(document).ready(function (){
     ws.init();
     setInterval(advance_header, HEADER_SPEED);
     setInterval(update_clock, 1000);
+    
+    $("#header-left").click(advance_header);
 });
 
 function advance_header()
