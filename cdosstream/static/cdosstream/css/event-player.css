@@ -26,6 +26,7 @@ body
 #event-card {
     background-color:rgba(0,0,0,0);
     position:absolute;
+    z-index:999;
 }
 
 #event-card.transparent {
@@ -70,7 +71,7 @@ body
 
 }
 
-#stream-timer
+#timer-frame
 {
     position:absolute;
     width:8ch;
@@ -78,4 +79,11 @@ body
     top:150px;
     left:1550px;
     font-size:56pt;
+    color:var(--ega-yellow);
+    background-color:var(--ega-darkred);
+    z-index:10;
+    display:none;
 }
+
+#timer-frame.active { display:block; }
+#timer-frame.paused { color:var(--ega-gray); }
