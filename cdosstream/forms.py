@@ -131,7 +131,7 @@ class Timer_Form(forms.Form):
     response = ""
     submit_text = "Launch"
 
-    mode = forms.ChoiceField(label="Mode", widget=forms.RadioSelect, choices=(("DOWN", "Count Down From"), ("UP", "Count Up To")), initial="DOWN")
+    mode = forms.ChoiceField(label="Mode", widget=forms.RadioSelect, choices=(("DOWN", "Count Down From"), ("UP", "Count Up To"), ("PAUSE", "Toggle Pause")), initial="DOWN")
     start_value = forms.CharField(label="Start Value")
 
     def process(self):
