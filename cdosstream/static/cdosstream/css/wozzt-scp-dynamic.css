@@ -42,9 +42,9 @@ main
 #event-log { background-color:#377; overflow:auto; }
 
 #header { background: #D67FFF; display:flex; gap:1px; color:#FFA;}
-#header > div { background:#00A; padding-left:2px; padding-right:2px; min-width:2ch;}
+#header > div { background:#00A; padding-left:2px; padding-right:2px; min-width:2ch; display:flex; }
 
-.wiget { grid-area:widget; }
+.widget { grid-area:widget; background-color:#D67FFF; }
 .widget:not(.active) { display:none; }
 #notes.active { display:flex; }
 
@@ -199,7 +199,7 @@ table td
 
 #stream-viewers
 {
-    width:4ch;
+    max-width:4ch;
     text-align:center;
 }
 
@@ -302,3 +302,17 @@ button.shortcut-button
 /* Custom Cards */
 #custom-card-form textarea { padding:0px; max-width:275px; margin-right:15px; height:3ch;}
 #custom-card-form textarea:focus { height:12ch; }
+
+#obsws
+{
+    background-color:#D67FFF;
+    padding-left:1ch;
+}
+
+#obsws-log
+{
+    width:95%;
+    height:200px;
+    margin:auto;
+}
+
