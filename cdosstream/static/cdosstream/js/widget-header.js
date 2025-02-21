@@ -13,20 +13,9 @@ class Header_Websocket_Connection extends Websocket_Connection
         super(host, port);
         this.name = "Header Websocket Connection";
         this.allowed_event_kinds = ["channelsubscribe", "channelsubscriptionmessage", "channelsubscriptiongift", "channelcheer"];
-    }
-
-    connection_established()
-    {
-        $("#wozzt-name").removeClass("ega-darkred");
-        $("#wozzt-name").addClass("ega-black");
-        $("#wozzt-name").attr("title", "Connected as " + this.uuid);
-    }
-
-    connection_lost()
-    {
-        $("#wozzt-name").removeClass("ega-black");
-        $("#wozzt-name").addClass("ega-red");
-        $("#wozzt-name").attr("title", "No connection");
+        this.connection_icon_selector = "#zzt-connection-indicator";
+        this.connection_good_icon = "ZZT";
+        this.connection_bad_icon = "???";
     }
 
     delegate_event(event)
@@ -59,7 +48,7 @@ $(document).ready(function (){
     ws.init();
     setInterval(advance_header, HEADER_SPEED);
     setInterval(update_clock, 1000);
-    
+
     $("#header-left").click(advance_header);
 });
 
