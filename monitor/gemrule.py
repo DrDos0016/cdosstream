@@ -44,25 +44,39 @@ CALL_AND_RESPONSE_COMMANDS = populate_call_and_response_commands()
 AUDIO_INFO = populate_audio_info()
 
 
-async def gemrule_launch(twitch):
-    print("[Gemrule] Booting up Gemrule")
-    chat = await Chat(twitch)
+class Gemrule_Bot():
+    chat = None
+    registered_commands = []
 
-    print("[Gemrule] Registering Complex Commands")
-    chat.register_event(ChatEvent.READY, on_ready)
-    #chat.register_event(ChatEvent.MESSAGE, on_message)
-    print(" - Registering !audio")
-    chat.register_command("audio", get_audio_link)
-    print(" - Registering !article")
-    chat.register_command("article", get_article_link)
+    async def launch(self, twitch):
+        print("[Gemrule] Booting up Gemrule")
+        self.chat = await Chat(twitch)
+        self.register_commands()
+        self.chat.start()
+        print("[Gemrule] Launched.")
 
-    print("[Gemrule] Populating Call and Response Commands")
+    def register_commands(self):
+        print("[Gemrule] Registering Complex Commands")
+        self.chat.register_event(ChatEvent.READY, on_ready)
+        #chat.register_event(ChatEvent.MESSAGE, on_message)
+        self.register_command("audio", get_audio_link)
+        self.register_command("article", get_article_link)
 
-    for k in CALL_AND_RESPONSE_COMMANDS.keys():
-        print(" - Registering !" + k)
-        chat.register_command(k, command_call_and_response)
-    chat.start()
-    print("[Gemrule] Launched.")
+        print("[Gemrule] Populating Call and Response Commands")
+
+        for k in CALL_AND_RESPONSE_COMMANDS.keys():
+            self.register_command(k, command_call_and_response)
+
+
+    def register_command(self, key, func):
+        print(" - Registering !" + key)
+        self.chat.register_command(key, func)
+        self.registered_commands.append("!" + key)
+
+    def get_registered_commands(self):
+        return self.registered_commands
+
+
 
 
 async def on_ready(ready_event: EventData):

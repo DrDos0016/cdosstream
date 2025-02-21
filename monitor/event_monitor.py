@@ -1,14 +1,14 @@
 import asyncio
 import json
 import os
-import sys
 import time
 import websockets
 
-from datetime import datetime
-
-import django
 import requests
+
+from colorama import Fore, Back, Style
+
+from datetime import datetime
 
 from twitchAPI.eventsub import EventSub
 from twitchAPI.helper import first
@@ -16,28 +16,35 @@ from twitchAPI.oauth import UserAuthenticator
 from twitchAPI.types import AuthScope
 from twitchAPI.twitch import Twitch
 
-from settings import *
-
+from .settings import *
 from core import *
-from gemrule import *
-
-django.setup()
-
-from cdosstream.models import Event
 
 
 class Event_Monitor():
-    connection_names = {}
-    connections = []
-    shutdown = False
-    monitor_stream_info = True
+    quick_mode = False  # If Twitch API connections are established or not
+    reverse_proxy_url = "N/A"  # ngrok url
+    connection_names = {}  # Names of websocket server connections (dict w/ key=UUID, value=Connection Alias)
+    connections = []  # List of websocket server connections
+    max_connection_count = 8  # Max number of active connections to display
+    message_log = []  # Log of messages
+    message_log_max_size = 20  # Max number of past messages to display
+    gemrule_registered_commands = []  # Commands enabled by Gemrule bot
+
+    monitor_stream_info = True  # Whether or not to ping viewer counts and stream info
+    monitor_stream_interval = 30  # Seconds to wait between stream info pings
     last_monitor_stream_info_time = 0
-    monitor_stream_interval = 30
+
+    # Commands that use repeatable event data and are passed to the event logger
+    basic_commands = ["clear-queue", "release-hold", "toggle-debug"]
+    basic_command_event_templates = {
+        "clear-queue": {"subscription": {"type": "Clear Queue"}, "event": {"title": "Clear Queue"}},
+        "release-hold": {"subscription": {"type": "Release Hold"}, "event": {"title": "Release Hold"}},
+        "toggle-debug": {"subscription": {"type": "Toggle Debug"}, "event": {"title": "Toggle Debug"}},
+    }
 
     async def initialize_twitch_api_connection(self):
         self.twitch = await Twitch(APP_ID, APP_SECRET)
         self.user = await first(self.twitch.get_users(logins=USERNAME))
-        print("Connected to Twitch as {} #{}".format(USERNAME, self.user.id))
 
     async def authenticate_twitch_user(self):
         target_scope = []
@@ -55,15 +62,16 @@ class Event_Monitor():
         await self.twitch.set_user_authentication(token, target_scope, refresh_token)
         store_token(token, refresh_token)
 
-        print("Authenticated.")
-
     async def log_event(self, data):
-        print(str(datetime.now())[:19], data.get("subscription", {}).get("type", {}), data.get("event", {}).get("reward", {}).get("title", {}))
+        #print(str(datetime.now())[:19], data.get("subscription", {}).get("type", {}), data.get("event", {}).get("reward", {}).get("title", {}))
+        #print("URL", WEBSERVER_URL + "event/capture/")
+        #print("DATA:", data)
         try:
             resp = requests.post(WEBSERVER_URL + "event/capture/", json=data)
         except Exception:
             print("Could not capture event! Is the web server running at {}?".format(WEBSERVER_URL))
             return
+
         if self.connections:
             websockets.broadcast(self.connections, resp.text)
         else:
@@ -83,15 +91,14 @@ class Event_Monitor():
             print("Subscribed to:", i["name"])
 
     async def run_websocket_server(self):
-        print("Launching Websocket Server at", WEBSOCKET_SERVER_HOST)
+        self.log_received_data("Launching Websocket Server at {}".format(WEBSOCKET_SERVER_HOST))
         async with websockets.serve(self.ws_connect, WEBSOCKET_SERVER_HOST, WS_PORT):
-            print("Ready for connections")
+            self.log_received_data("Ready for connections")
             await asyncio.Future()
-
 
     async def ws_connect(self, websocket):
         self.connections.append(websocket)
-        print("Client {} connected. {} concurrent connections.".format(websocket.id, len(self.connections)))
+        self.log_received_data("Client {} connected. {} concurrent connections.".format(websocket.id, len(self.connections)))
         await websocket.send(str(websocket.id))
 
         consumer_task = asyncio.create_task(self.consumer_handler(websocket))
@@ -101,17 +108,13 @@ class Event_Monitor():
         for task in pending:
             print("A task is being canceled", task)
             task.cancel()
-        if self.shutdown:
-            print("Self.shutdown is true")
-            await websocket.close()
-            return False
 
     def remove_connection(self, uuid):
         for idx in range(0, len(self.connections)):
             if self.connections[idx].id == uuid:
                 self.connections.pop(idx)
                 del self.connection_names[str(uuid)]
-                print("Client {} disconnected".format(uuid))
+                self.log_received_data("Client {} disconnected".format(uuid))
                 break
         return True
 
@@ -122,23 +125,31 @@ class Event_Monitor():
     async def producer_handler(self, websocket):
         while True:
             data = await websocket.recv()
-            print("Received message:", data)
+            self.log_received_data(data)
             data = json.loads(data)
+
+            if data.get("sender", {}).get("name") == "OBS Websocket Connection":
+                print("Received OBS Websocket Data")
+
+                if data["d"]["requestType"] == "GetCurrentProgramScene":
+                    card_data = {"subscription": {"type": "Set Event Position"}, "event": {"title": "Set Event Position", "position": "position-centered"}}
+                    await self.log_event(card_data)
+                continue
+
             if not data.get("command"):
-                print("Invalid data format!")
+                self.log_received_data(f"{Fore.RED}Invalid data format")
                 continue
             if data.get("params"):
                 command = data["command"]
                 data = json.loads(data["params"])
                 data["command"] = command
 
-            #print("FINAL COMMAND")
-            #print(data)
-
             if data["command"] == "replay":
                 pk = data["pk"]
                 resp = requests.get(WEBSERVER_URL + "get-event/?pk={}".format(pk))
                 websockets.broadcast(self.connections, resp.text)
+            elif data["command"] in self.basic_commands:
+                await self.log_event(self.get_basic_command_event(data["command"]))
             elif data["command"] == "set-custom-card":
                 card_data = {
                     "subscription": {"type": "Set Custom Card"},
@@ -148,42 +159,20 @@ class Event_Monitor():
                     "manual": True,
                 }
                 await self.log_event(card_data)
-            elif data["command"] == "set-card":
-                # Create an event to indicate the card change
-                card_data = {"subscription": {"type": "Set Card"}, "event": {"title": "Set Card", "card_pk": data["pk"]}, "manual": True}
-                await self.log_event(card_data)
-            elif data["command"] == "release-hold":
-                card_data = {"subscription": {"type": "Release Hold"}, "event": {"title": "Release Hold", "manual": True}, "manual": True}
-                await self.log_event(card_data)
-            elif data["command"] == "toggle-debug":
-                card_data = {"subscription": {"type": "Toggle Debug"}, "event": {"title": "Toggle Debug", "manual": True}, "manual": True}
-                await self.log_event(card_data)
-            elif data["command"] == "clear-queue":
-                card_data = {"subscription": {"type": "Clear Queue"}, "event": {"title": "Clear Queue", "manual": True}, "manual": True}
-                await self.log_event(card_data)
             elif data["command"] == "set-timer":
                 # Create an event to indicate the timer being set
-                card_data = {"subscription": {"type": "Set Timer"}, "event": {"title": "Set Timer", "val": data["val"]}, "manual": True}
+                card_data = {"subscription": {"type": "Set Timer"}, "event": {"title": "Set Timer", "value": data["value"], "mode": data["mode"]}}
                 await self.log_event(card_data)
-            elif data["command"] == "shutdown":
-                print("SHUTTING DOWN")
-                self.shutdown = True
-                self.monitor_stream_info = False
-                return True
             elif data["command"] == "set-event-position":
-                card_data = {"subscription": {"type": "Set Event Position"}, "event": {"title": "Set Event Position", "position": data["position"]}, "manual": True}
+                card_data = {"subscription": {"type": "Set Event Position"}, "event": {"title": "Set Event Position", "position": data["position"]}}
                 await self.log_event(card_data)
             elif data["command"] == "identify-connection":
                 self.connection_names[data["sender"]["uuid"]] = data["sender"]["name"]
-            elif data["command"] == "list-connections":
-                print("{} active connections:".format(len(self.connection_names)))
-                for k, v in self.connection_names.items():
-                    print("{} -- {}".format(k, v))
-            elif data["command"] == "timer-form":
-                card_data = {"subscription": {"type": "Timer"}, "event": {"title": "Timer", "mode": data["mode"], "start_value": data["start_value"]}, "manual": True}
-                await self.log_event(card_data)
             else:
-                print("Unknown command: {}".format(data["command"]))
+                command = data.get("command", "NO COMMAND?")
+                self.log_received_data(f"{Fore.RED}Unknown command: {command}")
+
+            self.display_data()
 
     async def get_stream_info(self):
         if self.monitor_stream_info:
@@ -202,30 +191,36 @@ class Event_Monitor():
             else:
                 await asyncio.sleep(self.monitor_stream_interval)
 
+    def display_data(self):
+        os.system("clear")
+        conn_count = len(self.connections)
+        quick = f" {Fore.RED}QUICK MODE" if self.quick_mode else ""
+        print(f"{Style.BRIGHT}{Fore.CYAN}{USERNAME} #{self.user.id}{quick}{Style.RESET_ALL}")
+        print(f"{Fore.MAGENTA}{self.reverse_proxy_url}{Style.RESET_ALL}")
+        print(f"{Fore.YELLOW}ACTIVE CONNECTIONS: {conn_count}")
+        for idx in range(0, conn_count):
+            c = self.connections[idx]
+            conn_alias = self.connection_names.get(str(c.id), "Unknown")
+            print(f"{Fore.WHITE}{idx}:{Fore.GREEN}{c.id} {Fore.CYAN}{conn_alias}{Style.RESET_ALL}")
+        if conn_count < self.max_connection_count:
+            for idx in range(conn_count, (self.max_connection_count + 1)):
+                print(f"{Fore.WHITE}{idx}:{Fore.GREEN}------------------------------------{Style.RESET_ALL}")
 
-async def main():
+        print(f"{Fore.YELLOW}GEMRULE COMMANDS: {Fore.MAGENTA}{', '.join(self.gemrule_registered_commands)}")
 
-    print("\n" * 30)
-    m = Event_Monitor()
-    await m.initialize_twitch_api_connection()
-    await m.authenticate_twitch_user()
-    print("Preparing EventSub Arguments...")
-    prepare_eventsub_args(m.user.id, m.log_event)
-    print("Prepared.")
-    m.launch_reverse_proxy(NGROK_TOKEN, NGROK_PORT)
-    if "-quick" in sys.argv:
-        print("Skipping EventSub Subscriptions. Functionality will be limited.")
-    else:
-        await m.subscribe_to_eventsub_events()
-    #await asyncio.gather(m.run_websocket_server(), m.get_stream_info())
-    # uncomment the above, or run gemrule below
-    await asyncio.gather(m.run_websocket_server(), m.get_stream_info(), gemrule_launch(m.twitch))
+        print(f"{Fore.YELLOW}MESSAGE HISTORY:")
+        idx = 0
+        for message in self.message_log:
+            idx_str = ("0" + str(idx))[-2:]
+            print(f"{Fore.WHITE}{idx_str}: {message}{Style.RESET_ALL}")
+            idx += 1
+        return True
 
-    try:
-        input("Press ENTER to quit\n")
-    finally:
-        await event_sub.stop()
-        await twitch.close()
-    print("Shutting Down...")
-
-asyncio.run(main())
+    def log_received_data(self, data, update_display=True):
+        timestamp = datetime.now().strftime("[%H:%M:%S]")
+        self.message_log.append(timestamp + " " + str(data))
+        if len(self.message_log) > self.message_log_max_size:
+            self.message_log = self.message_log[1:]
+        if update_display:
+            self.display_data()
+        return True
