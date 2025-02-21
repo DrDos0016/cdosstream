@@ -1,0 +1,263 @@
+{% extends "cdosstream/main.html" %}
+{% load static %}
+{% load cdosstream_tags %}
+
+{% block global_css %}
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-scp-dynamic.css">
+<style>
+    .obs-value[data-obs-key=microphone] { width:6ch; text-align:center; }
+    .obs-value[data-obs-key=scene] { width:10ch; }
+    #obs-mic-wrapper.muted { background-color:#A00; color:#F55; }
+</style>
+{% endblock %}
+
+{% block local_scripts %}
+<script async src="{% static 'cdosstream/js/stream-control-panel.js' %}?{{TIMESTAMP}}" type="module"></script>
+<script async src="{% static 'cdosstream/js/obs-ws.js' %}?{{TIMESTAMP}}" type="module"></script>
+<script src="/static/cdosstream/js/scp-events.js"></script>
+{% include "cdosstream/subtemplate/websocket-server-info.html" %}
+
+<script type="module">
+import { SCP_Websocket_Connection, launch_iframe, load_command_shortcut, prep_card, get_subscriber_count, clean_card_select } from "/static/cdosstream/js/stream-control-panel.js";
+import { Websocket_Connection } from "/static/cdosstream/js/modules/websocket_connection.js";
+import { OBS_Websocket_Connection } from "/static/cdosstream/js/obs-ws.js";
+import { Notepad } from "/static/cdosstream/js/modules/notepad.js";
+
+let ws_connections = {};
+let notepad = null;
+
+function test_get_scene()
+{
+    let command = {
+        "op": 6,
+        "d": {
+            "requestType": "GetCurrentProgramScene",
+            "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c",
+            "requestData": {},
+        }
+    };
+    console.log(command);
+    ws_connections.obsws.websocket.send(JSON.stringify(command));
+}
+
+function punt_event(event, destination)
+{
+    console.log("Generic punt");
+    console.log("Punt event", event);
+    console.log("Punt destination", destination);
+    ws_connections[destination].delegate_event(event);
+}
+
+function change_widget()
+{
+    $(".widget.active").removeClass("active");
+    let widget_id = $(this).data("widget");
+    $("#" + widget_id).addClass("active");
+}
+
+function ws_toggle_connection()
+{
+    let key = $(this).data("key")
+    ws_connections[key].toggle_connection();
+}
+
+function post_form(e)
+{
+    e.preventDefault();
+    if (ws_connections.scp.websocket == null)
+    {
+        console.log("No SCP websocket Connection Found. Form cannot post.");
+        return false;
+    }
+
+    console.log("Posting form");
+
+    var form = $(e.target).parent().parent();
+    var form_id = form.attr("id");
+
+    if (form_id == "replay-event-form")
+    {
+        ws_connections.scp.ws_send({"command": "replay", "pk": $("#id_pk").val()});
+    }
+    else if (form_id == "set-card-form")
+    {
+        ws_connections.scp.ws_send({"command": "set-card", "pk": $("#id_card").val()});
+        highlight_active_card();
+    }
+    else if (form_id == "send-command-form")
+    {
+        ws_connections.scp.ws_send({"command": $("#id_command").val(), "params": $("#id_params").val()});
+        $("#id_command").val("");
+        $("#id_params").val("");
+    }
+    else if (form_id == "custom-card-form")
+    {
+        ws_connections.scp.ws_send({"command": "set-custom-card", "basic": $("#id_basic_params").val(), "extras": $("#id_extra_params").val()});
+    }
+    else if (form_id == "timer-form")
+    {
+        ws_connections.scp.ws_send({"command": "set-timer", "mode": $("input[name=mode]:checked").val(), "value": $("#id_start_value").val()});
+    }
+    else
+    {
+        let form_data = $(form).serializeArray();
+        form_data["command"] = form_id;
+        console.log("SENDING", form_data);
+        ws_connections.scp.ws_send(form_data);
+    }
+}
+
+$(document).ready(function (){
+    $("#obs-getscene").click(test_get_scene);
+
+    console.log("SCP Page is creating SCP_Websocket_Connection");
+    ws_connections.scp = new SCP_Websocket_Connection(WEBSOCKET_SERVER_HOST, WEBSOCKET_SERVER_PORT);
+    ws_connections.scp.init();
+    console.log("SCP Page is creating OBS_Websocket_Connection");
+    ws_connections.obsws = new OBS_Websocket_Connection("localhost", 4455);
+    ws_connections.obsws.init();
+    ws_connections.obsws.punt_event = punt_event;
+
+    notepad = new Notepad();
+    $("#notepad")[0].addEventListener("keyup", (event) => notepad.restart_timer(event));
+
+    $(".widget-button").click(change_widget);
+    $(".connection-icon").click(ws_toggle_connection);
+    $(".iframe-launcher").click(launch_iframe);
+    $("input[type=submit]").click(post_form);
+
+    // Test events
+    use_the_3d_talk_engine({
+        "meta": {"created_at": "2024-01-01 04:20:15.12Z", "kind": "use-the-3d-talk-engine", "pk": 0,  },
+        "body": {"event": {"user_name": "WorldsOfZZT", "user_input":"The doorbell rings..."}},
+    });
+    default_log({
+        "meta": {"created_at": "2024-01-01 04:23:28.12Z", "kind": "bip-bo-beep", "pk": 0,  },
+        "body": {"event": {"user_name": "Snorb Probably", "user_input":""}},
+    });
+    random_scroll({
+        "meta": {"created_at": "2024-01-01 04:23:28.12Z", "kind": "random-scroll", "pk": 0,  },
+        "body": {"event": {"user_name": "TheBigChungus", "user_input":""}},
+    });
+    default_log({
+        "meta": {"created_at": "2024-01-01 04:23:28.12Z", "kind": "channelsubscriptionmessage", "pk": 0,  },
+        "body": {"event": {"user_name": "My_Loyal_Fans", "user_input":"", "message":{"text": "5 Years of Maximum ZZT"}}},
+    });
+
+
+    $(".shortcut-button").click(load_command_shortcut);
+    //$("#event-position-select").change(set_event_position);
+
+    $("#card-overview tr").click(prep_card);
+    $("#sub-info").click(get_subscriber_count);
+    clean_card_select();
+    get_subscriber_count();
+    //$("#cards").show();
+
+    $("#clear-log").click(function (){ $("#obsws-log").val(""); });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<main>
+    <header id="header">
+        <div id="connection-wrapper">
+            <span id="ws-connection" class="connection-icon" title="Disconnected" data-key="scp">❌</span>
+            <span id="obs-connection" class="connection-icon" title="Disconnected" data-key="obsws">❌</span>
+        </div>
+        <div id="stream-viewers">---</div>
+        <div id="event-position">
+            <select id="event-position-select" title="Redeem Position">
+                <option value="position-standard">Standard</option>
+                <option value="position-centered">Center</option>
+            </select>
+        </div>
+        <div id="widget-select-wrapper">
+            <div class="widget-button" data-widget="notes" title="Notepad">📝</div>
+            <div class="widget-button" data-widget="cards" title="Cards">📇</div>
+            <div class="widget-button" data-widget="forms" title="Forms">⚙️</div>
+            <div class="widget-button" data-widget="obsws" title="OBSWS Test">💡</div>
+            <div class="widget-button" data-widget="twitch" title="Twitch"><img src="/static/cdosstream/image/twitch-16px.png"></div>
+        </div>
+        <div id="sub-info" title="{{SUB_GOAL_REWARD}}">Subs: <span id="sub-count-value">----</span>/<span id="sub-goal-value">{{SUB_GOAL}}</span></div>
+        <div id="obs-scene-wrapper">🎥 <span class="obs-value truncate-text" data-obs-key="scene">----------</span></div>
+        <div id="obs-mic-wrapper">🎤 <span class="obs-value" data-obs-key="microphone">------</span></div>
+    </header>
+    <div id="chat-frame">
+        <div class="flex-centered-wrapper">
+            <button class="iframe-launcher" data-url="https://twitch.tv/[CHANNEL]/chat" data-target="#chat-frame" data-width="360px" data-height="600px">
+                <img src="/static/cdosstream/image/twitch-16px.png"><br>Open Chat (XL)
+            </button>
+            <button class="iframe-launcher" data-url="https://twitch.tv/[CHANNEL]/chat" data-target="#chat-frame" data-width="240px" data-height="440px">
+                <img src="/static/cdosstream/image/twitch-16px.png"><br>Open Chat (S)
+            </button>
+        </div>
+    </div>
+
+<!--Widgets-->
+    <div id="notes" class="widget">
+        <section class="controls">Cntrl.</section>
+        <textarea id="notepad" placeholder="Notes...">{{notes}}</textarea>
+    </div>
+    <div id="cards" class="widget">
+        <div class="sticky-header">{% display_form set_card_form %}</div>
+        <table id="card-overview">
+            {% for card in cards %}
+                <tr data-pk="{{card.pk}}">
+                    <td>
+                        <div class="card-title">{{card.title.value|striptags}}</div>
+                        <div class="card-author">{{card.authors.value|striptags}}</div>
+                        <div class="card-company">{{card.companies.value|striptags}}</div>
+                    </td>
+                    <td class="cramped">
+                        <div class="card-date">{{card.date.value|striptags}}</div><a href="" class="card-url" id="card-url-{{card.pk}}" target="_blank">View</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div id="forms" class="widget">
+    {% for form in forms %}
+        <form id="{{form.identifier}}">
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+        <div class="field-wrapper{% if field.errors %} field-with-error{% endif %}" data-field="{{field.name}}">
+            {{field.errors}}
+            {{field.label_tag}}
+            <div class="field-value">
+                {{field}}
+            </div>
+            {% if field.help_text %}
+            <p class="field-help">{{field.help_text|safe}}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% for field in form.hidden_fields %}
+        {{field}}
+        {% endfor %}
+        <div class="submit-wrapper">
+            <input type="submit" id="submit-{{form.identifier}}" value="{{form.submit_text|default:'Set'}}">
+        </div>
+        </form>
+    {% endfor %}
+    </div>
+    <div id="event-log">
+        <div id="event-overview"></div>
+    </div>
+
+    <div id="obsws" class="widget active">
+        <textarea id="obsws-log"></textarea>
+        <div style="display:flex;flex-wrap:wrap">
+            <button id="obs-getscene">Get Scene</button>
+            <button id="test1">Test 1</button>
+            <button id="clear-log">Clear Log</button>
+            </div>
+    </div>
+
+    <div id="twitch" class="widget">
+        <div id="stream-category-wrapper">Category: <span id="stream-category"></span></div>
+        <div id="stream-title-wrapper">Title: <span id="stream-title" class="truncate-text"></span></div>
+    </div>
+</main>
+{% endblock %}
