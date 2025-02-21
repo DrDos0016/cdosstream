@@ -1,31 +1,19 @@
 "use strict";
 
 import { Websocket_Connection } from "/static/cdosstream/js/modules/websocket_connection.js";
-import { Notepad } from "/static/cdosstream/js/modules/notepad.js";
 
 var TWITCH_USERNAME = "WorldsOfZZT";
 var ws = null;
-var notepad = null;
 
-class SCP_Websocket_Connection extends Websocket_Connection
+export class SCP_Websocket_Connection extends Websocket_Connection
 {
     constructor(host, port)
     {
         super(host, port);
         this.name = "SCP Websocket Connection";
-    }
-
-    connection_established()
-    {
-        $("#ws-connection").attr("title", "Connected as " + this.uuid);
-        $("#ws-connection").html("✅");
-    }
-
-    connection_lost()
-    {
-        $("#wozzt-name").removeClass("ega-black");
-        $("#wozzt-name").addClass("ega-red");
-        $("#ws-connection").html("❌");
+        this.connection_icon_selector = "#ws-connection";
+        this.address = "SCP";
+        this.groups = [];
     }
 
     delegate_event(event)
@@ -41,6 +29,7 @@ class SCP_Websocket_Connection extends Websocket_Connection
             return false;
         }
 
+
         if (event.meta.kind == "stream-info")
         {
             stream_info(event);
@@ -51,98 +40,13 @@ class SCP_Websocket_Connection extends Websocket_Connection
         {
             var func = window[event.meta.js_func];
             if (typeof func === "function") { func.apply(null, [event]); }
-            else { default_log(event) }
+            else { default_log(event, event.meta.js_func, "unhandled") }
         }
         else
         {
             console.log("[!] JS_FUNC NOT SET ON EVENT");
             console.log(event);
         }
-    }
-}
-
-
-$(document).ready(function (){
-    $("#ws-connection").click(ws_toggle_connection);
-    $("input[type=submit]").click(post_form);
-    $(".shortcut-button").click(load_command_shortcut);
-    $("#event-position-select").change(set_event_position);
-    $(".iframe-launcher").click(launch_iframe);
-
-    ws = new SCP_Websocket_Connection(WEBSOCKET_SERVER_HOST, WEBSOCKET_SERVER_PORT);
-    ws.init();
-
-
-    notepad = new Notepad();
-    $("#notepad")[0].addEventListener("keyup", (event) => notepad.restart_timer(event));
-
-    $(".widget-button").click(change_widget);
-    $("#card-overview tr").click(prep_card);
-    $("#sub-info").click(get_subscriber_count);
-    clean_card_select();
-    get_subscriber_count();
-    //$("#cards").show();
-
-    // Test events
-    use_the_3d_talk_engine({
-        "meta": {"created_at": "2024-01-01 04:20:15.12Z", "kind": "use-the-3d-talk-engine", "pk": 0,  },
-        "body": {"event": {"user_name": "WorldsOfZZT", "user_input":"The doorbell rings..."}},
-    });
-    default_log({
-        "meta": {"created_at": "2024-01-01 04:23:28.12Z", "kind": "bip-bo-beep", "pk": 0,  },
-        "body": {"event": {"user_name": "Snorb Probably", "user_input":""}},
-    });
-    random_scroll({
-        "meta": {"created_at": "2024-01-01 04:23:28.12Z", "kind": "random-scroll", "pk": 0,  },
-        "body": {"event": {"user_name": "TheBigChungus", "user_input":""}},
-    });
-    default_log({
-        "meta": {"created_at": "2024-01-01 04:23:28.12Z", "kind": "channelsubscriptionmessage", "pk": 0,  },
-        "body": {"event": {"user_name": "My_Loyal_Fans", "user_input":"", "message":{"text": "5 Years of Maximum ZZT"}}},
-    });
-});
-
-
-function post_form(e)
-{
-    e.preventDefault();
-    if (ws.websocket == null)
-    {
-        console.log("No Websocket Connection Found. Form cannot post.");
-        return false;
-    }
-
-    console.log("Posting form");
-
-    var form = $(e.target).parent().parent();
-    var form_id = form.attr("id");
-
-    if (form_id == "replay-event-form")
-    {
-        ws.ws_send({"command": "replay", "pk": $("#id_pk").val()});
-    }
-    else if (form_id == "set-card-form")
-    {
-        ws.ws_send({"command": "set-card", "pk": $("#id_card").val()});
-        highlight_active_card();
-    }
-    else if (form_id == "send-command-form")
-    {
-        ws.ws_send({"command": $("#id_command").val(), "params": $("#id_params").val()});
-        $("#id_command").val("");
-        $("#id_params").val("");
-    }
-    else if (form_id == "custom-card-form")
-    {
-        ws.ws_send({"command": "set-custom-card", "basic": $("#id_basic_params").val(), "extras": $("#id_extra_params").val()});
-    }
-    else
-    {
-        let form_data = $(form).serializeArray();
-        form_data = list_to_object(form_data);
-        form_data["command"] = form_id;
-        console.log("SENDING", form_data);
-        ws.ws_send(form_data);
     }
 }
 
@@ -154,13 +58,8 @@ function highlight_active_card()
     $("#card-overview tr[data-pk=" + pk + "]").addClass("highlight");
 }
 
-function ws_toggle_connection()
-{
-    ws.toggle_connection();
-}
 
-
-function load_command_shortcut()
+export function load_command_shortcut()
 {
     var command = $(this).data("command");
     var params = JSON.stringify($(this).data("params"));
@@ -171,13 +70,16 @@ function load_command_shortcut()
 
 function set_event_position()
 {
+    console.log("Updating event pos");
     if (ws != null)
         ws.ws_send({"command": "set-event-position", "position": $("#event-position-select").val()});
+    else
+        console.log("NO ws object?");
     return true;
 }
 
 
-function launch_iframe()
+export function launch_iframe()
 {
     let target_str = $(this).data("target");
     //let url = $(this).data("url").replaceAll("[CHANNEL]", $("input[name=twitch-channel-name]").val());
@@ -187,15 +89,7 @@ function launch_iframe()
     $(target_str).html(`<iframe src="${url}" width="${w}" height="${h}"></iframe>`);
 }
 
-function change_widget()
-{
-    console.log("Changing widget");
-    $(".widget.active").removeClass("active");
-    let widget_id = $(this).data("widget");
-    $("#" + widget_id).addClass("active");
-}
-
-function prep_card()
+export function prep_card()
 {
     let pk = $(this).data("pk");
     let params = "";
@@ -216,7 +110,7 @@ function prep_card()
     $(this).addClass("selected");
 }
 
-function clean_card_select()
+export function clean_card_select()
 {
     // Hacky, but I'd rather rewrite this widget to be custom inputs later so this will do for now
     $("#id_card option").each(function (){
@@ -249,7 +143,7 @@ function list_to_object(data)
 }
 
 
-function get_subscriber_count()
+export function get_subscriber_count()
 {
     $.ajax({
         url:"/query/get-subscriber-info/"
