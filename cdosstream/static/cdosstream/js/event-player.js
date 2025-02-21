@@ -17,19 +17,17 @@ class Event_Player_Websocket_Connection extends Websocket_Connection
         this.name = "Event Player Websocket Connection";
         this.EVENTS = []; // Event queue
         this.HANDLING = false;
-    }
 
-    connection_established()
-    {
-    }
-
-    connection_lost()
-    {
+        this.connection_icon_selector = "#NOSELECTOR";
+        this.connection_good_icon = "✅";
+        this.connection_bad_icon = "❌";
     }
 
     delegate_event(event)
     {
         event = JSON.parse(event);
+        console.log("Event player received an event");
+        console.log(event);
 
         if (! event.meta)
         {
@@ -41,6 +39,13 @@ class Event_Player_Websocket_Connection extends Websocket_Connection
         // Discard irrelevant events
         if ((event.meta.kind == "set-card") || (event.meta.kind == "stream-info") || (event.meta.kind == "set-custom-card"))
             return false;
+
+        // Handle events that do not need to be queued
+        if (event.meta.kind == "set-timer")
+        {
+            set_timer(event.body.event.mode, event.body.event.value);
+            return false;
+        }
 
         this.queue_event(event);
         return false;
@@ -130,4 +135,86 @@ async function run_card(event)
     console.log("3. [" + event.meta.pk + "] Running card w/ requested function:", func_name);
     console.log(event);
     return await Registered_Events[func_name](event);
+}
+
+/* TODO: This can live elsewhere I'm sure */
+var timer_interval = null;
+var timer_components = {"h": 0, "m": 0, "s": 0, "increment": 0, "paused": false};
+function set_timer(mode, initial)
+{
+    console.log(mode, timer_components);
+    // Pause gets special case
+    if (mode == "PAUSE" && (timer_components.paused == false))
+    {
+        timer_components.paused = true;
+        $("#timer-frame").addClass("paused");
+        return false;
+    }
+    else if (mode == "PAUSE" && (timer_components.paused == true))
+    {
+        timer_components.paused = false;
+        $("#timer-frame").removeClass("paused");
+        return false;
+    }
+
+    if (timer_interval)
+        clearInterval(timer_interval);
+
+    if (initial == "")
+        $("#timer-frame").removeClass("active");
+    else
+        $("#timer-frame").addClass("active");
+
+    timer_interval = setInterval(tick_timer, 1000)
+    let increment = (mode == "UP" ? 1 : -1);
+    let split = initial.split(":")
+    timer_components.h = parseInt(split[0]);
+    timer_components.m = parseInt(split[1]);
+    timer_components.s = parseInt(split[2]);
+    timer_components.increment = increment;
+}
+
+function tick_timer()
+{
+    // Tick timer
+    if (timer_components.paused)
+        return false;
+
+    timer_components.s += timer_components.increment;
+
+    if (timer_components.s >= 60)
+    {
+        timer_components.s = 0;
+        timer_components.m++;
+    }
+    else if (timer_components.s < 0)
+    {
+        timer_components.s = 59;
+        timer_components.m--;
+    }
+
+    if (timer_components.m >= 60)
+    {
+        timer_components.m = 0;
+        timer_components.h++;
+    }
+    else if (timer_components.m < 0)
+    {
+        timer_components.m = 59;
+        timer_components.h--;
+    }
+
+    if (timer_components.h < 0)
+    {
+        timer_components.h = 0;
+        timer_components.increment = 0;
+    }
+
+    let h_padded = ("0" + timer_components.h).slice(-2);
+    let m_padded = ("0" + timer_components.m).slice(-2);
+    let s_padded = ("0" + timer_components.s).slice(-2);
+
+    $("#timer-hours").html(h_padded);
+    $("#timer-minutes").html(m_padded);
+    $("#timer-seconds").html(s_padded);
 }
