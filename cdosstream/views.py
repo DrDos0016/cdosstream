@@ -187,7 +187,7 @@ class Patron_Credits(TemplateView):
 def zeoguessr(request):
     context = {"card": None}
     context["title"] = "World"
-    
+
     puzzles = [
         {"answer": "MERBOTIA", "directory": "merbotia"},
         {"answer": "BUG TOWN", "directory": "bugtown"},
@@ -195,13 +195,13 @@ def zeoguessr(request):
         {"answer": "DEEP DECEMBER", "directory": "deep-december"},
         {"answer": "DUNGEONS OF ZZT", "directory": "dungeons-of-zzt"},
     ]
-    
+
     puzzle = puzzles[random.randint(0, len(puzzles) - 1)]
-    
+
     images = glob.glob("/home/drdos/projects/stream/cdosstream/static/cdosstream/zeoguessr/{}/*.png".format(puzzle["directory"]))
     print(len(images))
     image = images[random.randint(0, len(images) - 1)]
-    
+
     # Set up hint
     hint = ""
     for ch in puzzle["answer"]:
@@ -209,8 +209,30 @@ def zeoguessr(request):
             hint += " "
         else:
             hint += random.choice("░▒▓█")
-    
+
     puzzle["image"] = "cdosstream/zeoguessr/{}/{}".format(puzzle["directory"], os.path.basename(image))
     puzzle["hint"] = hint
     context["puzzle"] = puzzle
     return render(request, "cdosstream/zeoguessr.html", context)
+
+
+def obs_test(request):
+    context = {"title": "OBS Websocket Server Test"}
+    context = {"title": "Stream Control Panel"}
+    context["SUB_GOAL"] = SUB_GOAL
+    context["SUB_GOAL_REWARD"] = SUB_GOAL_REWARD
+    #context["set_card_form"] = Set_Card_Form()
+    context["set_card_form"] = Custom_Card_Form()
+
+    context["forms"] = [
+        Replay_Event_Form(),
+        Send_Command_Form(),
+        Timer_Form(),
+    ]
+
+    # Get cards from Musuem
+    cards = get_stream_entries()
+    context["cards"] = cards
+    context["recent_events"] = Event.objects.all().order_by("-id")[:5]
+    context["notes"] = read_stream_notes()
+    return render(request, "cdosstream/obs-ws-test.html", context)
