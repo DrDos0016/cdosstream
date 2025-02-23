@@ -4,6 +4,7 @@ import os
 import time
 import websockets
 
+import django
 import requests
 
 from colorama import Fore, Back, Style
@@ -18,6 +19,10 @@ from twitchAPI.twitch import Twitch
 
 from .settings import *
 from core import *
+
+django.setup()
+
+from cdosstream.models import Event  # noqa: E402
 
 
 class Event_Monitor():
@@ -63,19 +68,16 @@ class Event_Monitor():
         store_token(token, refresh_token)
 
     async def log_event(self, data):
-        #print(str(datetime.now())[:19], data.get("subscription", {}).get("type", {}), data.get("event", {}).get("reward", {}).get("title", {}))
-        #print("URL", WEBSERVER_URL + "event/capture/")
-        #print("DATA:", data)
         try:
             resp = requests.post(WEBSERVER_URL + "event/capture/", json=data)
         except Exception:
-            print("Could not capture event! Is the web server running at {}?".format(WEBSERVER_URL))
+            self.log_received_data("Could not capture event! Is the web server running at {}?".format(WEBSERVER_URL))
             return
 
         if self.connections:
             websockets.broadcast(self.connections, resp.text)
         else:
-            print("No connections established to broadcast event!")
+            self.log_received_data("No connections established to broadcast event to!")
 
     def launch_reverse_proxy(self, token, port):
         self.reverse_proxy_url = reverse_proxy_init(token, port)
