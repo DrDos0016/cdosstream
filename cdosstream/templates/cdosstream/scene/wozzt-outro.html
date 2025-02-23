@@ -63,7 +63,16 @@ body {
     margin-bottom:4px;
 }
 
+#plugs-wrapper
+{
+    position:absolute;
+    top:0px;
+    left:1050px;
+    width:376px;
+    overflow:hidden;
+}
 
+.plug { margin-left: 376px; }
 </style>
 {% endblock %}
 
@@ -82,7 +91,7 @@ body {
     <div class="c ega-cyan">
         <span class="ega-cyan">
             {% timezone "America/New_York" %}{{stream.when|date:'l N jS'}}<br>
-            {{stream.when|date:'h:i A e'}}{% endtimezone %} /
+            {{stream.when|date:'h:i A e'}}{% endtimezone %}{% if stream.when %} / {% endif %}
             {% timezone "America/Los_Angeles" %}{{stream.when|date:'h:i A e'}}{% endtimezone %}
         </span>
         <br>
@@ -91,6 +100,15 @@ body {
 </div>
 {% endwith %}
 {% endif %}
+<div id="plugs-wrapper">
+{% plug "youtube" %}
+{% plug "patreon" %}
+{% plug "twitter" %}
+{% plug "bluesky" %}
+{% plug "tumblr" %}
+{% plug "mastodon" %}
+{% plug "discord" %}
+</div>
 <div id="text-wrapper">
     <div id="outro-credits" class="active flashing"></div>
 </div>

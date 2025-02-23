@@ -67,7 +67,10 @@ class Scene_View(TemplateView):
             r = requests.get("https://museumofzzt.com/ajax/get-stream-schedule/")
             context["streams"] = r.json().get("items")
             for stream in context["streams"]:
-                stream["when"] = datetime.fromisoformat(stream["when"])
+                try:
+                    stream["when"] = datetime.fromisoformat(stream["when"])
+                except ValueError:
+                    stream["when"] = ""
         return context
 
 

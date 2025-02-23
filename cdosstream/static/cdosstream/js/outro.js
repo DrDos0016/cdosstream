@@ -14,10 +14,13 @@ name_idx = -2; // Deliberate
 marquee_idx = 0;
 marquee_str = names.join(" X ").replace(" ", " "); /* Force non-breaking spaces */
 
+plug_delay = 3000;
+plug_increment = 100;
+
 
 $(document).ready(function (){
     name_timer = setInterval(animate_names, name_duration);
-    //marquee_timer = setInterval(scroll_names, 200);
+    show_plugs();
 });
 
 function scroll_names()
@@ -62,4 +65,19 @@ function advance_color()
         color_idx = 0;
 
     $(".flashing").addClass("ega-"+color_order[color_idx]);
+}
+
+function show_plugs()
+{
+    console.log("Plugs!");
+    $(".plug").each(function (){
+        setTimeout(swooce_plug, plug_delay, $(this));
+        plug_delay += plug_increment;
+    });
+}
+
+function swooce_plug(element)
+{
+    console.log("Swooce", element);
+    element.animate({"margin-left": "0px"}, 1000);
 }
