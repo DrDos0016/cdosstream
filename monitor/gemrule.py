@@ -11,8 +11,6 @@ from cdosstream.models import *  # noqa: E402
 
 from twitchAPI.types import ChatEvent
 from twitchAPI.chat import Chat, EventData, ChatMessage, ChatSub, ChatCommand
-#from private import USERNAME
-USERNAME = "WorldsOfZZT"
 
 from websockets.sync.client import connect
 
@@ -45,6 +43,7 @@ AUDIO_INFO = populate_audio_info()
 
 
 class Gemrule_Bot():
+    streamer = None
     chat = None
     registered_commands = []
 
@@ -57,7 +56,7 @@ class Gemrule_Bot():
 
     def register_commands(self):
         print("[Gemrule] Registering Complex Commands")
-        self.chat.register_event(ChatEvent.READY, on_ready)
+        self.chat.register_event(ChatEvent.READY, self.on_ready)
         #chat.register_event(ChatEvent.MESSAGE, on_message)
         self.register_command("audio", get_audio_link)
         self.register_command("article", get_article_link)
@@ -77,11 +76,9 @@ class Gemrule_Bot():
         return self.registered_commands
 
 
-
-
-async def on_ready(ready_event: EventData):
-    print("[Gemrule] Ready.")
-    await ready_event.chat.join_room(USERNAME)
+    async def on_ready(self, ready_event: EventData):
+        print("[Gemrule] Ready. In chat for {}".format(self.streamer))
+        await ready_event.chat.join_room(self.streamer)
 
 
 async def on_message(msg: ChatMessage):

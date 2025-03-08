@@ -26,6 +26,7 @@ from cdosstream.models import Event  # noqa: E402
 
 
 class Event_Monitor():
+    streamer = None
     quick_mode = False  # If Twitch API connections are established or not
     reverse_proxy_url = "N/A"  # ngrok url
     connection_names = {}  # Names of websocket server connections (dict w/ key=UUID, value=Connection Alias)
@@ -49,7 +50,7 @@ class Event_Monitor():
 
     async def initialize_twitch_api_connection(self):
         self.twitch = await Twitch(APP_ID, APP_SECRET)
-        self.user = await first(self.twitch.get_users(logins=USERNAME))
+        self.user = await first(self.twitch.get_users(logins=self.streamer))
 
     async def authenticate_twitch_user(self):
         target_scope = []
@@ -57,15 +58,15 @@ class Event_Monitor():
             # print("Scope", scope)
             target_scope.append(scope)
 
-        auth = UserAuthenticator(self.twitch, target_scope, force_verify=True)
+        auth = UserAuthenticator(self.twitch, target_scope, force_verify=False)
 
-        success, token, refresh_token = load_token()
+        success, token, refresh_token = load_token(self.streamer)
         if not success:
             token, refresh_token = await auth.authenticate()
-            store_token(token, refresh_token)
+            store_token(token, refresh_token, self.streamer)
 
         await self.twitch.set_user_authentication(token, target_scope, refresh_token)
-        store_token(token, refresh_token)
+        store_token(token, refresh_token, self.streamer)
 
     async def log_event(self, data):
         try:
@@ -185,7 +186,7 @@ class Event_Monitor():
             now = time.time()
             if now - self.last_monitor_stream_info_time > self.monitor_stream_interval:
                 self.last_monitor_stream_info_time = now
-                data = await first(self.twitch.get_streams(user_login=USERNAME))
+                data = await first(self.twitch.get_streams(user_login=self.streamer))
                 if data:
                     data = data.to_dict()
                     stream_info = Event(kind="stream-info", raw=data).jsonized()
@@ -197,7 +198,7 @@ class Event_Monitor():
         os.system("clear")
         conn_count = len(self.connections)
         quick = f" {Fore.RED}QUICK MODE" if self.quick_mode else ""
-        print(f"{Style.BRIGHT}{Fore.CYAN}{USERNAME} #{self.user.id}{quick}{Style.RESET_ALL}")
+        print(f"Streaming as {Style.BRIGHT}{Fore.CYAN}{self.streamer} (#{self.user.id}){quick}{Style.RESET_ALL}")
         print(f"{Fore.MAGENTA}{self.reverse_proxy_url}{Style.RESET_ALL}")
         print(f"{Fore.YELLOW}ACTIVE CONNECTIONS: {conn_count}")
         for idx in range(0, conn_count):

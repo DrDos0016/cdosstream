@@ -14,15 +14,19 @@ django.setup()
 
 from cdosstream.models import Event  # noqa: E402
 
+STREAMER = "WorldsOfZZT" if sys.argv[-1].endswith(".py") else sys.argv[-1]
+
 
 async def main():
     colorama_init()
     m = Event_Monitor()
+    m.streamer = STREAMER
     g = Gemrule_Bot()
+    g.streamer = STREAMER
     await m.initialize_twitch_api_connection()
-    m.log_received_data(f"Connected to Twitch as {USERNAME} #{m.user.id}")
+    m.log_received_data(f"Connected to Twitch as {STREAMER} #{m.user.id}")
     await m.authenticate_twitch_user()
-    m.log_received_data(f"Authenticated {USERNAME} #{m.user.id}")
+    m.log_received_data(f"Authenticated {STREAMER} #{m.user.id}")
     m.log_received_data(f"Preparing Eventsub Arguments...")
     prepare_eventsub_args(m.user.id, m.log_event)
     m.log_received_data(f"Eventsub Arguments prepared.")
