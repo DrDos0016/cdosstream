@@ -26,6 +26,9 @@ import { Notepad } from "/static/cdosstream/js/modules/notepad.js";
 let ws_connections = {};
 let notepad = null;
 
+let mul = 0.4;
+let fade_timer = null;
+
 function test_get_scene()
 {
     let command = {
@@ -38,6 +41,43 @@ function test_get_scene()
     };
     console.log(command);
     ws_connections.obsws.websocket.send(JSON.stringify(command));
+}
+
+function test_fade()
+{
+    if (fade_timer)
+        clearInterval(fade_timer);
+    // Intro Music was set to -5.0dB by default
+    //0.1 -> -5 to -20
+    //0.2 -> -5 to -14
+    //0.4 -> -5 to -8
+    //0.5 -> -5 to -6
+    //1.0 -> -5 to 0
+    fade_timer = setInterval(fadeout, 500, "Intro Music");
+}
+
+function fadeout(input_name)
+{
+    let command = {
+        "op": 6,
+        "d": {
+            "requestType": "SetInputVolume",
+            "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c",
+            "requestData": {
+                "inputName": "Intro Music",
+                "inputVolumeMul": mul,
+            },
+        }
+    };
+    console.log(command);
+    ws_connections.obsws.websocket.send(JSON.stringify(command));
+    mul = mul - 0.1;
+
+    if (mul < 0)
+    {
+        console.log("DONE FADING");
+        clearInterval(fade_timer);
+    }
 }
 
 function punt_event(event, destination)
@@ -108,8 +148,6 @@ function post_form(e)
 }
 
 $(document).ready(function (){
-    $("#obs-getscene").click(test_get_scene);
-
     console.log("SCP Page is creating SCP_Websocket_Connection");
     ws_connections.scp = new SCP_Websocket_Connection(WEBSOCKET_SERVER_HOST, WEBSOCKET_SERVER_PORT);
     ws_connections.scp.init();
@@ -154,7 +192,9 @@ $(document).ready(function (){
     get_subscriber_count();
     //$("#cards").show();
 
+    $("#obs-getscene").click(test_get_scene);
     $("#clear-log").click(function (){ $("#obsws-log").val(""); });
+    $("#test-fade").click(test_fade);
 });
 </script>
 {% endblock %}
@@ -252,6 +292,7 @@ $(document).ready(function (){
             <button id="obs-getscene">Get Scene</button>
             <button id="test1">Test 1</button>
             <button id="clear-log">Clear Log</button>
+            <button id="test-fade">Fade "Intro Music"</button>
             </div>
     </div>
 
