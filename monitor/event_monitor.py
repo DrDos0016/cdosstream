@@ -26,8 +26,6 @@ from cdosstream.models import Event  # noqa: E402
 
 
 class Event_Monitor():
-    streamer = None
-    quick_mode = False  # If Twitch API connections are established or not
     reverse_proxy_url = "N/A"  # ngrok url
     connection_names = {}  # Names of websocket server connections (dict w/ key=UUID, value=Connection Alias)
     connections = []  # List of websocket server connections
@@ -47,6 +45,10 @@ class Event_Monitor():
         "release-hold": {"subscription": {"type": "Release Hold"}, "event": {"title": "Release Hold"}},
         "toggle-debug": {"subscription": {"type": "Toggle Debug"}, "event": {"title": "Toggle Debug"}},
     }
+    
+    def __init__(self, streamer, quick):
+        self.streamer = streamer
+        self.quick_mode = quick  # If Twitch API connections are established or not
 
     async def initialize_twitch_api_connection(self):
         self.twitch = await Twitch(APP_ID, APP_SECRET)

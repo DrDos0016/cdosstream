@@ -43,9 +43,11 @@ AUDIO_INFO = populate_audio_info()
 
 
 class Gemrule_Bot():
-    streamer = None
-    chat = None
     registered_commands = []
+    
+    def __init__(self, bot, channel):
+        self.bot = bot
+        self.channel = channel
 
     async def launch(self, twitch):
         print("[Gemrule] Booting up Gemrule")
@@ -77,8 +79,8 @@ class Gemrule_Bot():
 
 
     async def on_ready(self, ready_event: EventData):
-        print("[Gemrule] Ready. In chat for {}".format(self.streamer))
-        await ready_event.chat.join_room(self.streamer)
+        print("[Gemrule] Ready. In chat for {}".format(self.channel))
+        await ready_event.chat.join_room(self.channel)
 
 
 async def on_message(msg: ChatMessage):

@@ -1,3 +1,4 @@
+import argparse
 import asyncio
 import sys
 
@@ -14,15 +15,24 @@ django.setup()
 
 from cdosstream.models import Event  # noqa: E402
 
-STREAMER = "WorldsOfZZT" if sys.argv[-1].endswith(".py") else sys.argv[-1]
+DEFAULT_STREAMER = "WorldsOfZZT"
+DEFAULT_CHATBOT = "gemrulebot"
+DEFAULT_QUICK = False
+
+parser = argparse.ArgumentParser(prog="Twitch Stream Monitor", description="Monitor Twitch events and manage Chatbot")
+parser.add_argument("-s", "--streamer", help="Twitch username to monitor for events")
+parser.add_argument("-b", "--bot", help="Twitch username to run the chatbot from")
+parser.add_argument("-q", "--quick", action="store_true", help="Bypass eventsub connections for faster debugging")
+args = parser.parse_args()
+STREAMER = args.streamer if args.streamer else DEFAULT_STREAMER
+CHATBOT = args.bot if args.bot else DEFAULT_CHATBOT
+QUICK = args.quick if args.quick else DEFAULT_QUICK
 
 
 async def main():
     colorama_init()
-    m = Event_Monitor()
-    m.streamer = STREAMER
-    g = Gemrule_Bot()
-    g.streamer = STREAMER
+    m = Event_Monitor(STREAMER, QUICK)
+    g = Gemrule_Bot(CHATBOT, STREAMER)
     await m.initialize_twitch_api_connection()
     m.log_received_data(f"Connected to Twitch as {STREAMER} #{m.user.id}")
     await m.authenticate_twitch_user()
@@ -33,9 +43,8 @@ async def main():
     m.log_received_data(f"Launching Reverse Proxy (ngrok)...")
     m.launch_reverse_proxy(NGROK_TOKEN, NGROK_PORT)
     m.log_received_data(f"Reverse Proxy Launched.")
-    if "-quick" in sys.argv:
-        m.quick_mode = True
-        m.log_received_data("Skipping EventSub Subscriptions. Functionality will be limited.")
+    if QUICK:
+        m.log_received_data(f"{Fore.YELLOW}{Back.BLACK}Skipping EventSub Subscriptions. Functionality will be limited.")
     else:
         await m.subscribe_to_eventsub_events()
 
