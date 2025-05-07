@@ -54,6 +54,7 @@ async def main():
     stream_info_task = m.get_stream_info()
 
     m.gemrule_registered_commands = g.get_registered_commands()
+    m.gemrule = g
 
     # Run Tasks
     m.log_received_data(f"{Fore.BLACK}{Back.GREEN}Running Tasks")

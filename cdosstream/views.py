@@ -154,7 +154,7 @@ class Blank_View(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = "Blank (Use ?w and ?h to speecify dimensions)"
+        context["title"] = "[{}x{}] (?w/?h to set size)".format(self.request.GET.get("w", 480), self.request.GET.get("h", 350))
         return context
 
 
@@ -162,6 +162,8 @@ class Card(TemplateView):
     template_name = "cdosstream/widget/card.html"
 
     def get_context_data(self, **kwargs):
+        if self.request.GET.get("alt"):
+            self.template_name = "cdosstream/widget/card-refresh.html"
         context = super().get_context_data(**kwargs)
         context["title"] = "Card"
         return context

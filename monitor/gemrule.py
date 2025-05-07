@@ -1,4 +1,5 @@
 import os
+import time
 import sys
 
 import django
@@ -45,6 +46,7 @@ AUDIO_INFO = populate_audio_info()
 class Gemrule_Bot():
     registered_commands = []
     
+    
     def __init__(self, bot, channel):
         self.bot = bot
         self.channel = channel
@@ -59,7 +61,7 @@ class Gemrule_Bot():
     def register_commands(self):
         print("[Gemrule] Registering Complex Commands")
         self.chat.register_event(ChatEvent.READY, self.on_ready)
-        #chat.register_event(ChatEvent.MESSAGE, on_message)
+        self.chat.register_event(ChatEvent.MESSAGE, self.on_message)
         self.register_command("audio", get_audio_link)
         self.register_command("article", get_article_link)
 
@@ -83,16 +85,21 @@ class Gemrule_Bot():
         await ready_event.chat.join_room(self.channel)
 
 
-async def on_message(msg: ChatMessage):
-    """
-    print("Message received")
-    print(msg.text)
-    print(msg.sent_timestamp)
-    print(msg.user)
-    print(msg)
-    print("---" * 20)
-    """
-    return True
+    async def on_message(self, msg: ChatMessage):
+        """
+        print("Message received")
+        print(msg.text)
+        print(msg.sent_timestamp)
+        print(msg.user)
+        print(msg)
+        print("---" * 20)
+        await self.chat.send_message(self.channel, "Got a message at " + str(int(now)))
+        """
+        return True
+
+
+#async def gemrule_auto_message(gemrule)
+#    awai
 
 
 async def test_command(cmd: ChatCommand):

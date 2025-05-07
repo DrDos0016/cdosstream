@@ -49,6 +49,7 @@ class Event_Monitor():
     def __init__(self, streamer, quick):
         self.streamer = streamer
         self.quick_mode = quick  # If Twitch API connections are established or not
+        self.gemrule = None
 
     async def initialize_twitch_api_connection(self):
         self.twitch = await Twitch(APP_ID, APP_SECRET)
@@ -173,6 +174,10 @@ class Event_Monitor():
                 await self.log_event(card_data)
             elif data["command"] == "identify-connection":
                 self.connection_names[data["sender"]["uuid"]] = data["sender"]["name"]
+            elif data["command"] == "gemrule-say":
+                if not self.gemrule:
+                    self.log_received_data(f"{Fore.RED}Gemrule is not attached to the event monitor! Can't send message.")
+                await self.gemrule.chat.send_message(self.gemrule.channel, data["message"])
             else:
                 command = data.get("command", "NO COMMAND?")
                 self.log_received_data(f"{Fore.RED}Unknown command: {command}")
