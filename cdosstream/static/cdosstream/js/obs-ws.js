@@ -1,8 +1,18 @@
 "use strict";
-
 import { Websocket_Connection } from "/static/cdosstream/js/modules/websocket_connection.js";
 
-//var obs_ws = null;
+let OPCODE = {"REQUEST": 6};
+let UUID_SCENE = {
+    "PRESTREAM":    "fbcafa89-a143-4233-8aba-da210a6390b4",
+    "WORLDS":       "5fdbef60-88bd-489a-b20f-0888b4d85497",
+    "OUTRO":        "49f5563c-9cd3-48a5-ad65-e7bdea274825",
+    "ZZT":          "93888a88-a827-4462-8cb5-81e6b35850aa",
+    "KEVEDIT":      "286c7e8c-24ea-48c3-9465-d47bc74eac3a",
+    "ADBREAK":      "398f708e-119f-43e4-9f53-5a72a05ad5bc",
+}
+let DO_NOT_PUNT_EVENTS = [
+    "GetSceneList", "GetInputList", "SetInputVolume",
+];
 
 const OBS_MICROPHONE_INPUT_NAME = "Mic/Aux";
 
@@ -24,6 +34,8 @@ export class OBS_Websocket_Connection extends Websocket_Connection
             "CurrentProgramSceneChanged": CurrentProgramSceneChanged,
             "InputMuteStateChanged": InputMuteStateChanged,
         }
+
+        this.redeem_location = "CORNER";
     }
 
     delegate_event(event)
@@ -46,22 +58,8 @@ export class OBS_Websocket_Connection extends Websocket_Connection
                 console.log(`OBS-WS.JS could not call function, ${callable_function}`);
             else
                 return callable_function(this, event);
-
-            /*
-            if (event.d.eventType == "CurrentProgramSceneChanged")
-            {
-                event.meta = {
-                    "kind": "OBS Scene Change",
-                    "js_func": `obsws_${event.d.eventType}`,
-                    "created_at": new Date(),
-                    "pk": "OBS",
-                }
-                event.body = {"event": event.d.eventData};
-                punt = true;
-            }
-            */
         }
-        else if (event.op == 7) // Request Response
+        else if ((event.op == 7) && (DO_NOT_PUNT_EVENTS.indexOf(event.d.requestType) == -1)) // Request Response + Punt
         {
             // Send an event received by OBSWS to the main WS Event system
             event.meta = {
@@ -72,6 +70,10 @@ export class OBS_Websocket_Connection extends Websocket_Connection
             };
             event.body = {"event": {"user_name": "OBSWS"}};
             punt = true;
+        }
+        else if ((event.op == 7) && (DO_NOT_PUNT_EVENTS.indexOf(event.d.requestType) != -1)) // Request Response, do not punt
+        {
+            console.log("No need to punt this");
         }
 
         if (punt)
@@ -119,9 +121,23 @@ export class OBS_Websocket_Connection extends Websocket_Connection
         let h = ("0" + now.getHours()).slice(-2);
         let m = ("0" + now.getMinutes()).slice(-2);
         let s = ("0" + now.getSeconds()).slice(-2);
-        let event_log_string = `[${h}:${m}:${s}] <OBS> ${event}\n`;
-        $("#obsws-log").val(event_log_string + log);
 
+        let event_pretty = JSON.stringify(JSON.parse(event), null, 4) ;
+
+        let event_log_string = `[${h}:${m}:${s}] <OBS> ${event_pretty}\n`;
+        $("#obsws-log").val(event_log_string + log);
+    }
+
+    connection_established()
+    {
+        super.connection_established();
+        console.log("My conn estab func");
+        let command = {"op": 6, "d": {"requestType": "GetSceneList", "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c"}};
+        this.websocket.send(JSON.stringify(command));
+        command = {"op": 6, "d": {"requestType": "GetInputList", "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c"}};
+        this.websocket.send(JSON.stringify(command));
+        command = {"op": 6, "d": {"requestType": "SetInputVolume", "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c", "requestData": {"inputName": "Pre-Stream Music", "inputVolumeDb": -6.0}}};
+        this.websocket.send(JSON.stringify(command));
     }
 }
 
@@ -138,6 +154,19 @@ function CurrentProgramSceneChanged(self, event)
 
     $(".obs-value[data-obs-key=scene]").html(scene_name);
     $(".obs-value[data-obs-key=scene]").attr("title", full_scene_name);
+
+    /*
+    let new_redeem_location = "CORNER";
+    if (full_scene_name.toUpperCase().indexOf("AD-BREAK") != -1)
+    {
+        new_redeem_location = "CENTER";
+    }
+    if (new_redeem_location != ws_connections.obsws.redeem_location)
+    {
+        ws_connections.obsws.redeem_location = new_redeem_location;
+        console.log("REDEEMS NOW GO IN", new_redeem_location);
+    }*/
+
     return true;
 }
 

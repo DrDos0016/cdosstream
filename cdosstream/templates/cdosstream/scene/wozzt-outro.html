@@ -84,6 +84,7 @@ body {
 {% block body %}
 {% if streams %}
 {% with streams.0 as stream %}
+{% if stream.visible %}
 <div id="next-stream" class="block">
     <div class="c ega-yellow">Next Time On Worlds Of ZZT</div>
     <div class="c">{{stream.title}}</div>
@@ -98,6 +99,7 @@ body {
         <span class="ega-blue">{{stream.when|date:'D M jS'}} {{stream.when|date:'H:i e'}}</span>
     </div>
 </div>
+{% endif %}
 {% endwith %}
 {% endif %}
 <div id="plugs-wrapper">

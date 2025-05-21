@@ -96,33 +96,6 @@ def stream_control_panel(request):
     return render(request, "cdosstream/stream-control-panel.html", context)
 
 
-"""
-@csrf_exempt
-def process_form(request, slug):
-    print("I THINK THIS CAN BE DELETED")
-    # Calls .process() function on whitelisted forms based on slug in URL with POST data
-    available_forms = {
-        "set-recording-timer-form": Set_Recording_Timer_Form,
-        "set-card-form": Set_Card_Form,
-        "replay-event-form": Replay_Event_Form,
-        "set-av-form": Set_AV_Form,
-        "send-command-form": Send_Command_Form,
-        "huh": whatthe,
-    }
-    form = available_forms.get(slug)
-
-    if not form:
-        return JsonResponse({"success": False, "errors": [{"message": "Form '{}' not found".format(slug)}]})
-
-    form = form(request.POST)
-
-    if form.is_valid():
-        form.process()
-        return JsonResponse({"success": True, "response": form.response})
-    return JsonResponse({"success": False, "errors": form.errors.get_json_data()})
-"""
-
-
 def get_event(request):
     """ Returns an event model in JSONized form """
     event = Event.objects.get(pk=request.GET["pk"])

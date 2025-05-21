@@ -19,7 +19,7 @@ export class SCP_Websocket_Connection extends Websocket_Connection
     delegate_event(event)
     {
         // "event" being the JSON data received via websocket, not a JS event
-        console.log("SCP GOT AN EVENT", event);
+        //console.log("SCP GOT AN EVENT", event);
 
         event = JSON.parse(event);
         if (! event.meta)
