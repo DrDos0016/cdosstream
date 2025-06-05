@@ -1,0 +1,52 @@
+{% extends "cdosstream/main.html" %}
+{% comment %}<!--THIS FILE IS USED TO QUICKLY REFERENCE UUIDS AND INDICIES USED BY OBS-->{% endcomment %}
+
+{% load static %}
+{% load cdosstream_tags %}
+
+{% block global_css %}
+<style>
+body
+{
+    font-family:monospace;
+    font-size:12pt;
+}
+</style>
+{% endblock %}
+
+{% block local_scripts %}
+<script async src="{% static 'cdosstream/js/stream-control-panel.js' %}?{{TIMESTAMP}}" type="module"></script>
+<script async src="{% static 'cdosstream/js/obs-ws.js' %}?{{TIMESTAMP}}" type="module"></script>
+<script src="/static/cdosstream/js/scp-events.js"></script>
+{% include "cdosstream/subtemplate/websocket-server-info.html" %}
+
+<script type="module">
+import { Websocket_Connection } from "/static/cdosstream/js/modules/websocket_connection.js";
+import { OBS_Websocket_Connection } from "/static/cdosstream/js/obs-ws.js";
+
+let ws_connections = {};
+
+$(document).ready(function (){
+    console.log("Creating OBS_Websocket_Connection");
+    ws_connections.obsws = new OBS_Websocket_Connection("localhost", 4455);
+    ws_connections.obsws.init();
+
+    $("#get-scene-list").click(get_scene_list);
+});
+
+function get_scene_list()
+{
+    ws_connections.obsws.get_scene_list();
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<main>
+    <button id="get-scene-list">Get Scene List</button>
+    <hr>
+    <table id="table-scene-list">
+        <tr><th>Scene List</th></tr>
+    </table>
+</main>
+{% endblock %}

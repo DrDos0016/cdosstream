@@ -30,6 +30,7 @@ urlpatterns = [
     path("zeoguessr/", cdosstream.views.zeoguessr),
 
     path("obs-test/", cdosstream.views.obs_test),
+    path("obs-ws-reference/", cdosstream.views.obs_ws_reference),
 
     # Confirm these are used below
 

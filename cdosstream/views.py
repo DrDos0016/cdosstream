@@ -214,3 +214,7 @@ def obs_test(request):
     context["recent_events"] = Event.objects.all().order_by("-id")[:5]
     context["notes"] = read_stream_notes()
     return render(request, "cdosstream/obs-ws-test.html", context)
+
+def obs_ws_reference(request):
+    context = {"title": "OBS Websocket Reference"}
+    return render(request, "cdosstream/obs-ws-reference.html", context)
