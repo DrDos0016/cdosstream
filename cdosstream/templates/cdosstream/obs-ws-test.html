@@ -153,6 +153,16 @@ function gemrule_auto_plug()
         ws_connections.scp.ws_send({"command": "gemrule-say", "message": "Discord: https://museumofzzt.com/discord/ | Bsky: https://bsky.app/profile/worldsofzzt.bsky.social | YouTube: https://www.youtube.com/c/WorldsofZZT | Patreon: https://patreon.com/worldsofzzt | More: https://museumofzzt.com/follow/"});
 }
 
+function reset_stream()
+{
+    ws_connections.obsws.reset_stream();
+}
+
+function get_wad()
+{
+    ws_connections.obsws.get_wad();
+}
+
 $(document).ready(function (){
     console.log("SCP Page is creating SCP_Websocket_Connection");
     ws_connections.scp = new SCP_Websocket_Connection(WEBSOCKET_SERVER_HOST, WEBSOCKET_SERVER_PORT);
@@ -201,6 +211,8 @@ $(document).ready(function (){
     $("#obs-getscene").click(test_get_scene);
     $("#clear-log").click(function (){ $("#obsws-log").val(""); });
     $("#test-fade").click(test_fade);
+    $("#reset-stream").click(reset_stream);
+    $("#wad").click(get_wad);
 
     // Timer
     setInterval(gemrule_auto_plug, 1000 * 60 * 52);
@@ -298,6 +310,8 @@ $(document).ready(function (){
     <div id="obsws" class="widget active">
         <textarea id="obsws-log"></textarea>
         <div style="display:flex;flex-wrap:wrap">
+            <button id="wad">WAD</button>
+            <button id="reset-stream">Reset Stream</button>
             <button id="obs-getscene">Get Scene</button>
             <button id="test1">Test 1</button>
             <button id="clear-log">Clear Log</button>

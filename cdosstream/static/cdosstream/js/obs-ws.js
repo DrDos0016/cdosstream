@@ -1,7 +1,7 @@
 "use strict";
 import { Websocket_Connection } from "/static/cdosstream/js/modules/websocket_connection.js";
 
-let OPCODE = {"REQUEST": 6};
+let OPCODE = {"HELLO": 0, "IDENTIFY": 1, "IDENTIFIED": 2, "REIDENTIFY": 3, "N/A": 4, "EVENT": 5, "REQUEST": 6, "REQUEST_RESPONSE": 7, "REQUEST_BATCH": 8, "REQUEST_BATCH_RESPONSE": 9};
 let UUID_SCENE = {
     "PRESTREAM":    "fbcafa89-a143-4233-8aba-da210a6390b4",
     "WORLDS":       "5fdbef60-88bd-489a-b20f-0888b4d85497",
@@ -10,8 +10,14 @@ let UUID_SCENE = {
     "KEVEDIT":      "286c7e8c-24ea-48c3-9465-d47bc74eac3a",
     "ADBREAK":      "398f708e-119f-43e4-9f53-5a72a05ad5bc",
 }
+let INPUTS  = {
+    "Desktop Audio (Keep Muted)": "57dd87b0-4ec4-4817-a46e-2e28bdd0da1e",
+    "Microphone": "ca47c4e4-6ff9-464f-8bdc-edf5ef3fd4ef",
+    "Ad Break Music": "18b0559a-3da5-49be-a722-264bddb284b7",
+    "WoZZT Theme": "450f168e-737e-4b6c-a22a-a78706631ba4",
+}
 let DO_NOT_PUNT_EVENTS = [
-    "GetSceneList", "GetInputList", "SetInputVolume",
+    "GetSceneList", "GetInputList", "SetInputVolume", "GetSceneItemList",
 ];
 
 const OBS_MICROPHONE_INPUT_NAME = "Mic/Aux";
@@ -36,6 +42,13 @@ export class OBS_Websocket_Connection extends Websocket_Connection
         }
 
         this.redeem_location = "CORNER";
+
+        this.event_handler_functions = [this.stub, this.stub, this.identified];
+    }
+
+    identified(event)
+    {
+        console.log("I got to identified here");
     }
 
     delegate_event(event)
@@ -44,6 +57,10 @@ export class OBS_Websocket_Connection extends Websocket_Connection
         this.obs_log_event(event);
         event = JSON.parse(event);
         let punt = false;
+
+        //let event_handler_function = this.event_handler_functions[event.op];
+        /*console.log("OP", event.op);
+        event_handler_function(event);*/
 
         if (event.op == 2) // Identified
         {
@@ -138,6 +155,40 @@ export class OBS_Websocket_Connection extends Websocket_Connection
         this.websocket.send(JSON.stringify(command));
         command = {"op": 6, "d": {"requestType": "SetInputVolume", "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c", "requestData": {"inputName": "Pre-Stream Music", "inputVolumeDb": -6.0}}};
         this.websocket.send(JSON.stringify(command));
+    }
+
+    reset_stream()
+    {
+        let command = {"op": OPCODE.REQUEST, "d": {"requestType": "GetSceneItemList", "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c", "requestData": {"sceneUuid": UUID_SCENE.PRESTREAM}}};
+        this.websocket.send(JSON.stringify(command));
+        return true;
+
+        console.log("Resetting stream!");
+        console.log("Inputs WoZZT Theme", INPUTS["WoZZT Theme"]);
+        // Disable source - WoZZT Theme
+        command = {"op": OPCODE.REQUEST, "d": {"requestType": "SetSceneItemEnabled", "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c", "requestData": {"sceneUuid": UUID_SCENE.PRESTREAM, "sceneItemID": INPUTS["WoZZT Theme"], "sceneItemEnabled": false}}};
+        this.websocket.send(JSON.stringify(command));
+        // Set Pre-Stream Music vol to -6.0db
+        // Enable Source - Pre-Stream Music
+        // Change scene to Pre-Stream
+    }
+
+    get_wad()
+    {
+        console.log(RAW_SCENE_LIST);
+        console.log(RAW_INPUT_LIST);
+        console.log("LL", RAW_SCENE_LIST.length);
+
+        for (let idx = 0; idx < RAW_SCENE_LIST.length; idx++)
+        {
+            let command = {"op": OPCODE.REQUEST, "d": {"requestType": "GetSceneItemList", "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c", "requestData": {"sceneUuid": RAW_SCENE_LIST[idx].sceneUuid}}};
+            this.websocket.send(JSON.stringify(command));
+        }
+    }
+
+    get_scene_list()
+    {
+        console.log("Gonna get scene list");
     }
 }
 

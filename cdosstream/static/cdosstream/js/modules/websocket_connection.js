@@ -104,6 +104,11 @@ export class Websocket_Connection
         $(this.connection_icon_selector).html(this.connection_bad_icon);
     }
 
+    stub(event)
+    {
+        return true;  // Stub function. Do nothing.
+    }
+
     /* Functions intended to be defined in subclasses */
     setup() { return true; }
     delegate_event(event) { return true; }
