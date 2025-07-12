@@ -1,0 +1,62 @@
+{% extends "cdosstream/main.html" %}
+{% load cdosstream_tags %}
+{% load static %}
+
+{% block local_css %}
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-layout.css">
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-events.css">
+<style>
+.art-wrapper
+{
+    background-color:var(--ega-darkblue);
+    width:1440px;
+    height:1050px;
+    margin-top:30px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+
+#image-wrapper
+{
+    border:2px dashed var(--ega-yellow);
+    margin-top:30px;
+}
+
+#image-wrapper img
+{
+    image-rendering:pixelated;
+    width:960px;
+    height:700px;
+}
+
+#image-description
+{
+    font-size:56px;
+    line-height:64px;
+    border:6px double #FFF;
+    padding:14px;
+    width:1280px;
+    margin:auto;
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="art-wrapper">
+    <h1>Art-vertizement Break!</h1>
+    <div id="image-wrapper">
+        <img src="{% static 'cdosstream/scene/art/src/Solarwar.png' %}">
+    </div>
+    <div id="image-description">Hewoo
+    </div>
+</div>
+
+<div class="pos-hud block">
+    <div class="info-card">
+        <div id="stream-card" class="cp437 ega-darkblue-bg">
+            {% audio_info "ad-break" %}
+        </div>
+    </div>
+</div>
+{% endblock %}

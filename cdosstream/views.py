@@ -73,29 +73,6 @@ class Scene_View(TemplateView):
                     stream["when"] = ""
         return context
 
-
-@csrf_exempt
-def stream_control_panel(request):
-    context = {"title": "Stream Control Panel"}
-    context["SUB_GOAL"] = SUB_GOAL
-    context["SUB_GOAL_REWARD"] = SUB_GOAL_REWARD
-    #context["set_card_form"] = Set_Card_Form()
-    context["set_card_form"] = Custom_Card_Form()
-
-    context["forms"] = [
-        Replay_Event_Form(),
-        Send_Command_Form(),
-        Timer_Form(),
-    ]
-
-    # Get cards from Musuem
-    cards = get_stream_entries()
-    context["cards"] = cards
-    context["recent_events"] = Event.objects.all().order_by("-id")[:5]
-    context["notes"] = read_stream_notes()
-    return render(request, "cdosstream/stream-control-panel.html", context)
-
-
 def get_event(request):
     """ Returns an event model in JSONized form """
     event = Event.objects.get(pk=request.GET["pk"])
@@ -194,12 +171,10 @@ def zeoguessr(request):
     return render(request, "cdosstream/zeoguessr.html", context)
 
 
-def obs_test(request):
-    context = {"title": "OBS Websocket Server Test"}
+def stream_control_panel(request):
     context = {"title": "Stream Control Panel"}
     context["SUB_GOAL"] = SUB_GOAL
     context["SUB_GOAL_REWARD"] = SUB_GOAL_REWARD
-    #context["set_card_form"] = Set_Card_Form()
     context["set_card_form"] = Custom_Card_Form()
 
     context["forms"] = [
@@ -213,7 +188,7 @@ def obs_test(request):
     context["cards"] = cards
     context["recent_events"] = Event.objects.all().order_by("-id")[:5]
     context["notes"] = read_stream_notes()
-    return render(request, "cdosstream/obs-ws-test.html", context)
+    return render(request, "cdosstream/stream-control-panel.html", context)
 
 def obs_ws_reference(request):
     context = {"title": "OBS Websocket Reference"}

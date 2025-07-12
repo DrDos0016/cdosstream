@@ -196,6 +196,7 @@ export class OBS_Websocket_Connection extends Websocket_Connection
 // Callable Events
 function CurrentProgramSceneChanged(self, event)
 {
+    console.log("SCENE CHANGE");
     //{"d":{"eventData":{"sceneName":"[2] KevEdit Composite"},"eventIntent":4,"eventType":"CurrentProgramSceneChanged"},"op":5}
     let full_scene_name = event.d.eventData.sceneName;
     let scene_name = full_scene_name.replace(" Composite", "");
@@ -206,17 +207,19 @@ function CurrentProgramSceneChanged(self, event)
     $(".obs-value[data-obs-key=scene]").html(scene_name);
     $(".obs-value[data-obs-key=scene]").attr("title", full_scene_name);
 
-    /*
+    console.log("Self?", self);
+
+
     let new_redeem_location = "CORNER";
     if (full_scene_name.toUpperCase().indexOf("AD-BREAK") != -1)
     {
         new_redeem_location = "CENTER";
     }
-    if (new_redeem_location != ws_connections.obsws.redeem_location)
+    if (new_redeem_location != self.redeem_location)
     {
-        ws_connections.obsws.redeem_location = new_redeem_location;
+        self.redeem_location = new_redeem_location;
         console.log("REDEEMS NOW GO IN", new_redeem_location);
-    }*/
+    }
 
     return true;
 }

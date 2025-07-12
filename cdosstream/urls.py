@@ -4,8 +4,7 @@ import cdosstream.views
 import cdosstream.event_views
 
 urlpatterns = [
-    #path("", cdosstream.views.stream_control_panel),
-    path("", cdosstream.views.obs_test),
+    path("", cdosstream.views.stream_control_panel),
 
     path("event/capture/", cdosstream.views.capture_event),
     path("event/<int:pk>/", cdosstream.event_views.get_event_view, name="get_event_view"),
@@ -29,7 +28,6 @@ urlpatterns = [
 
     path("zeoguessr/", cdosstream.views.zeoguessr),
 
-    path("obs-test/", cdosstream.views.obs_test),
     path("obs-ws-reference/", cdosstream.views.obs_ws_reference),
 
     # Confirm these are used below
