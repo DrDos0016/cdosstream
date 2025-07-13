@@ -15,6 +15,7 @@ urlpatterns = [
     path("notepad/save/", cdosstream.views.notepad_save),
 
     path("query/<slug:slug>/", cdosstream.views.get_query),
+    path("ajax/get-art/", cdosstream.views.get_art),
 
     path("scene/<slug:slug>/", cdosstream.views.Scene_View.as_view(), name="scene"),
 

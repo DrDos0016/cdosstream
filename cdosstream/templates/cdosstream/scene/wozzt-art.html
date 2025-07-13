@@ -19,8 +19,11 @@
 
 #image-wrapper
 {
-    border:2px dashed var(--ega-yellow);
+    border-style:solid;
+    border-color:var(--ega-white);
+    border-width: 14px 8px;
     margin-top:30px;
+    max-height:728px;
 }
 
 #image-wrapper img
@@ -33,7 +36,7 @@
 #image-description
 {
     font-size:56px;
-    line-height:64px;
+    line-height:56px;
     border:6px double #FFF;
     padding:14px;
     width:1280px;
@@ -45,10 +48,9 @@
 {% block body %}
 <div class="art-wrapper">
     <h1>Art-vertizement Break!</h1>
-    <div id="image-wrapper">
-        <img src="{% static 'cdosstream/scene/art/src/Solarwar.png' %}">
-    </div>
-    <div id="image-description">Hewoo
+    <div class="c ega-yellow">We'll return in just a few minutes...<br>In the meantime, enjoy these boards from ZZT art compilations</div>
+    <div id="image-wrapper"><img src="" id="image"></div>
+    <div id="image-description" class="c">
     </div>
 </div>
 
@@ -59,4 +61,21 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block local_scripts %}
+<script>
+function get_art() {
+    $.ajax({
+        url:"/ajax/get-art/"
+    }).done(function (data){
+        $("#image-description").text(data.desc);
+        $("#image").attr("src", "/static/cdosstream/scene/art/" + data.image);
+    });
+}
+$(document).ready(function (){
+    get_art();
+    setInterval(get_art, 20000);
+});
+</script>
 {% endblock %}

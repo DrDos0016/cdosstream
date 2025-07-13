@@ -193,3 +193,24 @@ def stream_control_panel(request):
 def obs_ws_reference(request):
     context = {"title": "OBS Websocket Reference"}
     return render(request, "cdosstream/obs-ws-reference.html", context)
+
+def get_art(request):
+    images = glob.glob("/home/drdos/projects/stream/cdosstream/static/cdosstream/scene/art/*.png")
+
+    image = os.path.basename(images[random.randint(0, len(images))])
+    prefix = image.split("-")[0]
+    prefixes = {
+        "artwork": "Artwork Collection v.01 (1999)",
+        "freezer": "FreeZerBurn's ARt (1999)",
+        "lemmer": "Planet Lemmer Industries (1999)",
+        "mosaic": "Mosaic (1999)",
+        "mosaic2": "Mosaic! 2 (1999)",
+        "ownage": "Ownage Triangle (2004)",
+        "rai": "R.E.S.T.A.R.T. (2000)",
+        "tseng": "Stairway To Da Hood (2000)",
+        "xmas": "Season's Greetings (1992)"
+    }
+
+    desc = prefixes.get(prefix, "Unknown origin! Yell at Dos.")
+
+    return JsonResponse({"image": image, "desc": desc})
