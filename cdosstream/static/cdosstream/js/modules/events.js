@@ -92,6 +92,16 @@ export async function channelsubscriptiongift(event)  /* Ref: 1565 / 1556 Gift S
     });
 }
 
+export async function guide_the_raid(event)  /* Ref: #5598 */
+{
+    $("#live-event").animate({opacity: 1}, speed.event_fade, async function (){
+		sound.volume = 0.30;
+        await play_sound("/static/cdosstream/event/channelraid/raid-passage.wav");
+        await delay(1600);
+        fade_out_event_card(event);
+    });
+}
+
 
 export async function hahaha(event)  /* Ref: #TBD */
 {

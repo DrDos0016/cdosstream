@@ -149,6 +149,15 @@ class Channel_Raid_View(Event_View):
     def get_username(self):
         return self.event_json["body"]["event"]["from_broadcaster_user_name"]
         
+class Guide_The_Raid_View(Event_View):
+    image = "passage-8x.png"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        raided_channel = self.event_json["body"]["event"].get("user_input", "???")
+        context["text"] = "<span class='ega-cyan'>Let's #walk on over to {}'s channel...</span>".format(raided_channel)
+        return context
+        
         
 class Hahaha_View(Event_View):
     image = "hahaha.png"
