@@ -21,7 +21,7 @@ export class Stream_Timer
     {
         console.log("Count", this.tick_count);
         this.tick_count++;
-        if (this.tick_count >= this.seconds)
+        //if (this.tick_count >= this.seconds)
     }
 
 

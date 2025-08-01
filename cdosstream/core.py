@@ -9,8 +9,8 @@ from proj.settings import BASE_DIR
 
 STREAM_NOTES_FILE_PATH = os.path.join(BASE_DIR, "cdosstream", "static", "cdosstream", "stream-notes.txt")
 
-SUB_GOAL = 480  # Inc by 50 normally?
-SUB_GOAL_REWARD = "Bonus Stream: <span class='ega-yellow'>:iiam:</span>"
+SUB_GOAL = 500  # Inc by 50 normally?
+SUB_GOAL_REWARD = "Bonus Stream: <span class='ega-yellow'>Games w/ Geight</span>"
 
 
 def get_stream_entries():
@@ -44,7 +44,7 @@ REGISTERED_EVENTS = {
         "js_func": "channelfollow",
         "icon": {"fg": "ega-white", "bg": "ega-darkblue-bg", "char": "☻"},
     },
-    "channelraid": {  # Ref: 1035
+    "channelraid": {  # Ref: 1035 -- Being raided
         "view": "Channel_Raid_View",
         "js_func": "channelraid",
         "icon": {"fg": "ega-white", "bg": "ega-darkyellow-bg", "char": "≡"},
@@ -64,7 +64,8 @@ REGISTERED_EVENTS = {
         "js_func": "channelsubscriptiongift",
         "icon": {"fg": "ega-purple", "bg": "", "char": "♀"},
     },
-    "guide-the-raid": {  # Ref: ?
+    "guide-the-raid": {  # Ref: 5598 -- WoZZT raiding a channel at the end of the stream
+		"view": "Guide_The_Raid_View",
         "js_func": "guide_the_raid",
         "icon": {"fg": "ega-green", "bg": "", "char": "►"},
     },

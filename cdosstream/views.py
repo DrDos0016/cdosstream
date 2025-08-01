@@ -196,6 +196,7 @@ def obs_ws_reference(request):
 
 def get_art(request):
     images = glob.glob("/home/drdos/projects/stream/cdosstream/static/cdosstream/scene/art/*.png")
+    
 
     image = os.path.basename(images[random.randint(0, len(images))])
     prefix = image.split("-")[0]
@@ -210,6 +211,17 @@ def get_art(request):
         "tseng": "Stairway To Da Hood (2000)",
         "xmas": "Season's Greetings (1992)"
     }
+    
+    # TODO Move this
+    # Quick and dirty Art Test
+    """
+    for fname in images:
+        image = os.path.basename(fname)
+        prefix = image.split("-")[0]
+        desc = prefixes.get(prefix, None)
+        if desc is None:
+            print("BROKEN PREFIX", image)
+	"""
 
     desc = prefixes.get(prefix, "Unknown origin! Yell at Dos.")
 
