@@ -2,6 +2,8 @@ import os
 import time
 import sys
 
+from datetime import datetime
+
 import django
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -38,16 +40,20 @@ REGISTERED_COMMANDS = [
     #{"command": "reply", "func": "test_command"},
     {"command": "audio", "func": "get_audio_link"},
     {"command": "article", "func": "get_article_link"},
+    {"command": "scroll", "func": "scroll_that"},
 ]
 CALL_AND_RESPONSE_COMMANDS = populate_call_and_response_commands()
 AUDIO_INFO = populate_audio_info()
 
+SCROLL_FH = open("scrolls-{}.txt".format(datetime.now().strftime("%Y-%m-%d")), "a")
+
 
 class Gemrule_Bot():
     registered_commands = []
-    
-    
+
+
     def __init__(self, bot, channel):
+        today = datetime.now()
         self.bot = bot
         self.channel = channel
 
@@ -64,6 +70,7 @@ class Gemrule_Bot():
         self.chat.register_event(ChatEvent.MESSAGE, self.on_message)
         self.register_command("audio", get_audio_link)
         self.register_command("article", get_article_link)
+        self.register_command("scroll", scroll_that)
 
         print("[Gemrule] Populating Call and Response Commands")
 
@@ -138,3 +145,10 @@ async def get_article_link(cmd: ChatCommand):
 
     response = "https://museumofzzt.com/article/view/{}".format(pk)
     await cmd.reply(response)
+
+async def scroll_that(cmd: ChatCommand):
+    now = datetime.now()
+    line = "[{}] {}".format(str(now)[11:], cmd.parameter)
+    SCROLL_FH.write(line + "\n")
+    SCROLL_FH.flush()
+    await cmd.reply("Writing that down...")
