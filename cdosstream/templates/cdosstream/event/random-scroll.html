@@ -5,10 +5,15 @@
 <style>
 #live-event .zzt-scroll
 {
-    font-size:16pt;
     color:var(--ega-yellow);
     background-color:var(--ega-darkblue);
     text-align:left;
+    
+    /* Readability and scrolling scrolls */
+    font-size:32pt;
+    max-height:320px;
+    overflow:scroll;
+    overflow-wrap:break-word;
 }
 
 .zzt-scroll .name
@@ -26,6 +31,11 @@
     text-align:center;
     color:var(--ega-white);
     min-height:14px;
+}
+
+.zzt-scroll .dots
+{
+    font-size: 16pt;
 }
 
 .zzt-scroll .hypertext

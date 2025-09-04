@@ -1,4 +1,5 @@
 var speed = {"event_fade": 250};
+var scroll_elapsed_ticks = 0;
 
 // Audio volume should be between -10 and -15db w/ 100% slider volume in OBS
 
@@ -200,10 +201,24 @@ export async function zzt_toilet_flush(event)  /* Ref: #973 */
 
 export async function random_scroll(event)  /* Ref: #2511 */
 {
+	scroll_elapsed_ticks = 0;
     $("#live-event").animate({opacity: 1}, speed.event_fade, async function (){
         sound.volume = 0.80;
         await play_sound("/static/cdosstream/event/random-scroll/scroll.mp3");
-        await delay(12000);
+        await delay(3000); // Delay before scrolling
+        $(".zzt-scroll").animate({scrollTop: $(".zzt-scroll")[0].scrollHeight},
+			{
+				duration: 5000,
+				easing: "linear",
+				step: function (now, fx){
+					scroll_elapsed_ticks++;
+					console.log("TICK", scroll_elapsed_ticks);
+					if (scroll_elapsed_ticks % 15 == 0)
+						$(this).scrollTop($(this).scrollTop + 28 + "px");
+				}
+			}
+		); // Time to scroll
+        await delay(8000); // Time spent on bottom
         fade_out_event_card(event);
     });
 }

@@ -302,6 +302,7 @@ button.shortcut-button
 /* Custom Cards */
 #custom-card-form textarea { padding:0px; max-width:275px; margin-right:15px; height:3ch;}
 #custom-card-form textarea:focus { height:12ch; }
+/* End Custom Cards */
 
 #obsws
 {
@@ -316,3 +317,6 @@ button.shortcut-button
     margin:auto;
 }
 
+.obs-value[data-obs-key=microphone] { width:6ch; text-align:center; }
+.obs-value[data-obs-key=scene] { width:10ch; }
+#obs-mic-wrapper.muted { background-color:#A00; color:#F55; }

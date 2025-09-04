@@ -35,10 +35,7 @@ class ZztScroll(template.Node):
             output += "<div class='name'>Interaction</div>\n"
 
         output += "<div class='content'>\n"
-
-        # Pad short scrolls with blank lines
-        output += "<br>\n" * (10 - len(raw))
-        output += "  •    •    •    •    •    •    •    •    •<br>\n"
+        output += "<div class='dots'>  •    •    •    •    •    •    •    •    •</div>\n"
 
         # Header dots
         for line in raw[1:]:
@@ -54,7 +51,7 @@ class ZztScroll(template.Node):
             output = output[:-5]
 
         # Footer dots
-        output += "  •    •    •    •    •    •    •    •    •<br>\n"
+        output += "<div class='dots bottom'>  •    •    •    •    •    •    •    •    •</div>\n"
         output += "</div>\n</div>\n</div>\n"
 
         # Fix spacing
