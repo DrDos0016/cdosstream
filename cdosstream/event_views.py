@@ -203,7 +203,7 @@ class Random_Scroll_View(Event_View):
         if self.request.GET.get("pk"):
             r = requests.get("https://museumofzzt.com/api/v2/scroll/get/?pk={}".format(self.request.GET["pk"]))
         else:
-            r = requests.get("https://museumofzzt.com/api/v2/scroll/random/")
+            r = requests.get("https://museumofzzt.com/api/v2/scroll/random/?twitch_support=1")
         context["scroll"] = r.json()["data"][0]
 
         # Replication of Scroll.content_as_text()
