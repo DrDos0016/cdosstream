@@ -200,7 +200,16 @@ class Random_Scroll_View(Event_View):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.request.GET.get("pk"):
+        alt_pk = 0
+        #print("FIRING PK", alt_pk)
+        """
+        REJECTS = [36, 44, 93, 123, 227, 272, 563, 46, 82, 117, 144, 170, 219, 233, 252, 262, 328, 339, 460, 371, 374, 405, 421, 425, 427, 529, 532,
+        580, 638, 654
+        ]
+    """
+        if alt_pk:
+            r = requests.get("https://museumofzzt.com/api/v2/scroll/get/?pk={}".format(alt_pk))
+        elif self.request.GET.get("pk"):
             r = requests.get("https://museumofzzt.com/api/v2/scroll/get/?pk={}".format(self.request.GET["pk"]))
         else:
             r = requests.get("https://museumofzzt.com/api/v2/scroll/random/?twitch_support=1")

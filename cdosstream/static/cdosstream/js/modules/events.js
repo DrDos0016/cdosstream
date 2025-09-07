@@ -201,24 +201,23 @@ export async function zzt_toilet_flush(event)  /* Ref: #973 */
 
 export async function random_scroll(event)  /* Ref: #2511 */
 {
-	scroll_elapsed_ticks = 0;
     $("#live-event").animate({opacity: 1}, speed.event_fade, async function (){
+		let scroll_height = $(".zzt-scroll")[0].scrollHeight;
+		let offset = 0;
         sound.volume = 0.80;
         await play_sound("/static/cdosstream/event/random-scroll/scroll.mp3");
-        await delay(3000); // Delay before scrolling
-        $(".zzt-scroll").animate({scrollTop: $(".zzt-scroll")[0].scrollHeight},
-			{
-				duration: 5000,
-				easing: "linear",
-				step: function (now, fx){
-					scroll_elapsed_ticks++;
-					console.log("TICK", scroll_elapsed_ticks);
-					if (scroll_elapsed_ticks % 15 == 0)
-						$(this).scrollTop($(this).scrollTop + 28 + "px");
-				}
-			}
-		); // Time to scroll
-        await delay(8000); // Time spent on bottom
+        //console.log("Scroll is this tall:", scroll_height);
+        await delay(4500); // Delay before scrolling
+        
+        while (offset <= $(".zzt-scroll").scrollTop())
+        {
+			offset += 37;
+			$(".zzt-scroll").scrollTop(offset);
+			await delay(1100)
+			//console.log("OFFSET", offset, "SCROLL_HEIGHT", scroll_height, "SCROLLTOP", $(".zzt-scroll").scrollTop());
+		}
+
+        await delay(2000); // Time spent on bottom
         fade_out_event_card(event);
     });
 }
