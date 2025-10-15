@@ -1,6 +1,8 @@
 import random
 import time
 
+from datetime import datetime, tzinfo
+
 import requests
 
 from django.http import HttpResponse, JsonResponse
@@ -49,7 +51,6 @@ def get_event_view(request, pk):
 
 def call_event_view(request, pk, slug, *args, **kwargs):
     view = REGISTERED_EVENTS.get(slug, {"view": "Undefined_Event_View"})["view"]
-    print("VIEW IS", view)
     return globals()[view].as_view()(request, pk=pk, slug=slug)
 
 
@@ -73,6 +74,28 @@ class Beautiful_Music_View(Event_View):
 class Bip_Bo_Beep_View(Event_View):
     image = "forest.png"
     text = "Bip-bo-beep"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        random.seed(self.request.path)
+        rng = random.randint(1, 50)
+        if rng == 50:
+            trees = [
+                {"suffix": "", "text": '"Invest in leaves."'},
+                {"suffix": "", "text": "I'm a sweet-smelling pine! ♠"},
+                {"suffix": "-white", "text": "I'm a slim birch tree! ♠"},
+                {"suffix": "-cyan", "text": "I'm a frozen winter tree. ;_;"},
+                {"suffix": "-yellow", "text": "I'm a talking maple tree! ♠"},
+                {"suffix": "-brown", "text": "I'm a towering oak tree! ♠"},
+                {"suffix": "-darkgreen", "text": "I'm a fragrant pear tree! ♠"},
+                {"suffix": "-red", "text": "I'm a giant California redwood! ♠"},
+                {"suffix": "-purple", "text": "Watashi wa sakura no kidesu! ♠_♠"},
+            ]
+            rng = random.randint(0,len(trees) - 1)
+            context["image"] = "forest{}.png".format(trees[rng-1]["suffix"])
+            context["text"] = trees[rng-1]["text"]
+            
+        return context
 
 
 class Channel_Cheer_View(Event_View):
@@ -162,6 +185,19 @@ class Guide_The_Raid_View(Event_View):
 class Hahaha_View(Event_View):
     image = "hahaha.png"
     text = "Ha ha ha"
+    
+class Happy_ZZT_Day_View(Event_View):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        random.seed(self.request.path)
+        hour = random.randint(1, 10)
+        
+        image = "/static/cdosstream/event/its-bird-oclock-somewhere/{}-{}.png"
+        now = datetime.now()
+        prefix = now.strftime("%a").lower()
+        context["image"] = image.format(hour)
+        return context
 
 
 class Hydrate_View(Event_View):

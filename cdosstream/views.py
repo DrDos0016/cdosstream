@@ -17,10 +17,6 @@ from .forms import *
 from .core import get_stream_entries, read_stream_notes, SUB_GOAL, SUB_GOAL_REWARD, get_stub_event_data
 from .event_views import *
 
-from twitchAPI.helper import first
-from twitchAPI.twitch import Twitch
-
-
 @csrf_exempt
 def capture_event(request):
     """ Take a received Twitch event and transform it into a CDosStream Event """
@@ -226,3 +222,13 @@ def get_art(request):
     desc = prefixes.get(prefix, "Unknown origin! Yell at Dos.")
 
     return JsonResponse({"image": image, "desc": desc})
+
+
+def subscroller(request):
+    context = {"title": "Sub Scroller"}
+    return render(request, "cdosstream/subscroller.html", context)
+
+def gemrule_test(request):
+    context = {"title": "Gemrule Test"}
+    print("NOW", now)
+    return render(request, "cdosstream/gemrule-test.html", context)
