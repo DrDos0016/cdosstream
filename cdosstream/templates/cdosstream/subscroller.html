@@ -1,0 +1,131 @@
+{% extends "cdosstream/main.html" %}
+{% load static %}
+
+{% block local_css %}
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/event-player.css">
+<style>
+body { margin: 0px; }
+main {
+    width:1440px;
+    height:196px;
+    background-color:#A0A;
+    background-image:url("/static/cdosstream/image/subscroller/subscroller.png");
+    background-size:960px;
+    image-rendering:pixelated;
+}
+
+#board
+{
+    width:960px;
+    height:196px;
+}
+
+main img { position: absolute; top: 0; left: 0;}
+
+#player { z-index: 10; width:16px; height:28px; visibility:hidden; }
+.door { z-index: 1; width:16px; height:28px; visibility:hidden; }
+</style>
+{% endblock %}
+
+{% block local_scripts %}
+<script>
+let TILE_WIDTH = 16;
+let TILE_HEIGHT = 28;
+let PLAYER = {"x": 0, "y": 3};
+let MOVE_SPEED = 60; // 180
+let ANTICIPATION_DELAY = 1; // 360
+let BACKGROUND_POS = 0;
+$(document).ready(async function (){
+    place_doors();
+    update_player();
+    await center_player();
+    await redeem_subs(25);
+});
+
+function delay(ms) {
+    return new Promise(res => {
+        setTimeout(() => { res('') }, ms);
+    });
+}
+
+function place_doors()
+{
+    let out = 128;
+    for (let idx = 1; idx < 10; idx++)
+    {
+        $(`#door${idx}`).css({"top": "84px", "left": `${out}px`, "visibility": "visible"});
+        out += 160;
+    }
+}
+
+function open_door(x)
+{
+    let idx = (x - 9) / 10 + 1;
+    console.log("OPEN DOOR", idx);
+    $("#door" + idx).css("visibility", "hidden");
+}
+
+function update_player()
+{
+    $("#player").css({"visibility": "visible", "left": PLAYER.x * TILE_WIDTH + "px", "top": PLAYER.y * TILE_HEIGHT + "px",});
+}
+
+async function center_player()
+{
+    for (let moves = 0; moves < 5; moves++)
+    {
+        PLAYER.x++;
+        await delay(MOVE_SPEED);
+        update_player();
+    }
+}
+
+async function redeem_subs(subs)
+{
+    for (let moves = 0; moves < subs * 10; moves++)
+    {
+        PLAYER.x++;
+        
+        // Board wrap?
+        if (PLAYER.x >= 90)
+        {
+            wrap_board();
+        }
+        
+        await delay(MOVE_SPEED);
+        if (PLAYER.x % 10 == 8)
+        {
+            await delay(ANTICIPATION_DELAY);
+        }
+        if (PLAYER.x % 10 == 9)
+        {
+            open_door(PLAYER.x)
+        }
+        update_player();
+    }
+}
+
+function wrap_board()
+{
+    PLAYER.x = 0;
+    BACKGROUND_POS = (BACKGROUND_POS == 0) ? 480 : 0;
+    $("main").css({"background-position": BACKGROUND_POS + "px 0px"});
+    $(".door").css("visibility", "visible");
+}
+</script>
+{% endblock %}
+
+{% block body %}
+<main>
+    <img src="/static/cdosstream/image/subscroller/player.png" id="player">
+    <img src="/static/cdosstream/image/subscroller/door.png" id="door1" class="door">
+    <img src="/static/cdosstream/image/subscroller/door.png" id="door2" class="door">
+    <img src="/static/cdosstream/image/subscroller/door.png" id="door3" class="door">
+    <img src="/static/cdosstream/image/subscroller/door.png" id="door4" class="door">
+    <img src="/static/cdosstream/image/subscroller/door.png" id="door5" class="door">
+    <img src="/static/cdosstream/image/subscroller/door.png" id="door6" class="door">
+    <img src="/static/cdosstream/image/subscroller/door.png" id="door7" class="door">
+    <img src="/static/cdosstream/image/subscroller/door.png" id="door8" class="door">
+    <img src="/static/cdosstream/image/subscroller/door.png" id="door9" class="door">
+</main>
+{% endblock %}
