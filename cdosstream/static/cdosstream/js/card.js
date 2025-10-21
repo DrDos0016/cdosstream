@@ -71,7 +71,7 @@ async function set_custom_card(event)
         let key, value;
         [key, value] = line.split("=", 2)
 
-        if (key == "URL" || value == "")
+        if (key == "URL" || value == "" || key == "PK")
             continue;
 
         console.log(key, value);
