@@ -1,3 +1,8 @@
+import asyncio
+import websockets
+from websockets.sync.client import connect
+
+import json
 import os
 import time
 import sys
@@ -5,6 +10,8 @@ import sys
 from datetime import datetime
 
 import django
+import requests
+
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "stream.settings")
@@ -15,7 +22,7 @@ from cdosstream.models import *  # noqa: E402
 from twitchAPI.types import ChatEvent
 from twitchAPI.chat import Chat, EventData, ChatMessage, ChatSub, ChatCommand
 
-from websockets.sync.client import connect
+from .settings import WEBSOCKET_SERVER_HOST, WEBSOCKET_SERVER_PORT
 
 #from asgiref.sync import sync_to_async
 
@@ -45,7 +52,7 @@ REGISTERED_COMMANDS = [
 CALL_AND_RESPONSE_COMMANDS = populate_call_and_response_commands()
 AUDIO_INFO = populate_audio_info()
 
-SCROLL_FH = open("scrolls-{}.txt".format(datetime.now().strftime("%Y-%m-%d")), "a")
+SCROLL_FH = open("scrolls-{}.txt".format(datetime.now().strftime("%b-%Y")).lower(), "a")
 
 
 class Gemrule_Bot():
@@ -56,6 +63,9 @@ class Gemrule_Bot():
         today = datetime.now()
         self.bot = bot
         self.channel = channel
+        self.ws = None
+        self.bot_name = "Gemrule"
+        self.uuid = ""
 
     async def launch(self, twitch):
         print("[Gemrule] Booting up Gemrule")
@@ -85,9 +95,25 @@ class Gemrule_Bot():
 
     def get_registered_commands(self):
         return self.registered_commands
+        
+    async def ws_connect(self):
+        if self.ws is None:
+            self.ws = connect("ws://{}:{}".format(WEBSOCKET_SERVER_HOST, WEBSOCKET_SERVER_PORT))
+            data = self.ws.recv()
+            self.uuid = data
+            await self.ws_send({"command": "identify-connection"});
+            #self.ws.send('{"sender": "Gemrule"}')
+            
+    async def ws_send(self, data):
+        data["sender"] = {}
+        data["sender"]["name"] = self.bot_name
+        data["sender"]["uuid"] = self.uuid
+        print("Okay Now I'll send:", data)
+        self.ws.send(json.dumps(data))
 
 
     async def on_ready(self, ready_event: EventData):
+        await self.ws_connect()
         print("[Gemrule] Ready. In chat for {}".format(self.channel))
         await ready_event.chat.join_room(self.channel)
 
@@ -102,8 +128,11 @@ class Gemrule_Bot():
         print("---" * 20)
         await self.chat.send_message(self.channel, "Got a message at " + str(int(now)))
         """
+        test_condition = msg.text.lower()
+        if "happy zzt" in test_condition and "day" in test_condition:
+            await self.ws_send({"command": "happy-zzt-day"})
         return True
-
+        
 
 #async def gemrule_auto_message(gemrule)
 #    awai
@@ -147,8 +176,12 @@ async def get_article_link(cmd: ChatCommand):
     await cmd.reply(response)
 
 async def scroll_that(cmd: ChatCommand):
+    # cmd.text "!scroll go away cretin was funny"
+    # cmd.parameter "go away cretin was funny"
     now = datetime.now()
-    line = "[{}] {}".format(str(now)[11:], cmd.parameter)
+    stamp = now.strftime("%c")
+    requester = cmd.user.name
+    line = "{}: <{}> {}".format(stamp, requester, cmd.text)
     SCROLL_FH.write(line + "\n")
     SCROLL_FH.flush()
     await cmd.reply("Writing that down...")
