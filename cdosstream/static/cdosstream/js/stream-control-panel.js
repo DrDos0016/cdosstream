@@ -124,10 +124,13 @@ export function prep_card()
     }
     // URLs need href attribute
     params += "URL=" + $(`tr[data-pk=${pk}] .card-url`).attr("href") + "\r\n";
+    // Add PK to pre-set cards
+    params += `PK=${pk}\r\n`;
 
-    $("#id_basic_params").val(params);
+    $("#id_fields").val(params);
     $("#card-overview .selected").removeClass("selected");
     $(this).addClass("selected");
+    $("#submit-custom-card-form").click();
 }
 
 export function clean_card_select()
@@ -265,12 +268,11 @@ function post_form(e)
     else if (form_id == "send-command-form")
     {
         ws_connections.scp.ws_send({"command": $("#id_command").val(), "params": $("#id_params").val()});
-        $("#id_command").val("");
         $("#id_params").val("");
     }
     else if (form_id == "custom-card-form")
     {
-        ws_connections.scp.ws_send({"command": "set-custom-card", "basic": $("#id_basic_params").val(), "extras": $("#id_extra_params").val()});
+        ws_connections.scp.ws_send({"command": "set-custom-card", "fields": $("#id_fields").val()});
     }
     else if (form_id == "timer-form")
     {
