@@ -20,6 +20,8 @@ from twitchAPI.twitch import Twitch
 from .settings import *
 from core import *
 
+from websockets.sync.client import connect
+
 django.setup()
 
 from cdosstream.models import Event  # noqa: E402
@@ -34,22 +36,15 @@ class Event_Monitor():
     message_log_max_size = 20  # Max number of past messages to display
     gemrule_registered_commands = []  # Commands enabled by Gemrule bot
 
-    monitor_stream_info = True  # Whether or not to ping viewer counts and stream info
+    monitor_stream_info = False  # Whether or not to ping viewer counts and stream info
     monitor_stream_interval = 30  # Seconds to wait between stream info pings
     last_monitor_stream_info_time = 0
-
-    # Commands that use repeatable event data and are passed to the event logger
-    basic_commands = ["clear-queue", "release-hold", "toggle-debug"]
-    basic_command_event_templates = {
-        "clear-queue": {"subscription": {"type": "Clear Queue"}, "event": {"title": "Clear Queue"}},
-        "release-hold": {"subscription": {"type": "Release Hold"}, "event": {"title": "Release Hold"}},
-        "toggle-debug": {"subscription": {"type": "Toggle Debug"}, "event": {"title": "Toggle Debug"}},
-    }
-    
+   
     def __init__(self, streamer, quick):
         self.streamer = streamer
         self.quick_mode = quick  # If Twitch API connections are established or not
         self.gemrule = None
+        self.obsws = None
 
     async def initialize_twitch_api_connection(self):
         self.twitch = await Twitch(APP_ID, APP_SECRET)
@@ -72,6 +67,7 @@ class Event_Monitor():
         store_token(token, refresh_token, self.streamer)
 
     async def log_event(self, data):
+        """ Record event in database. Broadcast to recipients. """
         try:
             resp = requests.post(WEBSERVER_URL + "event/capture/", json=data)
         except Exception:
@@ -119,7 +115,8 @@ class Event_Monitor():
         for idx in range(0, len(self.connections)):
             if self.connections[idx].id == uuid:
                 self.connections.pop(idx)
-                del self.connection_names[str(uuid)]
+                if self.connection_names.get(str(uuid)):
+                    del self.connection_names[str(uuid)]
                 self.log_received_data("Client {} disconnected".format(uuid))
                 break
         return True
@@ -130,10 +127,14 @@ class Event_Monitor():
 
     async def producer_handler(self, websocket):
         while True:
+            """ ALL received data objects MUST contain the following keys:
+            {"sender": {"name": "Human Readable Name for Connection", "uuid": "<UUID> for connection"}}
+            """
             data = await websocket.recv()
-            self.log_received_data(data)
             data = json.loads(data)
+            self.log_received_data(data)
 
+            """
             if data.get("sender", {}).get("name") == "OBS Websocket Connection":
                 print("Received OBS Websocket Data")
 
@@ -141,45 +142,33 @@ class Event_Monitor():
                     card_data = {"subscription": {"type": "Set Event Position"}, "event": {"title": "Set Event Position", "position": "position-centered"}}
                     await self.log_event(card_data)
                 continue
+            """
 
-            if not data.get("command"):
+            # Verify command is valid
+            command = data.get("command")
+            
+            # COMMAND LIST
+            if not command:
                 self.log_received_data(f"{Fore.RED}Invalid data format")
                 continue
-            if data.get("params"):
-                command = data["command"]
-                data = json.loads(data["params"])
-                data["command"] = command
-
-            if data["command"] == "replay":
-                pk = data["pk"]
-                resp = requests.get(WEBSERVER_URL + "get-event/?pk={}".format(pk))
-                websockets.broadcast(self.connections, resp.text)
-            elif data["command"] in self.basic_commands:
-                await self.log_event(self.get_basic_command_event(data["command"]))
-            elif data["command"] == "set-custom-card":
-                card_data = {
-                    "subscription": {"type": "Set Custom Card"},
-                    "event": {
-                        "title": "Set Custom Card", "basic": data["basic"], "extras": data["extras"]
-                    },
-                    "manual": True,
-                }
-                await self.log_event(card_data)
-            elif data["command"] == "set-timer":
-                # Create an event to indicate the timer being set
-                card_data = {"subscription": {"type": "Set Timer"}, "event": {"title": "Set Timer", "value": data["value"], "mode": data["mode"]}}
-                await self.log_event(card_data)
-            elif data["command"] == "set-event-position":
-                card_data = {"subscription": {"type": "Set Event Position"}, "event": {"title": "Set Event Position", "position": data["position"]}}
-                await self.log_event(card_data)
-            elif data["command"] == "identify-connection":
-                self.connection_names[data["sender"]["uuid"]] = data["sender"]["name"]
-            elif data["command"] == "gemrule-say":
-                if not self.gemrule:
-                    self.log_received_data(f"{Fore.RED}Gemrule is not attached to the event monitor! Can't send message.")
-                await self.gemrule.chat.send_message(self.gemrule.channel, data["message"])
-            else:
-                command = data.get("command", "NO COMMAND?")
+            elif command == "obs-connect":
+                await self.obs_connect(data)
+            elif command == "gemrule-say":
+                await self.gemrule_say(data)
+            elif command == "happy-zzt-day": # Not yet actually handled
+                print("Hapyp ZZT Day")
+            elif command == "identify-connection":
+                self.add_connection_identification(data)
+            elif command == "replay-event":
+                await self.replay_event(data)
+            elif command == "set-custom-card":
+                await self.set_custom_card(data)
+            elif command == "set-timer":
+                await self.set_timer(data)
+            elif command == "set-event-position": # Not yet rehandled
+                await self.set_event_position(data)
+            else:  # Unknown Command
+                command = data.get("command", "NO COMMAND")
                 self.log_received_data(f"{Fore.RED}Unknown command: {command}")
 
             self.display_data()
@@ -228,9 +217,74 @@ class Event_Monitor():
 
     def log_received_data(self, data, update_display=True):
         timestamp = datetime.now().strftime("[%H:%M:%S]")
-        self.message_log.append(timestamp + " " + str(data))
+        if isinstance(data, str):
+            message_line = timestamp + " " + str(data)
+        else:
+            message_line =  timestamp + " {} <{}> {}".format(data["sender"]["uuid"][:8], data["sender"]["name"], data.get("command"))
+        self.message_log.append(message_line)
         if len(self.message_log) > self.message_log_max_size:
             self.message_log = self.message_log[1:]
         if update_display:
             self.display_data()
         return True
+        
+    async def replay_event(self, data):
+        pk = data.get("params")
+        if not pk:
+            self.log_received_data(f"{Fore.RED}Invalid data format")
+        else:
+            resp = requests.get(WEBSERVER_URL + "get-event/?pk={}".format(pk))
+            websockets.broadcast(self.connections, resp.text)
+
+    async def set_custom_card(self, data):
+        card_data = {"subscription": {"type": "Set Custom Card"}, "event": {"title": "Set Custom Card", "basic": data["fields"]}}
+        await self.log_event(card_data)
+
+    async def set_timer(self, data):
+        # Create an event to indicate the timer being set
+        card_data = {"subscription": {"type": "Set Timer"}, "event": {"title": "Set Timer", "value": data["value"], "mode": data["mode"]}}
+        await self.log_event(card_data)
+
+    def add_connection_identification(self, data):
+        self.connection_names[data["sender"]["uuid"]] = data["sender"]["name"]
+
+    async def gemrule_say(self, data):
+        """ These messages ARE NOT shown in the stream itself. They do show up in actual chat. """
+        if not self.gemrule:
+            self.log_received_data(f"{Fore.RED}Gemrule is not attached to the event monitor! Can't send message.")
+        else:
+            await self.gemrule.chat.send_message(self.gemrule.channel, data["params"])
+
+    async def set_event_position(self, data):
+        card_data = {"subscription": {"type": "Set Event Position"}, "event": {"title": "Set Event Position", "position": data["params"]}}
+        await self.log_event(card_data)
+
+    async def obs_connect(self, data):
+        self.log_received_data(f"{Fore.GREEN}I wanna connect to OBS's own server.")
+        self.obsws = connect("ws://{}:{}".format("localhost", 4455))
+        data = self.obsws.recv()
+        print("HERE WHAT I GOT")
+        print(data)
+        print("NOW IDENTIFYING SELF")
+        command = {"op": 1, "d": {"rpcVersion": 1,}} # Identify
+        json_str = json.dumps(command)
+        self.obsws.send(json_str)
+        data = self.obsws.recv() # Get that response.
+        
+        print("NOW ASKING FOR SCENE LIST")
+        data = {"op": 6, "d": {"requestType": "GetSceneList", "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c"}}
+        json_str = json.dumps(data)
+        self.obsws.send(json_str)
+        data = self.obsws.recv()
+        data = json.loads(data)
+        print("HERE WHAT I GOT")
+        print(data)
+        #self.log_received_data(data)
+
+    async def obs_connection_loop(self):
+        while True:
+            if not self.obsws:
+                await asyncio.Future()
+            else:
+                self.log_received_data("OBSWS TIME")
+                await asyncio.Future()
