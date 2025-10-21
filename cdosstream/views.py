@@ -174,7 +174,6 @@ def stream_control_panel(request):
     context["set_card_form"] = Custom_Card_Form()
 
     context["forms"] = [
-        Replay_Event_Form(),
         Send_Command_Form(),
         Timer_Form(),
     ]
