@@ -2,7 +2,7 @@
 
 import { Websocket_Connection } from "/static/cdosstream/js/modules/websocket_connection.js";
 import * as Registered_Events from "/static/cdosstream/js/modules/events.js";
-import { print_registered_events } from "/static/cdosstream/js/modules/utils.js";
+import { print_registered_events, raw_event_to_class } from "/static/cdosstream/js/modules/utils.js";
 
 var ws = null;
 var speed = {
@@ -67,6 +67,7 @@ class Event_Player_Websocket_Connection extends Websocket_Connection
         this.EVENTS.push(event)
 
         // Iconify the event
+        console.log("Iconify?", event);
         let icon = `<span class="${event.meta.icon.fg} ${event.meta.icon.bg}" id="event-icon-${event.meta.pk}">${event.meta.icon.char}</span>`;
         $("#event-queue").html($("#event-queue").html() + icon);
 
@@ -78,7 +79,9 @@ class Event_Player_Websocket_Connection extends Websocket_Connection
         // Initiates process of runnning an event
         this.HANDLING = true;
         let event = this.EVENTS.shift();
+        let pk = event.meta.pk
         console.log("2. [" + event.meta.pk + "] Processing event:", event.meta.kind);
+        console.log("Just the event", event);
 
         if (event.meta.kind == "timer") // TODO I don't like this living here
         {
@@ -86,17 +89,22 @@ class Event_Player_Websocket_Connection extends Websocket_Connection
             Registered_Events["timer_start"](event);
             return true;
         }
+        
+        if (! event.meta.js_func)
+        {
+            console.log("Using Class for", event.meta.kind);
+            event = raw_event_to_class(event, Registered_Events);
+        }
 
         // Pull relevant HTML for event
         $.ajax({
-            url:"/event/" + event.meta.pk + "/",
+            url:"/event/" + pk + "/",
         }).done(function (data){
             // Blank current card
             $("#event-card").html("");
             $("#event-card").data("finished", false);
             // Add the new card's HTML and allow it to be visible
             $("#event-card").html(data);
-
             // Fade the card in and run any necessary code
             $("#event-card").animate({opacity: 1}, speed.event_fade, function (){
                 run_card(event);
@@ -134,10 +142,21 @@ async function check_event_queue()
 
 async function run_card(event)
 {
-    let func_name = (event.meta.js_func) ? event.meta.js_func : "undefined_event";
-    console.log("3. [" + event.meta.pk + "] Running card w/ requested function:", func_name);
+    console.log("MEOWDY RUN CARD FUNC EVENT IS");
     console.log(event);
-    return await Registered_Events[func_name](event);
+    
+    if (event.class_based_event)
+    {
+        console.log("3. [" + event.pk + "] Running class-based event");
+        return await event.play();
+    }
+    else
+    {
+        let func_name = (event.meta.js_func) ? event.meta.js_func : "undefined_event";
+        console.log("3. [" + event.meta.pk + "] Running card w/ requested function:", func_name);
+        console.log(event);
+        return await Registered_Events[func_name](event);
+    }
 }
 
 /* TODO: This can live elsewhere I'm sure */
