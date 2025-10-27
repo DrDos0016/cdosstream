@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import datetime
 import sys
 
 from colorama import init as colorama_init
@@ -49,16 +50,20 @@ async def main():
         await m.subscribe_to_eventsub_events()
 
     # Gather Tasks
+    websocket_server = m.run_websocket_server()    
     gemrule = g.launch(m.twitch)
-    websocket_server = m.run_websocket_server()
     stream_info_task = m.get_stream_info()
+    #obs_connection = m.obs_connection_loop()
 
     m.gemrule_registered_commands = g.get_registered_commands()
     m.gemrule = g
 
     # Run Tasks
     m.log_received_data(f"{Fore.BLACK}{Back.GREEN}Running Tasks")
-    await asyncio.gather(*[websocket_server, stream_info_task, gemrule])
+    #await asyncio.gather(*[websocket_server, stream_info_task, gemrule], return_exceptions=True)
+    await asyncio.gather(*[websocket_server, stream_info_task, gemrule, gemrule_messages(m)])
+    #await asyncio.gather(*[websocket_server, stream_info_task, gemrule]) # <- This is the standard
+    #await asyncio.gather(*[websocket_server, stream_info_task, gemrule, obs_connection])
 
     try:
         input("Press ENTER to quit\n")
@@ -66,5 +71,19 @@ async def main():
         await event_sub.stop()
         await twitch.close()
     print("Shutting Down...")
+
+async def gemrule_messages(m):
+    while True:
+        if m.gemrule.message_log:
+            for message in m.gemrule.message_log:
+                #record = f"[{msg.sent_timestamp}] <{msg.user.name}> {msg.text}"
+                text = message.text
+                #print(datetime.now(), m.gemrule.bot_name, log)
+                comp = message.text.upper()
+                if "HAPPY ZZT FRIDAY" in comp:
+                    await m.happy_zzt_day("friday")
+            m.gemrule.message_log = []
+            
+        await asyncio.sleep(0.5)
 
 asyncio.run(main())
