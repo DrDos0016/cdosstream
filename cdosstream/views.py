@@ -229,5 +229,4 @@ def subscroller(request):
 
 def gemrule_test(request):
     context = {"title": "Gemrule Test"}
-    print("NOW", now)
     return render(request, "cdosstream/gemrule-test.html", context)
