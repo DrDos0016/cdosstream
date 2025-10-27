@@ -114,6 +114,8 @@ $(document).ready(function (){
     });
 
     setInterval(check_event_queue, speed.event_check);
+    
+    print_registered_events();
 });
 
 async function check_event_queue()
@@ -217,4 +219,14 @@ function tick_timer()
     $("#timer-hours").html(h_padded);
     $("#timer-minutes").html(m_padded);
     $("#timer-seconds").html(s_padded);
+}
+
+function print_registered_events()
+{
+    let event_str = "REGISTERED EVENT PLAYER EVENTS\n";
+    for (let key in Registered_Events)
+    {
+        event_str += key + "\n";
+    }
+    console.log(event_str);
 }
