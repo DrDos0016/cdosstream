@@ -8,7 +8,6 @@ from .core import get_stream_entries
 FAUX_EVENT_TEMPLATE = {
     "subscription": {"type": ""},
     "event": {"title": ""},
-    "manual": True
 }
 
 
@@ -33,8 +32,7 @@ class Custom_Card_Form(forms.Form):
     use_required_attribute = False
     response = ""
 
-    basic_params = forms.CharField(label="Params", widget=forms.Textarea, initial="#BLANK\r\nWorld=\r\nAuthor=\r\nCompany=\r\nDate=\r\nURL=\r\n")
-    extra_params = forms.CharField(label="Extras", widget=forms.Textarea)
+    fields = forms.CharField(label="Card Fields", widget=forms.Textarea, initial="World=\r\nAuthor=\r\nCompany=\r\nDate=\r\nURL=\r\n")
 
     def process(self):
         new_card = self.cleaned_data["card"]
@@ -116,13 +114,19 @@ class Send_Command_Form(forms.Form):
     identifier = "send-command-form"
     use_required_attribute = False
     submit_text = "Run"
+    
+    COMMAND_CHOICES = (
+        ("replay-event", "Replay Event <#>"),
+        ("gemrule-say", "Gemrule Says <text>"),
+        ("clear-event-queue", "Clear Event Queue"),
+        ("obs-connect", "Connect to OBS"),
+    )
 
-    command = forms.CharField()
+    command = forms.ChoiceField(choices=COMMAND_CHOICES)
     params = forms.CharField(required=False)
-    shortcuts = Shortcut_Field(widget=Shortcut_Button_Widget())
 
     def process(self):
-        self.response = "Send command form?"
+        self.response = "Greeting from Send_Command_Form.process()."
 
 
 class Timer_Form(forms.Form):

@@ -2,6 +2,7 @@
 
 import { Websocket_Connection } from "/static/cdosstream/js/modules/websocket_connection.js";
 import * as Registered_Events from "/static/cdosstream/js/modules/events.js";
+import { print_registered_events } from "/static/cdosstream/js/modules/utils.js";
 
 var ws = null;
 var speed = {
@@ -115,7 +116,7 @@ $(document).ready(function (){
 
     setInterval(check_event_queue, speed.event_check);
     
-    print_registered_events();
+    print_registered_events(Registered_Events);
 });
 
 async function check_event_queue()
@@ -221,12 +222,4 @@ function tick_timer()
     $("#timer-seconds").html(s_padded);
 }
 
-function print_registered_events()
-{
-    let event_str = "REGISTERED EVENT PLAYER EVENTS\n";
-    for (let key in Registered_Events)
-    {
-        event_str += key + "\n";
-    }
-    console.log(event_str);
-}
+

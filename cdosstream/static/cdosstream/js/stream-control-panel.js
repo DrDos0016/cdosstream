@@ -4,6 +4,8 @@ import { Websocket_Connection } from "/static/cdosstream/js/modules/websocket_co
 import { OBS_Websocket_Connection } from "/static/cdosstream/js/obs-ws.js";
 import { Notepad } from "/static/cdosstream/js/modules/notepad.js";
 import { Stream_Timer } from "/static/cdosstream/js/modules/timer.js";
+import * as Registered_Events from "/static/cdosstream/js/modules/events.js";
+import { print_registered_events } from "/static/cdosstream/js/modules/utils.js";
 
 
 var TWITCH_USERNAME = "WorldsOfZZT";
@@ -309,6 +311,7 @@ function test_timer_func()
 }
 
 $(document).ready(function (){
+    print_registered_events(Registered_Events);
     console.log("SCP Page is creating SCP_Websocket_Connection");
     ws_connections.scp = new SCP_Websocket_Connection(WEBSOCKET_SERVER_HOST, WEBSOCKET_SERVER_PORT);
     ws_connections.scp.init();
