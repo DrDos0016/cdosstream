@@ -190,17 +190,16 @@ class Hahaha_View(Event_View):
     image = "hahaha.png"
     text = "Ha ha ha"
     
-class Happy_ZZT_Day_View(Event_View):
+class Happy_Zzt_Day_View(Event_View):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
         random.seed(self.request.path)
         hour = random.randint(1, 10)
-        
-        image = "/static/cdosstream/event/its-bird-oclock-somewhere/{}-{}.png"
+        image = "/static/cdosstream/event/happy-zzt-day/{}-{}.png"
         now = datetime.now()
-        prefix = now.strftime("%a").lower()
-        context["image"] = image.format(hour)
+        prefix = "fri"
+        context["image"] = image.format(prefix, hour)
+        context["text"] = ""
         return context
 
 
