@@ -66,6 +66,7 @@ class Gemrule_Bot():
         self.ws = None
         self.bot_name = "Gemrule"
         self.uuid = ""
+        self.message_log = []
 
     async def launch(self, twitch):
         print("[Gemrule] Booting up Gemrule")
@@ -95,47 +96,16 @@ class Gemrule_Bot():
 
     def get_registered_commands(self):
         return self.registered_commands
-        
-    async def ws_connect(self):
-        if self.ws is None:
-            self.ws = connect("ws://{}:{}".format(WEBSOCKET_SERVER_HOST, WEBSOCKET_SERVER_PORT))
-            data = self.ws.recv()
-            self.uuid = data
-            await self.ws_send({"command": "identify-connection"});
-            #self.ws.send('{"sender": "Gemrule"}')
-            
-    async def ws_send(self, data):
-        data["sender"] = {}
-        data["sender"]["name"] = self.bot_name
-        data["sender"]["uuid"] = self.uuid
-        print("Okay Now I'll send:", data)
-        self.ws.send(json.dumps(data))
 
 
     async def on_ready(self, ready_event: EventData):
-        await self.ws_connect()
         print("[Gemrule] Ready. In chat for {}".format(self.channel))
         await ready_event.chat.join_room(self.channel)
 
 
     async def on_message(self, msg: ChatMessage):
-        """
-        print("Message received")
-        print(msg.text)
-        print(msg.sent_timestamp)
-        print(msg.user)
-        print(msg)
-        print("---" * 20)
-        await self.chat.send_message(self.channel, "Got a message at " + str(int(now)))
-        """
-        test_condition = msg.text.lower()
-        if "happy zzt" in test_condition and "day" in test_condition:
-            await self.ws_send({"command": "happy-zzt-day"})
-        return True
-        
-
-#async def gemrule_auto_message(gemrule)
-#    awai
+        #record = f"[{msg.sent_timestamp}] <{msg.user.name}> {msg.text}"
+        self.message_log.append(msg)
 
 
 async def test_command(cmd: ChatCommand):
