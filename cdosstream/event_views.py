@@ -33,7 +33,7 @@ class Event_View(DetailView):
         context["event_func"] = self.object.kind.replace("-", "_")
         context["is_ajax"] = self.is_ajax()
         context["username"] = self.get_username()
-        context["image"] = "/static/cdosstream/event/{}/{}".format(self.object.kind, self.image) if self.image else None
+        context["image"] = self.get_image_path(self.image)
         context["text"] = self.text
         return context
 
@@ -42,6 +42,9 @@ class Event_View(DetailView):
 
     def get_username(self):
         return self.event_json["body"]["event"]["user_name"]
+        
+    def get_image_path(self, filename=None):
+        return "/static/cdosstream/event/{}/{}".format(self.object.kind, filename) if filename else None
 
 
 def get_event_view(request, pk):
@@ -78,8 +81,8 @@ class Bip_Bo_Beep_View(Event_View):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         random.seed(self.request.path)
-        rng = random.randint(1, 50)
-        if rng == 50:
+        rng = random.randint(1, 20)
+        if rng == 20:
             trees = [
                 {"suffix": "", "text": '"Invest in leaves."'},
                 {"suffix": "", "text": "I'm a sweet-smelling pine! ♠"},
@@ -92,7 +95,8 @@ class Bip_Bo_Beep_View(Event_View):
                 {"suffix": "-purple", "text": "Watashi wa sakura no kidesu! ♠_♠"},
             ]
             rng = random.randint(0,len(trees) - 1)
-            context["image"] = "forest{}.png".format(trees[rng-1]["suffix"])
+            tree = "forest{}.png".format(trees[rng-1]["suffix"])
+            context["image"] = self.get_image_path(tree)
             context["text"] = trees[rng-1]["text"]
             
         return context
