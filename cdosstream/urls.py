@@ -26,8 +26,6 @@ urlpatterns = [
     path("widget/patron-credits/", cdosstream.views.Patron_Credits.as_view()),
 
     path("create-event/goal/", cdosstream.views.create_event_goal),
-    
-    path("gemrule/happy-zzt-day/", cdosstream.views.gemrule_test),
 
     path("zeoguessr/", cdosstream.views.zeoguessr),
     path("subscroller/", cdosstream.views.subscroller),
