@@ -3,6 +3,110 @@ var scroll_elapsed_ticks = 0;
 
 // Audio volume should be between -10 and -15db w/ 100% slider volume in OBS
 
+export class Redeem_Event_Base {
+    constructor(event) {
+        console.log("Base constructor");
+        this.class_based_event = true; // Stopgap while classes and functions for events both exist
+        this.event = event;
+        this.event_key = "";
+        this.event_icon = {"fg": "ega-white", "bg": "", "char": "?"};
+        this.event_target = "#live-event";
+        this.volume = 0.30;
+        this.sound_filename = "";
+        this.delay = 1000;
+        this.created_at = event.meta.created_at;
+        this.time = this.created_at.slice(14,19);
+        this.username = (event.body.event.user_name) ? event.body.event.user_name : "NOUSER";
+        this.pk = event.meta.pk;
+        this.sound_filename = "";
+    }
+    
+    get_static_path()
+    {
+        return `/static/cdosstream/event/${this.event_key.replaceAll('_', '-')}`;
+    }
+    
+    async play()  // Animate the event
+    {
+        $(this.event_target).animate({opacity: 1}, speed.event_fade, async value => {
+            sound.volume = this.volume;
+            if (this.sound_filename)
+                await play_sound(`${this.get_static_path()}/${this.sound_filename}`);
+            await delay(this.delay);
+            fade_out_event_card(this.event);
+        });
+    }
+    
+    as_scp_log()  // Returns HTML used to log the event in the SCP event log
+    {        
+        let extra_row = "";
+        let output = `
+		<div class="event" data-pk="${this.event.meta.pk}">
+			<div class="event-row">
+				<div class="event-pk">${this.event.meta.pk}</div>
+				<div class="event-time">${this.time}</div>
+				<div class="event-kind">${this.event_icon.char} ${this.event.meta.kind}</div>
+				<div class="event-user">${this.username}</div>
+			</div>
+			${extra_row}
+		</div>
+        `;
+        
+        return output;
+    }
+}
+
+export class Event_Happy_Zzt_Day extends Redeem_Event_Base
+{
+    constructor(event)
+    {
+        console.log("HZZT Day Constructor");
+        super(event);
+        this.event_key = "happy_zzt_day";
+        this.event_icon = {"fg": "ega-white", "bg": "ega-darkblue", "char": "X"};
+        this.sound_filename = "foo.wav";
+    }
+}
+
+export class Event_Bip_Bo_Beep extends Redeem_Event_Base
+{
+    constructor(event)
+    {
+        console.log("Bip-Bo Constructor");
+        super(event);
+        this.volume = 0.25;
+        this.event_key = "bip_bo_beep";
+        this.event_icon = {"fg": "ega-green", "bg": "", "char": "Z"};
+    }
+    
+    async play()  // Animate the event
+    {
+        $(this.event_target).animate({opacity: 1}, speed.event_fade, async value => {
+            sound.volume = this.volume;
+            for (var idx = 1; idx < 9; idx++)
+            {
+                await play_sound(this.get_static_path() + "/f-" + (idx % 8 + 1)  + ".mp3");
+                await delay(random_int(1,8) * 50);
+            }
+            fade_out_event_card(this.event);
+        });
+    }
+}
+
+export class Event_Beautiful_Music extends Redeem_Event_Base
+{
+    constructor(event)
+    {
+        console.log("Beautiful Music Constructor");
+        super(event);
+        this.delay = 4000;
+        this.event_key = "beautiful_music";
+        this.event_icon = {"fg": "ega-darkred", "bg": "", "char": "☻"};
+    }
+}
+
+/* Old Style functions below */
+
 export async function beautiful_music(event)  /* Ref: #TBD */
 {
     $("#live-event").animate({opacity: 1}, speed.event_fade, async function (){
@@ -11,7 +115,7 @@ export async function beautiful_music(event)  /* Ref: #TBD */
     });
 }
 
-export async function bip_bo_beep(event)  /* Ref: #69 */
+export async function bip_bo_beep(event)  /* Ref: #69 | #5930=Redwood */
 {
     $("#live-event").animate({opacity: 1}, speed.event_fade, async function (){
         sound.volume = 0.25;
@@ -124,7 +228,6 @@ export async function hydrate(event)  /* Ref: #991 */
         fade_out_event_card(event);
     });
 }
-
 
 export async function its_bird_oclock_somewhere(event)  /* Ref: #268 */
 {
