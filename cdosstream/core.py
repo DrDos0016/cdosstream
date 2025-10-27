@@ -26,12 +26,12 @@ class Event_View(TemplateView):
 REGISTERED_EVENTS = {
 	"beautiful-music": {  # Ref: TBD
         "view": "Beautiful_Music_View",
-        "js_func": "beautiful_music",
+        #"js_func": "beautiful_music",
         "icon": {"fg": "ega-darkred", "bg": "", "char": "☻"}
     },
     "bip-bo-beep": {  # Ref: 69
         "view": "Bip_Bo_Beep_View",
-        "js_func": "bip_bo_beep",
+        #"js_func": "bip_bo_beep",
         "icon": {"fg": "ega-green", "bg": "", "char": "♠"}
     },
     "channelcheer": {  # Ref: 260
@@ -73,6 +73,10 @@ REGISTERED_EVENTS = {
         "view": "Hahaha_View",
         "js_func": "hahaha",
         "icon": {"fg": "ega-darkgray", "bg": "", "char": "\""}
+    },
+    "happy-zzt-day": {  # Ref: ?
+        "view": "Happy_Zzt_Day_View",
+        "icon": {"fg": "ega-yellow", "bg": "", "char": "☺"}
     },
     "hydrate": {  # Ref: 991
         "view": "Hydrate_View",
