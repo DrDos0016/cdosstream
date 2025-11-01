@@ -307,6 +307,7 @@ class Use_The_3D_Talk_Engine_View(Event_View):
 
 class Yeaaaaahh_View(Event_View):
     image = "jill.png"
+    text = ""
 
 class ZZT_Toilet_Flush_View(Event_View):
     image = "toilet-8x.png"
