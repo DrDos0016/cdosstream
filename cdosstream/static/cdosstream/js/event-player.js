@@ -63,11 +63,9 @@ class Event_Player_Websocket_Connection extends Websocket_Connection
             return false;
         }
 
-        // Push to event list
-        this.EVENTS.push(event)
+        this.EVENTS.push(event);  // Push to event list
 
         // Iconify the event
-        console.log("Iconify?", event);
         let icon = `<span class="${event.meta.icon.fg} ${event.meta.icon.bg}" id="event-icon-${event.meta.pk}">${event.meta.icon.char}</span>`;
         $("#event-queue").html($("#event-queue").html() + icon);
 
@@ -81,7 +79,6 @@ class Event_Player_Websocket_Connection extends Websocket_Connection
         let event = this.EVENTS.shift();
         let pk = event.meta.pk
         console.log("2. [" + event.meta.pk + "] Processing event:", event.meta.kind);
-        console.log("Just the event", event);
 
         if (event.meta.kind == "timer") // TODO I don't like this living here
         {
@@ -90,11 +87,7 @@ class Event_Player_Websocket_Connection extends Websocket_Connection
             return true;
         }
         
-        if (! event.meta.js_func)
-        {
-            console.log("Using Class for", event.meta.kind);
-            event = raw_event_to_class(event, Registered_Events);
-        }
+        event = raw_event_to_class(event, Registered_Events);
 
         // Pull relevant HTML for event
         $.ajax({
@@ -142,21 +135,8 @@ async function check_event_queue()
 
 async function run_card(event)
 {
-    console.log("MEOWDY RUN CARD FUNC EVENT IS");
-    console.log(event);
-    
-    if (event.class_based_event)
-    {
-        console.log("3. [" + event.pk + "] Running class-based event");
-        return await event.play();
-    }
-    else
-    {
-        let func_name = (event.meta.js_func) ? event.meta.js_func : "undefined_event";
-        console.log("3. [" + event.meta.pk + "] Running card w/ requested function:", func_name);
-        console.log(event);
-        return await Registered_Events[func_name](event);
-    }
+    console.log("3. [" + event.pk + "] Running class-based event");
+    return await event.play();
 }
 
 /* TODO: This can live elsewhere I'm sure */

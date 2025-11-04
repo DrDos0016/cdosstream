@@ -43,7 +43,7 @@ export class SCP_Websocket_Connection extends Websocket_Connection
     delegate_event(event)
     {
         // "event" being the JSON data received via websocket, not a JS event
-        console.log("SCP GOT AN EVENT", event);
+        //console.log("SCP GOT AN EVENT: ", event);
 
         event = JSON.parse(event);
         if (! event.meta)
@@ -59,26 +59,10 @@ export class SCP_Websocket_Connection extends Websocket_Connection
             return true;
         }
 
-        if (event.meta.js_func)
-        {
-            console.log("Event with js_func.");
-            var func = window[event.meta.js_func];
-            console.log("Func is...", func);
-            if (typeof func === "function") { func.apply(null, [event]); }
-            else { default_log(event, event.meta.js_func, "unhandled") }
-        }
-        else
-        {
-            console.log("[!] JS_FUNC NOT SET ON EVENT");
-            console.log(`Trying new style for Kind: ${event.meta.kind}`);
-            console.log(event);
-            let event_class = raw_event_to_class(event, Registered_Events);
-            console.log(event_class);
-            console.log(event_class.event_key);
-            
-            let log = event_class.as_scp_log();
-            $("#event-overview").prepend(log);
-        }
+        let event_class = raw_event_to_class(event, Registered_Events);
+        console.log("Event Kind:", event_class.event_key, "Class:", event_class);
+        let log = event_class.as_scp_log();
+        $("#event-overview").prepend(log);
     }
 }
 
