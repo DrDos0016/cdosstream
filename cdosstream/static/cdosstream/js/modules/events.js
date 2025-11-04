@@ -32,7 +32,7 @@ export class Redeem_Event_Base {
             if (this.sound_filename)
                 await play_sound(`${this.get_static_path()}/${this.sound_filename}`);
             await delay(this.delay);
-            fade_out_event_card(this.event);
+            this.fade_out_event_card();
         });
     }
     
@@ -52,6 +52,23 @@ export class Redeem_Event_Base {
         `;
         
         return output;
+    }
+    
+    fade_out_event_card()
+    {
+        console.log("5. [" + this.event.meta.pk + "] Event complete. Returning to info card");
+        $("#event-card").animate({opacity: 0}, speed.event_fade, value => {
+            this.conclude_event();
+        });
+    }
+    
+    conclude_event()
+    {
+        $("#event-card").html("");
+        $("#event-card").css("opacity", "");
+        $("#event-icon-" + this.event.meta.pk).remove();
+        $("#event-card").data("finished", true);
+        console.log("6. [" + this.event.meta.pk + "] Fade Out Complete.");
     }
 }
 
@@ -73,7 +90,7 @@ export class Event_Bip_Bo_Beep extends Redeem_Event_Base // Ref 69
                 await play_sound(this.get_static_path() + "/f-" + (idx % 8 + 1)  + ".mp3");
                 await delay(random_int(1,8) * 50);
             }
-            fade_out_event_card(this.event);
+            this.fade_out_event_card();
         });
     }
 }
@@ -105,7 +122,7 @@ export class Event_Channelcheer extends Redeem_Event_Base  // Ref 260
             await play_sound(this.get_static_path() + "/" + this.sound_filename);
             await play_sound(this.get_static_path() + "/" + this.sound_filename);
             await delay(2000);
-            fade_out_event_card(this.event);
+            this.fade_out_event_card();
         });
     }
 }
@@ -223,7 +240,7 @@ export class Event_Its_Bird_Oclock_Somewhere extends Redeem_Event_Base // Ref 26
             sound.volume = this.volume;
             let hour = $("#live-event").data("hour");
             await play_sound(this.get_static_path() + "/bc-" + hour + ".mp3");
-            fade_out_event_card(this.event);
+            this.fade_out_event_card();
         });
     }
 }
@@ -236,6 +253,40 @@ export class Event_Posture_Check extends Redeem_Event_Base // Ref 991
         this.delay = 2000;
         this.event_icon = {"fg": "ega-yellow", "bg": "ega-darkcyan-bg", "char": "☻"};
         this.sound_filename = "pushing.wav";
+    }
+}
+
+export class Event_Random_Scroll extends Redeem_Event_Base // Ref 2511
+{
+    constructor(event)
+    {
+        super(event);
+        this.volume = 0.80;
+        this.delay = 4500;
+        this.scroll_delay = 1100;
+        this.event_icon = {"fg": "ega-white", "bg": "", "char": "Φ"};
+        this.sound_filename = "scroll.mp3";
+    }
+    
+    async play()  // Animate the event
+    {
+        $(this.event_target).animate({opacity: 1}, speed.event_fade, async value => {
+            sound.volume = this.volume;
+            let scroll_height = $(".zzt-scroll")[0].scrollHeight;
+            let offset = 0;
+            await play_sound(this.get_static_path() + "/" + this.sound_filename);
+            await delay(this.delay); // Delay before scrolling 
+            
+            while (offset <= $(".zzt-scroll").scrollTop())
+            {
+                offset += 37;
+                $(".zzt-scroll").scrollTop(offset);
+                await delay(this.scroll_delay);
+            }        
+            
+            await delay(2000); // Time spent on bottom
+            this.fade_out_event_card();
+        });
     }
 }
 
@@ -262,6 +313,17 @@ export class Event_Sub_Goal extends Redeem_Event_Base // Ref 3780
     }
 }
 
+export class Event_Undefined_Event extends Redeem_Event_Base // Ref 3780
+{
+    constructor(event)
+    {
+        super(event);
+        this.volume = 0;
+        this.event_icon = {"fg": "ega-darkgray", "bg": "", "char": "Ü"};
+    }
+}
+
+
 export class Event_Use_The_3d_Talk_Engine extends Redeem_Event_Base // Ref 1033
 {
     constructor(event)
@@ -280,7 +342,7 @@ export class Event_Use_The_3d_Talk_Engine extends Redeem_Event_Base // Ref 1033
             await delay(800);
             await play_sound(this.get_static_path() + "/" + this.sound_filename);
             await delay(1200);
-            fade_out_event_card(this.event);
+            this.fade_out_event_card();
         });
     }
 }
@@ -309,90 +371,14 @@ export class Event_Zzt_Toilet_Flush extends Redeem_Event_Base // Ref 973
     }
 }
 
-/* Old Style functions below */
-export async function random_scroll(event)  /* Ref: #2511 */
+export class Event_Set_Timer extends Redeem_Event_Base // Ref? 
 {
-    $("#live-event").animate({opacity: 1}, speed.event_fade, async function (){
-		let scroll_height = $(".zzt-scroll")[0].scrollHeight;
-		let offset = 0;
-        sound.volume = 0.80;
-        await play_sound("/static/cdosstream/event/random-scroll/scroll.mp3");
-        //console.log("Scroll is this tall:", scroll_height);
-        await delay(4500); // Delay before scrolling
-        
-        while (offset <= $(".zzt-scroll").scrollTop())
-        {
-			offset += 37;
-			$(".zzt-scroll").scrollTop(offset);
-			await delay(1100)
-			//console.log("OFFSET", offset, "SCROLL_HEIGHT", scroll_height, "SCROLLTOP", $(".zzt-scroll").scrollTop());
-		}
-
-        await delay(2000); // Time spent on bottom
-        fade_out_event_card(event);
-    });
-}
-
-export async function timer_start(event) /* Ref: ?? */
-{
-    if ($("#stream-timer").attr("data-timer-id"))
-        clearInterval($("#stream-timer").attr("data-timer-id"));
-    $("#stream-timer").remove();
-
-    let [hours, minutes, seconds] = event.body.event.start_value.split(":");
-    let raw_seconds = parseInt(hours * 60 * 60) + parseInt(minutes * 60) + parseInt(seconds);
-
-    $("body").append(`<div id="stream-timer" data-value="${raw_seconds}" data-mode="${event.body.event.mode}" data-timer-id=""><span class="timer-hours">00</span>:<span class="timer-minutes">00</span>:<span class="timer-seconds">00</span>`);
-    let timer_id = setInterval(tick_timer, 1000);
-    $("#stream-timer").attr("data-timer-id", timer_id);
-    conclude_event(event);
-}
-
-export async function undefined_event(event)  /* Ref: #1009 */
-{
-    $("#live-event").animate({opacity: 1}, speed.event_fade, async function (){
-        fade_out_event_card(event);
-    });
-}
-
-export function fade_out_event_card(event)
-{
-    console.log("5. [" + event.meta.pk + "] Event complete. Returning to info card");
-    $("#event-card").animate({opacity: 0}, speed.event_fade, function (){
-        conclude_event(event)
-    });
-}
-
-
-export function remove_event_icon(pk)
-{
-    $("#event-icon-" + pk).remove();
-}
-
-export function conclude_event(event)
-{
-    $("#event-card").html("");
-    $("#event-card").css("opacity", "");
-    remove_event_icon(event.meta.pk);
-    $("#event-card").data("finished", true);
-    console.log("6. [" + event.meta.pk + "] Fade Out Complete.");
-}
-
-
-function tick_timer()
-{
-    let current = $("#stream-timer").attr("data-value");
-    let mode = $("#stream-timer").data("mode");
-    current -= 1;
-    $("#stream-timer").attr("data-value", current);
-    let temp = current;
-    let hours = parseInt(temp / 60 / 60);
-    temp -= (hours * 60 * 60);
-    let minutes = parseInt(temp / 60);
-    temp -= (minutes * 60);
-    let seconds = temp;
-
-    $(".timer-hours").html(("" + hours).padStart(2, "0"));
-    $(".timer-minutes").html(("" + minutes).padStart(2, "0"));
-    $(".timer-seconds").html(("" + seconds).padStart(2, "0"));
+    constructor(event)
+    {
+        super(event);
+        this.event_icon = {"fg": "ega-cyan", "bg": "", "char": "♂"};
+    }
+    
+    async play()  // This is handled in event-player.js as this event skips the queue
+    { return true; }
 }
