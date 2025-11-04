@@ -353,20 +353,25 @@ $(document).ready(function (){
 
 function render_test_events()
 {
-    use_the_3d_talk_engine({
+    console.log("TEST EVENTS");
+    let test_3d_talk = new Registered_Events.Event_Use_The_3d_Talk_Engine({
         "meta": {"created_at": "2024-01-01 04:20:15.12Z", "kind": "use-the-3d-talk-engine", "pk": 0,  },
         "body": {"event": {"user_name": "WorldsOfZZT", "user_input":"The doorbell rings..."}},
     });
-    default_log({
+    $("#event-overview").prepend(test_3d_talk.as_scp_log());
+    let test_bip_bo_beep = new Registered_Events.Event_Bip_Bo_Beep({
         "meta": {"created_at": "2024-01-01 04:23:28.12Z", "kind": "bip-bo-beep", "pk": 0,  },
         "body": {"event": {"user_name": "Snorb Probably", "user_input":""}},
     });
-    random_scroll({
+    $("#event-overview").prepend(test_bip_bo_beep.as_scp_log());
+    let test_scroll = new Registered_Events.Event_Random_Scroll({
         "meta": {"created_at": "2024-01-01 04:23:28.12Z", "kind": "random-scroll", "pk": 0,  },
         "body": {"event": {"user_name": "TheBigChungus", "user_input":""}},
     });
-    default_log({
+    $("#event-overview").prepend(test_scroll.as_scp_log());
+    let test_sub_message = new Registered_Events.Event_Channelsubscriptionmessage({
         "meta": {"created_at": "2024-01-01 04:23:28.12Z", "kind": "channelsubscriptionmessage", "pk": 0,  },
         "body": {"event": {"user_name": "My_Loyal_Fans", "user_input":"", "message":{"text": "5 Years of Maximum ZZT"}}},
     });
+    $("#event-overview").prepend(test_sub_message.as_scp_log());
 }
