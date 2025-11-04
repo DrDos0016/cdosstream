@@ -26,7 +26,6 @@ body
 #event-card {
     background-color:rgba(0,0,0,0);
     position:absolute;
-    z-index:999;
 }
 
 #event-card.transparent {
@@ -74,13 +73,13 @@ body
 #timer-frame
 {
     position:absolute;
-    width:8ch;
+    width:10ch;
     text-align:center;
-    top:150px;
-    left:1550px;
+    top:173px;
+    left:1493px;
     font-size:56pt;
-    color:var(--ega-yellow);
-    background-color:var(--ega-darkred);
+    color:var(--ega-green);
+    background-color:#AAAAAA88;
     z-index:10;
     display:none;
 }
