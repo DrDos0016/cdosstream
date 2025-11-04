@@ -37,8 +37,8 @@ export class Redeem_Event_Base {
     }
     
     as_scp_log()  // Returns HTML used to log the event in the SCP event log
-    {        
-        let extra_row = "";
+    {   
+        let extra_row = this.get_scp_log_extra_row();
         let output = `
 		<div class="event" data-pk="${this.event.meta.pk}">
 			<div class="event-row">
@@ -53,6 +53,8 @@ export class Redeem_Event_Base {
         
         return output;
     }
+    
+    get_scp_log_extra_row() { return ""; }
     
     fade_out_event_card()
     {
@@ -168,6 +170,16 @@ export class Event_Channelsubscriptionmessage extends Redeem_Event_Base // Ref 1
         this.delay = 2000;
         this.event_icon = {"fg": "ega-purple", "bg": "", "char": "♀"};
         this.sound_filename = "sub-key.wav";
+    }
+    
+    get_scp_log_extra_row()
+    {
+        let months = (this.event.body.event.cumulative_months) ? this.event.body.event.cumulative_months : "-";
+        let output = `<div class="event-row highlight">
+            <div class="event-months">${months} mo(s).</div>
+            <div class="event-message">&lt;${this.username}&gt; ${this.event.body.event.message.text}</div>
+            </div>`;
+        return output;
     }
 }
 
@@ -344,6 +356,14 @@ export class Event_Use_The_3d_Talk_Engine extends Redeem_Event_Base // Ref 1033
             await delay(1200);
             this.fade_out_event_card();
         });
+    }
+    
+    get_scp_log_extra_row()
+    {
+        let output = `<div class="event-row">
+				<div class="event-message">&lt;${this.username}&gt; ${this.event.body.event.user_input}</div>
+			</div>`;
+        return output;
     }
 }
 
