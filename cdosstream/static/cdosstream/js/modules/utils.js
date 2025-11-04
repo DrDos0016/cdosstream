@@ -15,6 +15,11 @@ export function raw_event_to_class(event, registered_events)
     let components = event.meta.kind.split("-");
     let class_name = "Event_" + components.map((x) => x.slice(0, 1).toUpperCase() + x.slice(1)).join("_");
     console.log("CONSTRUCTING CLASS: ", class_name);
-    let obj = new registered_events[class_name](event);
+    let obj;
+    try {
+        obj = new registered_events[class_name](event);
+    } catch (e) {
+        obj = new registered_events["Event_Undefined_Event"](event);
+    }
     return obj;
 }
