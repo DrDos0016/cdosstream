@@ -305,6 +305,7 @@ function test_timer_func()
 
 $(document).ready(function (){
     print_registered_events(Registered_Events);
+    generate_quick_event_buttons(Registered_Events);
     console.log("SCP Page is creating SCP_Websocket_Connection");
     ws_connections.scp = new SCP_Websocket_Connection(WEBSOCKET_SERVER_HOST, WEBSOCKET_SERVER_PORT);
     ws_connections.scp.init();
@@ -322,6 +323,7 @@ $(document).ready(function (){
     $("input[type=submit]").click(post_form);
     
     $("#event-overview").on("click", ".event-icon", replay_clicked_event);
+    $("#quick-events").on("click", ".event-button", replay_quick_event);
 
     // Test events
     render_test_events();
@@ -374,6 +376,31 @@ function render_test_events()
 function replay_clicked_event()
 {
     let pk = $(this).next(".event-pk").text();
+    $("#id_command").val("replay-event");
+    $("#id_params").val(pk);
+    $("#submit-send-command-form").click();
+}
+
+function generate_quick_event_buttons(registered_events)
+{
+    let EXCLUDED = []
+    let output = ""
+    for (let class_name in registered_events)
+    {
+        if (EXCLUDED.indexOf(class_name) != -1)
+            continue;
+        if (class_name.toLowerCase().slice(0, 5) != "event")
+            continue;
+        let obj = new registered_events[class_name];
+        output += obj.get_event_button_html(class_name) + " ";
+    }
+    $("#quick-events").html(output)
+}
+
+function replay_quick_event()
+{
+    let pk = $(this).data("pk");
+    console.log("Quick replay:", pk);
     $("#id_command").val("replay-event");
     $("#id_params").val(pk);
     $("#submit-send-command-form").click();

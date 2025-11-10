@@ -7,17 +7,20 @@ export class Redeem_Event_Base {
     constructor(event) {
         this.class_based_event = true; // Stopgap while classes and functions for events both exist
         this.event = event;
-        this.event_key = event.meta.kind.replaceAll("-", "_").toLowerCase();
         this.event_icon = {"fg": "ega-white", "bg": "", "char": "?"};
+        this.reference_pk = 0;
         this.event_target = "#live-event";
         this.volume = 0.30;
         this.sound_filename = "";
         this.delay = 1000;
-        this.created_at = event.meta.created_at;
-        this.time = this.created_at.slice(14,19);
-        this.username = (event.body.event.user_name) ? event.body.event.user_name : "NOUSER";
-        this.pk = event.meta.pk;
-        this.sound_filename = "";
+        if (event)
+        {
+            this.event_key = event.meta.kind.replaceAll("-", "_").toLowerCase();
+            this.created_at = event.meta.created_at;
+            this.time = this.created_at.slice(14,19);
+            this.username = (event.body.event.user_name) ? event.body.event.user_name : "NOUSER";
+            this.pk = event.meta.pk;
+        }
     }
     
     get_static_path()
@@ -73,6 +76,13 @@ export class Redeem_Event_Base {
         $("#event-card").data("finished", true);
         console.log("6. [" + this.event.meta.pk + "] Fade Out Complete.");
     }
+    
+    get_event_button_html(js_class_name)
+    {
+        let disabled = (this.reference_pk) ? "" : "disabled ";
+        let output = `<button ${disabled}type='button' class='event-button' title="${js_class_name}" data-pk="${this.reference_pk}"><span class="${this.event_icon.fg} ${this.event_icon.bg}">${this.event_icon.char}</span></button>`;
+        return output;
+    }
 }
 
 export class Event_Bip_Bo_Beep extends Redeem_Event_Base // Ref 69
@@ -80,6 +90,7 @@ export class Event_Bip_Bo_Beep extends Redeem_Event_Base // Ref 69
     constructor(event)
     {
         super(event);
+        //this.reference_pk = 69;
         this.volume = 0.25;
         this.event_icon = {"fg": "ega-green", "bg": "", "char": "♠"};
     }
@@ -103,6 +114,7 @@ export class Event_Beautiful_Music extends Redeem_Event_Base // Ref 5992
     constructor(event)
     {
         super(event);
+        this.reference_pk = 5992;
         this.delay = 4500;
         this.event_icon = {"fg": "ega-darkred", "bg": "", "char": "☻"};
     }
@@ -113,6 +125,7 @@ export class Event_Channelcheer extends Redeem_Event_Base  // Ref 260
     constructor(event)
     {
         super(event);
+        this.reference_pk = 260;
         this.event_icon = {"fg": "ega-green", "bg": "", "char": "♦"};
         this.sound_filename = "bits-gem.wav";
     }
@@ -135,6 +148,7 @@ export class Event_Channelfollow extends Redeem_Event_Base // Ref 249
     constructor(event)
     {
         super(event);
+        this.reference_pk = 249;
         this.delay = 3000;
         this.event_icon = {"fg": "ega-white", "bg": "ega-darkblue-bg", "char": "☻"};
         this.sound_filename = "follow-transporter.wav";
@@ -146,6 +160,7 @@ export class Event_Channelraid extends Redeem_Event_Base // Ref 1035
     constructor(event)
     {
         super(event);
+        this.reference_pk = 1035;
         this.delay = 3000;
         this.event_icon = {"fg": "ega-white", "bg": "ega-darkyellow-bg", "char": "≡"};
         this.sound_filename = "raid-passage.wav";
@@ -157,6 +172,7 @@ export class Event_Channelsubscribe extends Redeem_Event_Base // Ref 243 (basic)
     constructor(event)
     {
         super(event);
+        this.reference_pk = 243;
         this.delay = 2000;
         this.event_icon = {"fg": "ega-purple", "bg": "", "char": "♀"};
         this.sound_filename = "sub-key.wav";
@@ -168,6 +184,7 @@ export class Event_Channelsubscriptionmessage extends Redeem_Event_Base // Ref 1
     constructor(event)
     {
         super(event);
+        this.reference_pk = 1550;
         this.delay = 2000;
         this.event_icon = {"fg": "ega-purple", "bg": "", "char": "♀"};
         this.sound_filename = "sub-key.wav";
@@ -189,6 +206,7 @@ export class Event_Channelsubscriptiongift extends Redeem_Event_Base // Ref 1565
     constructor(event)
     {
         super(event);
+        this.reference_pk = 1556;
         this.delay = 2000;
         this.event_icon = {"fg": "ega-purple", "bg": "", "char": "♀"};
         this.sound_filename = "sub-key.wav";
@@ -200,6 +218,7 @@ export class Event_Guide_The_Raid extends Redeem_Event_Base // Ref 5598
     constructor(event)
     {
         super(event);
+        this.reference_pk = 5598;
         this.delay = 1600;
         this.event_icon = {"fg": "ega-green", "bg": "", "char": "►"};
         this.sound_filename = "raid-passage.wav";
@@ -211,6 +230,7 @@ export class Event_Hahaha extends Redeem_Event_Base // Ref 5877
     constructor(event)
     {
         super(event);
+        this.reference_pk = 5877;
         this.delay = 1000;
         this.event_icon = {"fg": "ega-darkgray", "bg": "", "char": "\""};
         this.sound_filename = "hahaha.wav";
@@ -222,6 +242,7 @@ export class Event_Happy_Zzt_Day extends Redeem_Event_Base // Ref 5996
     constructor(event)
     {
         super(event);
+        this.reference_pk = 5996;
         this.event_icon = {"fg": "ega-white", "bg": "ega-darkblue", "char": "X"};
         this.sound_filename = "foo.wav";
     }
@@ -232,6 +253,7 @@ export class Event_Hydrate extends Redeem_Event_Base // Ref 991
     constructor(event)
     {
         super(event);
+        this.reference_pk = 991;
         this.delay = 1000;
         this.event_icon = {"fg": "ega-white", "bg": "ega-darkblue-bg", "char": "░"};
         this.sound_filename = "hydrate-water.wav";
@@ -243,6 +265,7 @@ export class Event_Its_Bird_Oclock_Somewhere extends Redeem_Event_Base // Ref 26
     constructor(event)
     {
         super(event);
+        this.reference_pk = 268;
         this.volume = 0.90;
         this.event_icon = {"fg": "ega-white", "bg": "", "char": "v"};
     }
@@ -263,6 +286,7 @@ export class Event_Posture_Check extends Redeem_Event_Base // Ref 991
     constructor(event)
     {
         super(event);
+        this.reference_pk = 991;
         this.delay = 2000;
         this.event_icon = {"fg": "ega-yellow", "bg": "ega-darkcyan-bg", "char": "☻"};
         this.sound_filename = "pushing.wav";
@@ -274,6 +298,7 @@ export class Event_Random_Scroll extends Redeem_Event_Base // Ref 2511
     constructor(event)
     {
         super(event);
+        this.reference_pk = 2511;
         this.volume = 0.80;
         this.delay = 4500;
         this.scroll_delay = 1100;
@@ -308,6 +333,7 @@ export class Event_Streeeeeeeeeetch extends Redeem_Event_Base // Ref 159
     constructor(event)
     {
         super(event);
+        this.reference_pk =159;
         this.delay = 2000;
         this.event_icon = {"fg": "ega-yellow", "bg": "ega-blue-bg", "char": "☺"};
         this.sound_filename = "pushing.wav";
@@ -319,6 +345,7 @@ export class Event_Sub_Goal extends Redeem_Event_Base // Ref 3780
     constructor(event)
     {
         super(event);
+        this.reference_pk = 3780;
         this.volume = 0.5;
         this.delay = 0;
         this.event_icon = {"fg": "ega-red", "bg": "", "char": "♥"};
@@ -326,11 +353,12 @@ export class Event_Sub_Goal extends Redeem_Event_Base // Ref 3780
     }
 }
 
-export class Event_Undefined_Event extends Redeem_Event_Base // Ref 3780
+export class Event_Undefined_Event extends Redeem_Event_Base // Ref 5986
 {
     constructor(event)
     {
         super(event);
+        this.reference_pk = 5986;
         this.volume = 0;
         this.event_icon = {"fg": "ega-darkgray", "bg": "", "char": "Ü"};
     }
@@ -342,6 +370,7 @@ export class Event_Use_The_3d_Talk_Engine extends Redeem_Event_Base // Ref 1033
     constructor(event)
     {
         super(event);
+        this.reference_pk = 1033;
         this.event_icon = {"fg": "ega-yellow", "bg": "ega-darkred-bg", "char": "☺"};
         this.sound_filename = "3d-talk.wav";
     }
@@ -373,6 +402,7 @@ export class Event_Yeaaaaahh extends Redeem_Event_Base // Ref 1046
     constructor(event)
     {
         super(event);
+        this.reference_pk = 1046;
         this.volume = 0.5;
         this.delay = 200;
         this.event_icon = {"fg": "ega-yellow", "bg": "ega-darkgreen-bg", "char": "☻"};
@@ -385,6 +415,7 @@ export class Event_Zzt_Toilet_Flush extends Redeem_Event_Base // Ref 973
     constructor(event)
     {
         super(event);
+        this.reference_pk = 973;
         this.volume = 0.4;
         this.delay = 1000;
         this.event_icon = {"fg": "ega-white", "bg": "", "char": "∩"};

@@ -388,3 +388,15 @@ button.shortcut-button
 .obs-value[data-obs-key=microphone] { width:6ch; text-align:center; }
 .obs-value[data-obs-key=scene] { width:10ch; }
 #obs-mic-wrapper.muted { background-color:#A00; color:#F55; }
+
+#quick-events button {
+    font-family:"cp437";
+    width:24px;
+    height:30px;
+    font-size:28px;
+    background-color:var(--ega-black);
+    margin:2px;
+    text-align:center;
+}
+
+#quick-events button[disabled] { filter:grayscale(100%); cursor:not-allowed;}
