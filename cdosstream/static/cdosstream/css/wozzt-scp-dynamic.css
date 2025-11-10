@@ -1,5 +1,69 @@
 * { box-sizing:border-box; }
 
+@font-face
+{
+    /* http://int10h.org/oldschool-pc-fonts/readme/ */
+    font-family: 'cp437';
+    src: url('/static/cdosstream/font/PxPlus_IBM_EGA_8x14.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.cp437 { font-family: "cp437"; }
+
+:root {
+    --ega-blue: #55F;
+    --ega-green: #5F5;
+    --ega-cyan: #5FF;
+    --ega-red: #F55;
+    --ega-purple: #F5F;
+    --ega-yellow: #FF5;
+    --ega-white: #FFF;
+    --ega-gray: #AAA;
+    --ega-black: #000;
+    --ega-darkblue: #00A;
+    --ega-darkgreen: #0A0;
+    --ega-darkcyan: #0AA;
+    --ega-darkred: #A00;
+    --ega-darkpurple: #A0A;
+    --ega-darkyellow: #A50;
+    --ega-darkgray: #555;
+}
+
+.ega-blue { color:var(--ega-blue); }
+.ega-green { color:var(--ega-green); }
+.ega-cyan { color:var(--ega-cyan); }
+.ega-red { color:var(--ega-red); }
+.ega-purple { color:var(--ega-purple); }
+.ega-yellow { color:var(--ega-yellow); }
+.ega-white { color:var(--ega-white); }
+.ega-gray { color:var(--ega-gray); }
+.ega-black { color:var(--ega-black); }
+.ega-darkblue { color:var(--ega-darkblue); }
+.ega-darkgreen { color:var(--ega-darkgreen); }
+.ega-darkcyan { color:var(--ega-darkcyan); }
+.ega-darkred { color:var(--ega-darkred); }
+.ega-darkpurple { color:var(--ega-darkpurple); }
+.ega-darkyellow { color:var(--ega-darkyellow); }
+.ega-darkgray { color:var(--ega-darkgray); }
+.ega-blue-bg { background-color:var(--ega-blue); }
+.ega-green-bg { background-color:var(--ega-green); }
+.ega-cyan-bg { background-color:var(--ega-cyan); }
+.ega-red-bg { background-color:var(--ega-red); }
+.ega-purple-bg { background-color:var(--ega-purple); }
+.ega-yellow-bg { background-color:var(--ega-yellow); }
+.ega-white-bg { background-color:var(--ega-white); }
+.ega-gray-bg { background-color:var(--ega-gray); }
+.ega-black-bg { background-color:var(--ega-black); }
+.ega-darkblue-bg { background-color:var(--ega-darkblue); }
+.ega-darkgreen-bg { background-color:var(--ega-darkgreen); }
+.ega-darkcyan-bg { background-color:var(--ega-darkcyan); }
+.ega-darkred-bg { background-color:var(--ega-darkred); }
+.ega-darkpurple-bg { background-color:var(--ega-darkpurple); }
+.ega-darkyellow-bg { background-color:var(--ega-darkyellow); }
+.ega-darkgray-bg { background-color:var(--ega-darkgray); }
+.ega-transparent-bg { background-color:transparent; }
+
 body
 {
     margin:0px;
@@ -39,7 +103,7 @@ main
 #event-log { grid-area:events; }
 #touch-frame { grid-area:touch; }
 
-#event-log { background-color:#377; overflow:auto; }
+#event-log { background-color:var(--ega-darkcyan); overflow:auto; }
 
 #header { background: #D67FFF; display:flex; gap:1px; color:#FFA;}
 #header > div { background:#00A; padding-left:2px; padding-right:2px; min-width:2ch; display:flex; }
@@ -136,27 +200,36 @@ table td
 }
 
 /* Event Log Widget */
-#event-log .event
-{
-    border:1px solid #000;
-    margin-bottom:3px;
-}
-
 #event-log .event .event-row
 {
-	display:flex;
-	flex-wrap:wrap;
-	gap:4px;
+	display:grid;
+    font-family:cp437;
+    font-size:16px;
+    grid-template-areas: "icon pk time user"
+    "icon extra extra extra";
+    grid-template-columns: 16px 5ch 6ch 1fr;
+    border-bottom:1px solid var(--ega-white);
 }
 
-#event-log .event:nth-child(odd) { background:#DFF; }
-#event-log .event:nth-child(even) { background:#5FF; }
+.event-icon
+{
+    grid-area: icon;
+    background-color: var(--ega-black);
+    font-size:28px;
+    width:16px;
+    height:28px;
+    padding:0px;
+    cursor:pointer;
+}
+.event-pk { grid-area: pk; }
+.event-time { grid-area: time; }
+.event-user { grid-area: user; }
+.event-extra { grid-area: extra; display:flex; gap:1ch; }
+.event-months { color:var(--ega-green); }
+.event-message { color:var(--ega-yellow); }
 
-.event-pk { flex:0 0 4ch; }
-.event-time { flex:0 0 6ch; }
-.event-kind { flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;}
-.event-user { flex:1 0 10ch; text-align:right; }
-.event-message { flex:1; background:#FDF; }
+#event-log .event:nth-child(odd) { background:var(--ega-darkred); color:var(--ega-white); }
+#event-log .event:nth-child(even) { background:var(--ega-darkcyan); color:var(--ega-white); }
 /* End Event Log Widget */
 
 
@@ -174,11 +247,6 @@ table td
     flex:1;
     resize:none;
     margin:0px;
-}
-
-.highlight
-{
-    background:#B0AEFF;
 }
 
 #event-overview

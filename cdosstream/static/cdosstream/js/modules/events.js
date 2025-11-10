@@ -39,15 +39,16 @@ export class Redeem_Event_Base {
     as_scp_log()  // Returns HTML used to log the event in the SCP event log
     {   
         let extra_row = this.get_scp_log_extra_row();
+        console.log(this.event_icon);
         let output = `
 		<div class="event" data-pk="${this.event.meta.pk}">
 			<div class="event-row">
+                <div class="event-icon cp437 ${this.event_icon.fg} ${this.event_icon.bg}" title="${this.event.meta.kind}">${this.event_icon.char}</div>
 				<div class="event-pk">${this.event.meta.pk}</div>
 				<div class="event-time">${this.time}</div>
-				<div class="event-kind">${this.event_icon.char} ${this.event.meta.kind}</div>
-				<div class="event-user">${this.username}</div>
+				<div class="event-user">&lt;${this.username}&gt;</div>
+                ${extra_row}
 			</div>
-			${extra_row}
 		</div>
         `;
         
@@ -80,7 +81,7 @@ export class Event_Bip_Bo_Beep extends Redeem_Event_Base // Ref 69
     {
         super(event);
         this.volume = 0.25;
-        this.event_icon = {"fg": "ega-green", "bg": "", "char": "Z"};
+        this.event_icon = {"fg": "ega-green", "bg": "", "char": "♠"};
     }
     
     async play()  // Animate the event
@@ -174,10 +175,10 @@ export class Event_Channelsubscriptionmessage extends Redeem_Event_Base // Ref 1
     
     get_scp_log_extra_row()
     {
-        let months = (this.event.body.event.cumulative_months) ? this.event.body.event.cumulative_months : "-";
-        let output = `<div class="event-row highlight">
-            <div class="event-months">${months} mo(s).</div>
-            <div class="event-message">&lt;${this.username}&gt; ${this.event.body.event.message.text}</div>
+        let months = (this.event.body.event.cumulative_months) ? this.event.body.event.cumulative_months : "999";
+        let output = `<div class="event-extra">
+                <div class="event-months">${months} Months</div>
+                <div class="event-message">&ldquo;${this.event.body.event.message.text}&rdquo;</div>
             </div>`;
         return output;
     }
@@ -360,9 +361,9 @@ export class Event_Use_The_3d_Talk_Engine extends Redeem_Event_Base // Ref 1033
     
     get_scp_log_extra_row()
     {
-        let output = `<div class="event-row">
-				<div class="event-message">&lt;${this.username}&gt; ${this.event.body.event.user_input}</div>
-			</div>`;
+        let output = `<div class="event-extra">
+        <div class="event-message">&ldquo;${this.event.body.event.user_input}&rdquo;</div>
+        </div>`;
         return output;
     }
 }
