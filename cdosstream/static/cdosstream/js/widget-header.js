@@ -139,6 +139,6 @@ function sub_goal_met()
     }).done(function (data){
         //console.log("Event created for reaching goal.");
         // "Replay" the newly logged event
-        ws.ws_send({"command": "replay", "pk": data.meta.pk});
+        ws.ws_send({"command": "replay-event", "params": data.meta.pk});
     });
 }
