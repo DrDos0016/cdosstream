@@ -90,7 +90,7 @@ export class Event_Bip_Bo_Beep extends Redeem_Event_Base // Ref 69
     constructor(event)
     {
         super(event);
-        //this.reference_pk = 69;
+        this.reference_pk = 69;
         this.volume = 0.25;
         this.event_icon = {"fg": "ega-green", "bg": "", "char": "♠"};
     }

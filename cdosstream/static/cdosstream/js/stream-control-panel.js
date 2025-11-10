@@ -383,7 +383,7 @@ function replay_clicked_event()
 
 function generate_quick_event_buttons(registered_events)
 {
-    let EXCLUDED = []
+    let EXCLUDED = ["Event_Set_Timer"]
     let output = ""
     for (let class_name in registered_events)
     {
