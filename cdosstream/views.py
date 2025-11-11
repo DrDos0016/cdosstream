@@ -28,7 +28,7 @@ def capture_event(request):
 
 
 def create_event_goal(request):
-    event = Event(raw=get_stub_event_data("sub-goal"))
+    event = Event(raw=get_stub_event_data("sub-goal", "AUTO:Sub Goal Met"))
     event.prepare()
     event.kind = "sub-goal"
     event.save()
