@@ -110,7 +110,7 @@ REGISTERED_EVENTS = {
     },
 }
 
-def get_stub_event_data(event_title):
+def get_stub_event_data(event_title, event_username):
     STUB_EVENT_DATA = {
         "subscription": {
             "id": "",
@@ -150,6 +150,7 @@ def get_stub_event_data(event_title):
 
     event_data = STUB_EVENT_DATA
     event_data["event"]["reward"]["title"] = event_title
+    event_data["event"]["user_name"] = event_username
     return event_data
 
 
