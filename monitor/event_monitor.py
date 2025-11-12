@@ -16,6 +16,7 @@ from twitchAPI.helper import first
 from twitchAPI.oauth import UserAuthenticator
 from twitchAPI.types import AuthScope
 from twitchAPI.twitch import Twitch
+from twitchAPI.chat import ChatMessage
 
 from .settings import *
 from core import *
@@ -106,9 +107,9 @@ class Event_Monitor():
         consumer_task = asyncio.create_task(self.consumer_handler(websocket))
         producer_task = asyncio.create_task(self.producer_handler(websocket))
 
-        done, pending = await asyncio.wait([consumer_task, producer_task], return_when=asyncio.FIRST_COMPLETED)
+        done, pending = await asyncio.wait([consumer_task, producer_task], return_when=asyncio.ALL_COMPLETED) # Was FIRST_COMPLETED
         for task in pending:
-            print("A task is being canceled", task)
+            print("Hey! A task is being canceled: ", task)
             task.cancel()
 
     def remove_connection(self, uuid):
@@ -149,14 +150,14 @@ class Event_Monitor():
             
             # COMMAND LIST
             if not command:
-                self.log_received_data(f"{Fore.RED}Invalid data format")
+                self.log_received_data(f"{Fore.RED}Invalid data format {data}")
                 continue
             elif command == "obs-connect":
                 await self.obs_connect(data)
             elif command == "gemrule-say":
                 await self.gemrule_say(data)
             elif command == "happy-zzt-day": # Not yet actually handled
-                print("Hapyp ZZT Day")
+                await self.happy_zzt_day(data)
             elif command == "identify-connection":
                 self.add_connection_identification(data)
             elif command == "replay-event":
@@ -254,6 +255,12 @@ class Event_Monitor():
             self.log_received_data(f"{Fore.RED}Gemrule is not attached to the event monitor! Can't send message.")
         else:
             await self.gemrule.chat.send_message(self.gemrule.channel, data["params"])
+            
+    async def happy_zzt_day(self, data):
+        # data = {"message": **, "dow": "Friday"}
+        print("DATA", data)
+        card_data = {"subscription": {"type": "Happy ZZT Day"}, "event": {"title": "Happy ZZT Day", "user_name": data["message"].user.name, "dow": data["dow"]}}
+        await self.log_event(card_data)
 
     async def set_event_position(self, data):
         card_data = {"subscription": {"type": "Set Event Position"}, "event": {"title": "Set Event Position", "position": data["params"]}}

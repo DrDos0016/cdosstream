@@ -197,9 +197,12 @@ class Happy_Zzt_Day_View(Event_View):
         hour = random.randint(1, 10)
         image = "/static/cdosstream/event/happy-zzt-day/{}-{}.png"
         now = datetime.now()
-        prefix = "fri"
+        prefix = self.event_json["body"]["event"]["dow"][:3].lower()
+        if prefix not in ["sun", "fri"]:
+            prefix = "fri"
         context["image"] = image.format(prefix, hour)
         context["text"] = ""
+        #context["image"] = image = "/static/cdosstream/event/happy-zzt-day/reference.png"
         return context
 
 

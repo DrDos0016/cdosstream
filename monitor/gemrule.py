@@ -8,6 +8,7 @@ import time
 import sys
 
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 import django
 import requests
@@ -67,6 +68,7 @@ class Gemrule_Bot():
         self.bot_name = "Gemrule"
         self.uuid = ""
         self.message_log = []
+        self.happy_chatters = []
 
     async def launch(self, twitch):
         print("[Gemrule] Booting up Gemrule")
@@ -148,7 +150,7 @@ async def get_article_link(cmd: ChatCommand):
 async def scroll_that(cmd: ChatCommand):
     # cmd.text "!scroll go away cretin was funny"
     # cmd.parameter "go away cretin was funny"
-    now = datetime.now()
+    now = datetime.now(tz=ZoneInfo("America/Los_Angeles"))
     stamp = now.strftime("%c")
     requester = cmd.user.name
     line = "{}: <{}> {}".format(stamp, requester, cmd.text)

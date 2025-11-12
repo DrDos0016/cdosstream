@@ -19,6 +19,7 @@ from cdosstream.models import Event  # noqa: E402
 DEFAULT_STREAMER = "WorldsOfZZT"
 DEFAULT_CHATBOT = "gemrulebot"
 DEFAULT_QUICK = False
+TODAY = datetime.now()
 
 parser = argparse.ArgumentParser(prog="Twitch Stream Monitor", description="Monitor Twitch events and manage Chatbot")
 parser.add_argument("-s", "--streamer", help="Twitch username to monitor for events")
@@ -75,13 +76,16 @@ async def main():
 async def gemrule_messages(m):
     while True:
         if m.gemrule.message_log:
+            dow = TODAY.strftime("%A")
             for message in m.gemrule.message_log:
                 #record = f"[{msg.sent_timestamp}] <{msg.user.name}> {msg.text}"
                 text = message.text
                 #print(datetime.now(), m.gemrule.bot_name, log)
                 comp = message.text.upper()
-                if "HAPPY ZZT FRIDAY" in comp:
-                    await m.happy_zzt_day("friday")
+                if "HAPPY ZZT " in comp and "DAY" in comp:
+                    if (message.user.name + "XYZ") not in m.gemrule.happy_chatters:
+                        m.gemrule.happy_chatters.append(message.user.name)
+                        await m.happy_zzt_day({"message": message, "dow": dow})
             m.gemrule.message_log = []
             
         await asyncio.sleep(0.5)

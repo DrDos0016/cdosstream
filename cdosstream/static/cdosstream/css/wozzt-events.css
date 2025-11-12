@@ -67,3 +67,24 @@
 {
     margin-left:4ch;
 }
+
+/* Event specific */
+#live-event[data-func=happy_zzt_day] .card-image
+{
+    background:red;
+    width:464px;
+    height:308px;
+    max-width:464px;
+    max-height:308px;
+    background:red;
+    flex:0;
+    overflow:clip;
+}
+
+#live-event[data-func=happy_zzt_day] .card-image img
+{
+    max-height:350px;
+    width:480px;
+    height:350px;
+    margin-top:14px;
+}

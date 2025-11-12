@@ -85,7 +85,7 @@ export class Redeem_Event_Base {
     }
 }
 
-export class Event_Bip_Bo_Beep extends Redeem_Event_Base // Ref 69
+export class Event_Bip_Bo_Beep extends Redeem_Event_Base
 {
     constructor(event)
     {
@@ -109,7 +109,7 @@ export class Event_Bip_Bo_Beep extends Redeem_Event_Base // Ref 69
     }
 }
 
-export class Event_Beautiful_Music extends Redeem_Event_Base // Ref 5992
+export class Event_Beautiful_Music extends Redeem_Event_Base
 {
     constructor(event)
     {
@@ -120,7 +120,7 @@ export class Event_Beautiful_Music extends Redeem_Event_Base // Ref 5992
     }
 }
 
-export class Event_Channelcheer extends Redeem_Event_Base  // Ref 260
+export class Event_Channelcheer extends Redeem_Event_Base
 {
     constructor(event)
     {
@@ -143,7 +143,7 @@ export class Event_Channelcheer extends Redeem_Event_Base  // Ref 260
     }
 }
 
-export class Event_Channelfollow extends Redeem_Event_Base // Ref 249
+export class Event_Channelfollow extends Redeem_Event_Base
 {
     constructor(event)
     {
@@ -155,7 +155,7 @@ export class Event_Channelfollow extends Redeem_Event_Base // Ref 249
     }
 }
 
-export class Event_Channelraid extends Redeem_Event_Base // Ref 1035
+export class Event_Channelraid extends Redeem_Event_Base
 {
     constructor(event)
     {
@@ -167,19 +167,19 @@ export class Event_Channelraid extends Redeem_Event_Base // Ref 1035
     }
 }
 
-export class Event_Channelsubscribe extends Redeem_Event_Base // Ref 243 (basic) / 1557 (gifted)
+export class Event_Channelsubscribe extends Redeem_Event_Base
 {
     constructor(event)
     {
         super(event);
-        this.reference_pk = 243;
+        this.reference_pk = 243; // 243 = basic | 1557 = gifted
         this.delay = 2000;
         this.event_icon = {"fg": "ega-purple", "bg": "", "char": "♀"};
         this.sound_filename = "sub-key.wav";
     }
 }
 
-export class Event_Channelsubscriptionmessage extends Redeem_Event_Base // Ref 1550
+export class Event_Channelsubscriptionmessage extends Redeem_Event_Base
 {
     constructor(event)
     {
@@ -201,19 +201,19 @@ export class Event_Channelsubscriptionmessage extends Redeem_Event_Base // Ref 1
     }
 }
 
-export class Event_Channelsubscriptiongift extends Redeem_Event_Base // Ref 1565 (one gift) / 1556 (two gifts)
+export class Event_Channelsubscriptiongift extends Redeem_Event_Base
 {
     constructor(event)
     {
         super(event);
-        this.reference_pk = 1556;
+        this.reference_pk = 1556; //1556 (two gifts) 1565 (one gift)
         this.delay = 2000;
         this.event_icon = {"fg": "ega-purple", "bg": "", "char": "♀"};
         this.sound_filename = "sub-key.wav";
     }
 }
 
-export class Event_Guide_The_Raid extends Redeem_Event_Base // Ref 5598
+export class Event_Guide_The_Raid extends Redeem_Event_Base
 {
     constructor(event)
     {
@@ -225,7 +225,7 @@ export class Event_Guide_The_Raid extends Redeem_Event_Base // Ref 5598
     }
 }
 
-export class Event_Hahaha extends Redeem_Event_Base // Ref 5877
+export class Event_Hahaha extends Redeem_Event_Base
 {
     constructor(event)
     {
@@ -237,13 +237,14 @@ export class Event_Hahaha extends Redeem_Event_Base // Ref 5877
     }
 }
 
-export class Event_Happy_Zzt_Day extends Redeem_Event_Base // Ref 5996
+export class Event_Happy_Zzt_Day extends Redeem_Event_Base
 {
     constructor(event)
     {
         super(event);
-        this.reference_pk = 5996;
-        this.event_icon = {"fg": "ega-white", "bg": "ega-darkblue", "char": "X"};
+        this.reference_pk = 6170;
+        this.delay = 5000;
+        this.event_icon = {"fg": "ega-yellow", "bg": "", "char": "♥"};
         this.sound_filename = "foo.wav";
     }
 }
@@ -260,7 +261,7 @@ export class Event_Hydrate extends Redeem_Event_Base // Ref 991
     }
 }
 
-export class Event_Its_Bird_Oclock_Somewhere extends Redeem_Event_Base // Ref 268
+export class Event_Its_Bird_Oclock_Somewhere extends Redeem_Event_Base
 {
     constructor(event)
     {
@@ -281,7 +282,7 @@ export class Event_Its_Bird_Oclock_Somewhere extends Redeem_Event_Base // Ref 26
     }
 }
 
-export class Event_Posture_Check extends Redeem_Event_Base // Ref 991
+export class Event_Posture_Check extends Redeem_Event_Base
 {
     constructor(event)
     {
@@ -293,7 +294,7 @@ export class Event_Posture_Check extends Redeem_Event_Base // Ref 991
     }
 }
 
-export class Event_Random_Scroll extends Redeem_Event_Base // Ref 2511
+export class Event_Random_Scroll extends Redeem_Event_Base
 {
     constructor(event)
     {
@@ -328,7 +329,7 @@ export class Event_Random_Scroll extends Redeem_Event_Base // Ref 2511
     }
 }
 
-export class Event_Streeeeeeeeeetch extends Redeem_Event_Base // Ref 159
+export class Event_Streeeeeeeeeetch extends Redeem_Event_Base
 {
     constructor(event)
     {
@@ -340,7 +341,7 @@ export class Event_Streeeeeeeeeetch extends Redeem_Event_Base // Ref 159
     }
 }
 
-export class Event_Sub_Goal extends Redeem_Event_Base // Ref 3780
+export class Event_Sub_Goal extends Redeem_Event_Base
 {
     constructor(event)
     {
@@ -353,7 +354,7 @@ export class Event_Sub_Goal extends Redeem_Event_Base // Ref 3780
     }
 }
 
-export class Event_Undefined_Event extends Redeem_Event_Base // Ref 5986
+export class Event_Undefined_Event extends Redeem_Event_Base
 {
     constructor(event)
     {
@@ -365,7 +366,7 @@ export class Event_Undefined_Event extends Redeem_Event_Base // Ref 5986
 }
 
 
-export class Event_Use_The_3d_Talk_Engine extends Redeem_Event_Base // Ref 1033
+export class Event_Use_The_3d_Talk_Engine extends Redeem_Event_Base
 {
     constructor(event)
     {
@@ -397,7 +398,7 @@ export class Event_Use_The_3d_Talk_Engine extends Redeem_Event_Base // Ref 1033
     }
 }
 
-export class Event_Yeaaaaahh extends Redeem_Event_Base // Ref 1046
+export class Event_Yeaaaaahh extends Redeem_Event_Base
 {
     constructor(event)
     {
@@ -410,7 +411,7 @@ export class Event_Yeaaaaahh extends Redeem_Event_Base // Ref 1046
     }
 }
 
-export class Event_Zzt_Toilet_Flush extends Redeem_Event_Base // Ref 973
+export class Event_Zzt_Toilet_Flush extends Redeem_Event_Base
 {
     constructor(event)
     {
@@ -423,7 +424,7 @@ export class Event_Zzt_Toilet_Flush extends Redeem_Event_Base // Ref 973
     }
 }
 
-export class Event_Set_Timer extends Redeem_Event_Base // Ref? 
+export class Event_Set_Timer extends Redeem_Event_Base 
 {
     constructor(event)
     {
