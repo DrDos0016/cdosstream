@@ -9,6 +9,7 @@ from proj.settings import BASE_DIR
 
 STREAM_NOTES_FILE_PATH = os.path.join(BASE_DIR, "cdosstream", "static", "cdosstream", "stream-notes.txt")
 
+#SUB_GOAL = 500  # Inc by 50 normally?
 SUB_GOAL = 500  # Inc by 50 normally?
 SUB_GOAL_REWARD = "Bonus Stream: <span class='ega-yellow'>Games w/ Geight</span>"
 
@@ -96,6 +97,10 @@ REGISTERED_EVENTS = {
         "view": "Sub_Goal_View",
         "icon": {"fg": "ega-red", "bg": "", "char": "♥"},
     },
+    "sub-goal-progress": {  # Ref: X
+        "view": "Sub_Goal_Progress_View",
+        "icon": {"fg": "ega-green", "bg": "", "char": "→"},
+    },
     "use-the-3d-talk-engine": {  # Ref: 1033
         "view": "Use_The_3D_Talk_Engine_View",
         "icon": {"fg": "ega-yellow", "bg": "ega-darkred-bg", "char": "☺"},
@@ -110,7 +115,7 @@ REGISTERED_EVENTS = {
     },
 }
 
-def get_stub_event_data(event_title, event_username):
+def get_stub_event_data(event_title, username):
     STUB_EVENT_DATA = {
         "subscription": {
             "id": "",
@@ -150,7 +155,7 @@ def get_stub_event_data(event_title, event_username):
 
     event_data = STUB_EVENT_DATA
     event_data["event"]["reward"]["title"] = event_title
-    event_data["event"]["user_name"] = event_username
+    event_data["event"]["user_name"] = username
     return event_data
 
 
