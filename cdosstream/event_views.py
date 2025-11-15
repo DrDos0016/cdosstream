@@ -289,13 +289,6 @@ class Sub_Goal_View(TemplateView):
         context["image"] = "/static/cdosstream/event/sub-goal/goal.png"
         context["text"] = self.text
         context["username"] = ":)"
-
-        """
-        "sub-goal": {  # Ref: X
-        "view": "Sub_Goal_View",
-        "js_func": "sub_goal",
-        "icon": {"fg": "ega-red", "bg": "", "char": "♥"},
-        },"""
         return context
 
 
