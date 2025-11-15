@@ -11,6 +11,8 @@ pokyfriends/
 tcn/
 
 db.sqlite3
+ttv-token-*
+scrolls-*
 backup/*
 cdosstream/static/cdosstream/js/patrons.js
 cdosstream/static/cdosstream/image/game-media/*
