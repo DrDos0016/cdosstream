@@ -354,6 +354,16 @@ export class Event_Sub_Goal extends Redeem_Event_Base
     }
 }
 
+/*export class Event_Sub_Goal_Progress extends Redeem_Event_Base
+{
+    constructor(event)
+    {
+        super(event);
+        this.reference_pk = 0;
+        this.event_icon = {"fg": "ega-green", "bg": "", "char": "→"};
+    }
+}*/
+
 export class Event_Undefined_Event extends Redeem_Event_Base
 {
     constructor(event)

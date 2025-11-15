@@ -33,6 +33,13 @@ def create_event_goal(request):
     event.kind = "sub-goal"
     event.save()
     return JsonResponse(event.jsonized())
+    
+def create_event_sub_goal_progress(request):
+    event = Event(raw=get_stub_event_data("sub-goal", "Sub Goal Progress"))
+    event.prepare()
+    event.kind = "sub-goal-progress"
+    event.save()
+    return JsonResponse(event.jsonized())
 
 
 def get_card(request, pk):
@@ -225,6 +232,14 @@ def get_art(request):
 
 def subscroller(request):
     context = {"title": "Sub Scroller"}
+    context["starting_subs"] = cache.get("STARTING_SUBS", 69)
+    context["current_subs"] = Event.objects.get_subscriber_info()["sub_count"]
+    context["goal"] = SUB_GOAL
+    
+    #context["starting_subs"] = 39
+    #context["current_subs"] = 57
+    #context["goal"] = request.GET.get("g", 57)
+    #print("CONTEXT", context)
     return render(request, "cdosstream/subscroller.html", context)
 
 def gemrule_test(request):

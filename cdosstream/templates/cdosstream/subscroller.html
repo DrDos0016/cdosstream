@@ -5,13 +5,16 @@
 <link rel="stylesheet" type="text/css" href="/static/cdosstream/css/event-player.css">
 <style>
 body { margin: 0px; }
-main {
+#subscroller {
     width:1440px;
     height:196px;
     background-color:#A0A;
     background-image:url("/static/cdosstream/image/subscroller/subscroller.png");
     background-size:960px;
     image-rendering:pixelated;
+    line-height:28px;
+    visibility:hidden;
+    font-size:32px;
 }
 
 #board
@@ -20,10 +23,35 @@ main {
     height:196px;
 }
 
-main img { position: absolute; top: 0; left: 0;}
+#subscroller img { position: absolute; top: 0; left: 0;}
 
 #player { z-index: 10; width:16px; height:28px; visibility:hidden; }
 .door { z-index: 1; width:16px; height:28px; visibility:hidden; }
+
+#room-labels {
+    width:1440px;
+    position:relative;
+    top:0px; left:0px;
+    z-index: 10;
+}
+
+#room-labels div { width:48px; text-align:right; background-color:#A00; display:inline-block; margin-left:112px;}
+#room-labels div + div { margin-left:112px; }
+
+#goal-overlay
+{
+    background:red;
+    width: 1440px;
+    height:196px;
+    position:absolute;
+    top:0;
+    left:0;
+    visibility:hidden;
+    background-image:url("/static/cdosstream/image/subscroller/goal-overlay.png");
+    background-size:1920px 196px;
+    image-rendering:pixelated;
+    z-index:5;
+}
 </style>
 {% endblock %}
 
@@ -35,11 +63,20 @@ let PLAYER = {"x": 0, "y": 3};
 let MOVE_SPEED = 60; // 180
 let ANTICIPATION_DELAY = 1; // 360
 let BACKGROUND_POS = 0;
+let STARTING_ROOM = Math.min({{starting_subs}}, {{goal}});
+let GOAL_ROOM = {{goal}};
+let ENDING_ROOM = Math.min({{current_subs|default:0}}, {{goal|default:0}});
+let CURRENT_ROOM = STARTING_ROOM;
 $(document).ready(async function (){
+    console.log("Sub Scroller - START", STARTING_ROOM, "END", ENDING_ROOM, "GOAL", GOAL_ROOM);
+    write_goal(CURRENT_ROOM, GOAL_ROOM);
     place_doors();
+    write_labels(CURRENT_ROOM);
+    $("#subscroller").css("visibility", "visible");
     update_player();
+    await delay(3000);
     await center_player();
-    await redeem_subs(25);
+    await redeem_subs({{current_subs}} - {{starting_subs}});
 });
 
 function delay(ms) {
@@ -61,8 +98,9 @@ function place_doors()
 function open_door(x)
 {
     let idx = (x - 9) / 10 + 1;
-    console.log("OPEN DOOR", idx);
+    //console.log("OPEN DOOR", idx);
     $("#door" + idx).css("visibility", "hidden");
+    CURRENT_ROOM += 1;
 }
 
 function update_player()
@@ -85,6 +123,12 @@ async function redeem_subs(subs)
     for (let moves = 0; moves < subs * 10; moves++)
     {
         PLAYER.x++;
+        console.log("CURRENT ROOM", CURRENT_ROOM, "GOAL ROOM", GOAL_ROOM);
+        
+        if ((PLAYER.x % 10 == 6) && (CURRENT_ROOM >= GOAL_ROOM))
+        {
+            break;
+        }
         
         // Board wrap?
         if (PLAYER.x >= 90)
@@ -111,12 +155,44 @@ function wrap_board()
     BACKGROUND_POS = (BACKGROUND_POS == 0) ? 480 : 0;
     $("main").css({"background-position": BACKGROUND_POS + "px 0px"});
     $(".door").css("visibility", "visible");
+    write_labels(CURRENT_ROOM);
+    write_goal(CURRENT_ROOM, GOAL_ROOM);
+}
+
+function write_labels(val)
+{
+    // Write board #s beginning with start value
+    let output = "";
+    for (let n = 0; n < 9; n++)
+    {
+        if (val < GOAL_ROOM)
+            output += "<div>" + val + "</div>";
+        else if (val == GOAL_ROOM)
+            output += "<div>G</div>";
+        val++;
+    }
+    $("#room-labels").html(output);
+}
+
+function write_goal(current, goal)
+{
+    if (current + 8 < goal)
+        return false;
+        
+    let diff = goal - current;
+    let offset = diff * 16 * 10; // diff * x-resolution * tiles
+    console.log("DIFF OF", diff);
+    console.log("OFFSET", offset);
+    let new_width = 1440 - offset;
+    $("#goal-overlay").css({"visibility": "visible", "left": offset + "px", "width": new_width});
 }
 </script>
 {% endblock %}
 
 {% block body %}
-<main>
+<section id="subscroller">
+    <div id="room-labels"></div>
+    <div id="goal-overlay"></div>
     <img src="/static/cdosstream/image/subscroller/player.png" id="player">
     <img src="/static/cdosstream/image/subscroller/door.png" id="door1" class="door">
     <img src="/static/cdosstream/image/subscroller/door.png" id="door2" class="door">
@@ -127,5 +203,5 @@ function wrap_board()
     <img src="/static/cdosstream/image/subscroller/door.png" id="door7" class="door">
     <img src="/static/cdosstream/image/subscroller/door.png" id="door8" class="door">
     <img src="/static/cdosstream/image/subscroller/door.png" id="door9" class="door">
-</main>
+</section>
 {% endblock %}

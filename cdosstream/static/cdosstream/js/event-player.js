@@ -47,6 +47,22 @@ class Event_Player_Websocket_Connection extends Websocket_Connection
             set_timer(event.body.event.mode, event.body.event.value);
             return false;
         }
+        
+        if (event.meta.kind == "sub-goal-progress")
+        {
+            console.log("SHOWING SUB GOAL PROGRESS");
+            
+            $.ajax({
+                url:"/subscroller/",
+            }).done(function (data){
+                $("#sub-progress-frame").hide();
+                $("#sub-progress-frame").html(data);
+                $("#sub-progress-frame").show();
+            });
+            
+            
+            return false;
+        }
 
         this.queue_event(event);
         return false;

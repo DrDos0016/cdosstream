@@ -86,3 +86,6 @@ body
 
 #timer-frame.active { display:block; }
 #timer-frame.paused { color:var(--ega-gray); }
+
+#sub-progress-frame { position: absolute; top: 854px; left:0px; display:none; }
+#sub-progress-iframe { border:0px; }
