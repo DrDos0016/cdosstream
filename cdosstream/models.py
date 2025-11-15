@@ -15,11 +15,8 @@ class Event(models.Model):
     objects = Event_Queryset.as_manager()
 
     raw = models.JSONField(null=True, blank=True)
-    cleaned = models.JSONField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    processed = models.IntegerField(default=0)
-    processed_at = models.DateTimeField(null=True, blank=True)
     kind = models.CharField(max_length=255, blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return "Event ({}) [{}] -- {}".format(self.pk, str(self.created_at)[5:10], self.kind)
