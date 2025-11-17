@@ -83,7 +83,7 @@ async def gemrule_messages(m):
                 #print(datetime.now(), m.gemrule.bot_name, log)
                 comp = message.text.upper()
                 if "HAPPY ZZT " in comp and "DAY" in comp:
-                    if (message.user.name + "XYZ") not in m.gemrule.happy_chatters:
+                    if (message.user.name) not in m.gemrule.happy_chatters:
                         m.gemrule.happy_chatters.append(message.user.name)
                         await m.happy_zzt_day({"message": message, "dow": dow})
             m.gemrule.message_log = []
