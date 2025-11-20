@@ -42,19 +42,6 @@ def create_event_sub_goal_progress(request):
     return JsonResponse(event.jsonized())
 
 
-def get_card(request, pk):
-    """ Load Stream Info Card from Museum and return it as HTML """
-    context = {"card": None}
-    cards = get_stream_entries()
-
-    for card in cards:
-        if card["pk"] == pk:
-            context["card"] = card
-            break
-
-    return render(request, "cdosstream/event/zzt-card.html", context)
-
-
 class Scene_View(TemplateView):
     def get_template_names(self):
         if self.kwargs.get("slug"):
@@ -192,10 +179,6 @@ def stream_control_panel(request):
     context["notes"] = read_stream_notes()
     return render(request, "cdosstream/stream-control-panel.html", context)
 
-def obs_ws_reference(request):
-    context = {"title": "OBS Websocket Reference"}
-    return render(request, "cdosstream/obs-ws-reference.html", context)
-
 def get_art(request):
     images = glob.glob("/home/drdos/projects/stream/cdosstream/static/cdosstream/scene/art/*.png")
     
@@ -241,7 +224,3 @@ def subscroller(request):
     #context["goal"] = request.GET.get("g", 57)
     #print("CONTEXT", context)
     return render(request, "cdosstream/subscroller.html", context)
-
-def gemrule_test(request):
-    context = {"title": "Gemrule Test"}
-    return render(request, "cdosstream/gemrule-test.html", context)

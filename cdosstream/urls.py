@@ -30,13 +30,6 @@ urlpatterns = [
 
     path("zeoguessr/", cdosstream.views.zeoguessr),
     path("subscroller/", cdosstream.views.subscroller),
-
-    path("obs-ws-reference/", cdosstream.views.obs_ws_reference),
-
     # Confirm these are used below
 
-    #path("widget/chat/", cdosstream.views.Chat.as_view()),
-
-    path("card/latest/", cdosstream.views.get_card, {"pk": -1}),
-    path("card/<int:pk>/", cdosstream.views.get_card),
 ]
