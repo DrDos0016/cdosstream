@@ -18,5 +18,6 @@ def cdosstream_global(request):
     if not cache.get("STARTING_SUBS"):
         sub_info = Event.objects.get_subscriber_info()
         cache.set("STARTING_SUBS", sub_info.get("sub_count"))
+        print("Initialized Starting Subs to", sub_info.get("sub_count"))
     
     return context
