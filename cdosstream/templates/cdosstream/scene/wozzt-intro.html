@@ -2,8 +2,8 @@
 {% load cdosstream_tags %}
 
 {% block local_css %}
-<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-layout.css">
-<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-events.css">
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-layout.css?{{TIMESTAMP}}">
+<link rel="stylesheet" type="text/css" href="/static/cdosstream/css/wozzt-events.css?{{TIMESTAMP}}">
 <style>
 body {
     margin:0px;
@@ -24,10 +24,13 @@ h2
 
 {% block body %}
 <video src="/static/cdosstream/scene/intro/intro.mp4" autoplay="autoplay" loop="True"></video>
-<div class="pos-hud block">
+<div class="pos-hud block pos-hud-top"><p>Top</p></div>
+<div class="pos-hud block pos-hud-middle">
     <div class="info-card">
         <div id="stream-card" class="cp437 ega-darkblue-bg" data-card-pk="{{card.pk}}">
             {% audio_info "intro" %}
+        </div>
     </div>
 </div>
+<div class="pos-hud block pos-hud-bottom"><p>Bottom</p></div>
 {% endblock %}
