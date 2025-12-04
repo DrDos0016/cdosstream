@@ -218,6 +218,7 @@ def subscroller(request):
     context["starting_subs"] = cache.get("STARTING_SUBS", 69)
     context["current_subs"] = Event.objects.get_subscriber_info()["sub_count"]
     context["goal"] = SUB_GOAL
+    print("SUBSCROLLER PARAMS:", context["starting_subs"], context["current_subs"], SUB_GOAL)
     
     #context["starting_subs"] = 39
     #context["current_subs"] = 57
