@@ -2,9 +2,23 @@
 .pos-hud
 {
     position:absolute;
-    top:380px;
     left:1440px;
     background-color:var(--ega-darkblue);
+}
+
+.pos-hud-top
+{
+    top:0px;
+}
+
+.pos-hud-middle
+{
+    top:350px;
+}
+
+.pos-hud-bottom
+{
+    top:700px;
 }
 
 div { box-sizing: border-box; }
@@ -43,7 +57,7 @@ body
     border-image-source: url("/static/cdosstream/image/border.png");
     border-style: solid;
     border-width:14px 8px;
-    background-color:var(--ega-darkblue);
+    /*background-color:var(--ega-darkblue);*/
 }
 
 #header

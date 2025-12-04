@@ -400,3 +400,5 @@ button.shortcut-button
 }
 
 #quick-events button[disabled] { filter:grayscale(100%); cursor:not-allowed;}
+
+select { background-color:#CCF; }
