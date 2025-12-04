@@ -42,7 +42,6 @@ export class Redeem_Event_Base {
     as_scp_log()  // Returns HTML used to log the event in the SCP event log
     {   
         let extra_row = this.get_scp_log_extra_row();
-        console.log(this.event_icon);
         let output = `
 		<div class="event" data-pk="${this.event.meta.pk}">
 			<div class="event-row">
@@ -327,6 +326,26 @@ export class Event_Random_Scroll extends Redeem_Event_Base
             this.fade_out_event_card();
         });
     }
+}
+
+export class Event_Set_Custom_Card extends Redeem_Event_Base
+{
+    constructor(event)
+    {
+        super(event);
+        this.event_icon = {"fg": "ega-white", "bg": "ega-darkblue-bg", "char": "■"};
+        this.username = "Custom Card";
+    }
+    
+    get_scp_log_extra_row()
+    {
+        let card_data = this.event.body.event.basic.split("\n")
+        let output = `<div class="event-extra">
+                <div><span class="ega-yellow">${card_data}</div>
+            </div>`;
+        return output;
+    }
+    
 }
 
 export class Event_Streeeeeeeeeetch extends Redeem_Event_Base
