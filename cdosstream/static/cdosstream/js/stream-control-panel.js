@@ -341,6 +341,7 @@ $(document).ready(function (){
     $("#obs-getscene").click(test_get_scene);
     $("#clear-log").click(function (){ $("#obsws-log").val(""); });
     $("#test-fade").click(test_fade);
+    $("#world-overview-key").change(set_world_overview_key)
     $("#reset-stream").click(reset_stream);
     $("#wad").click(get_wad);
 
@@ -404,4 +405,19 @@ function replay_quick_event()
     $("#id_command").val("replay-event");
     $("#id_params").val(pk);
     $("#submit-send-command-form").click();
+}
+
+function set_world_overview_key()
+{
+    //"inputName": "World Overview",
+    //"inputUuid": "70437a9b-fa12-40d5-95b0-4a826b539275",
+    //let request = build_request("SetInputSettings", {inputName: "World Overview"});
+    //ws_connections.obsws.websocket.send(request);
+    let key = $(this).val();
+    console.log("KEY", key);
+    
+    //let request = build_request("SetInputVolume", {inputName: this.input_name, inputVolumeDb: this.current_volume});
+    let request = build_request("SetInputSettings", {inputName: "World Overview", inputSettings: {url: "https://museumofzzt.com/stream/overview/?key=" + key}});
+    ws_connections.obsws.websocket.send(request);
+    console.log("Request Sent!");
 }
