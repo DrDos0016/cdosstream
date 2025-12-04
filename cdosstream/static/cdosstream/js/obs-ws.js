@@ -18,6 +18,7 @@ let INPUTS  = {
 }
 let DO_NOT_PUNT_EVENTS = [
     "GetSceneList", "GetInputList", "SetInputVolume", "GetSceneItemList",
+    "GetInputSettings",
 ];
 
 const OBS_MICROPHONE_INPUT_NAME = "Mic/Aux";
@@ -72,7 +73,9 @@ export class OBS_Websocket_Connection extends Websocket_Connection
         {
             let callable_function = this.obs_event_functions[event.d.eventType];
             if (! callable_function)
-                console.log(`OBS-WS.JS could not call function, ${callable_function}`);
+            {
+                console.log(`OBS-WS.JS could has no callable function for: ${event.d.eventType}. Doing nothing.`);
+            }
             else
                 return callable_function(this, event);
         }
@@ -90,7 +93,8 @@ export class OBS_Websocket_Connection extends Websocket_Connection
         }
         else if ((event.op == 7) && (DO_NOT_PUNT_EVENTS.indexOf(event.d.requestType) != -1)) // Request Response, do not punt
         {
-            console.log("No need to punt this");
+            //console.log("No need to punt this:", event);
+            0; // Nothing to do if we're not debug logging.
         }
 
         if (punt)
@@ -100,7 +104,7 @@ export class OBS_Websocket_Connection extends Websocket_Connection
     identify_connection(event)
     {
         event = JSON.parse(event.data)
-        console.log(event);
+        //console.log(event);
         if (event.op !== 0)
         {
             console.log("ERROR: OBSWS event received was not meant to be used for identification");
@@ -148,7 +152,6 @@ export class OBS_Websocket_Connection extends Websocket_Connection
     connection_established()
     {
         super.connection_established();
-        console.log("My conn estab func");
         let command = {"op": 6, "d": {"requestType": "GetSceneList", "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c"}};
         this.websocket.send(JSON.stringify(command));
         command = {"op": 6, "d": {"requestType": "GetInputList", "requestId": "f819dcf0-89cc-11eb-8f0e-382c4ac93b9c"}};
