@@ -285,7 +285,7 @@ function post_form(e)
 function gemrule_auto_plug()
 {
     if (ws_connections["scp"])
-        ws_connections.scp.ws_send({"command": "gemrule-say", "message": "Discord: https://museumofzzt.com/discord/ | Bsky: https://bsky.app/profile/worldsofzzt.bsky.social | YouTube: https://www.youtube.com/c/WorldsofZZT | Patreon: https://patreon.com/worldsofzzt | More: https://museumofzzt.com/follow/"});
+        ws_connections.scp.ws_send({"command": "gemrule-say", "params": "Discord: https://museumofzzt.com/discord/ | Bsky: https://bsky.app/profile/worldsofzzt.bsky.social | YouTube: https://www.youtube.com/c/WorldsofZZT | Patreon: https://patreon.com/worldsofzzt | More: https://museumofzzt.com/follow/"});
 }
 
 function reset_stream()
@@ -333,9 +333,9 @@ $(document).ready(function (){
     //$("#event-position-select").change(set_event_position);
 
     $("#card-overview tr").click(prep_card);
-    $("#sub-info").click(get_subscriber_count);
+    //$("#sub-info").click(get_subscriber_count);
     clean_card_select();
-    get_subscriber_count();
+    //get_subscriber_count();
     //$("#cards").show();
 
     $("#obs-getscene").click(test_get_scene);
