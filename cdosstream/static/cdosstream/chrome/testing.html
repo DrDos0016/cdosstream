@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body
+{
+    margin:0px;
+    background-color:#300;
+}
+
+#background
+{
+    width: 1440px;
+    height: 1050px;
+    background-color:#330;
+    background-image:url("clock-face.png");
+    background-repeat:no-repeat;
+    background-position:center center;
+    background-size:cover;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
+#overlay1
+{
+    color:#e40055;
+    display:flex;
+    align-items:baseline;
+}
+
+#a
+{
+    font-size:390pt;
+    font-family:"Z003";
+    font-style:italic;
+    -webkit-text-stroke: 2px #310000;
+}
+
+#b
+{
+    color:#000;
+    font-size:128pt;
+    -webkit-text-stroke: 2px #FFF;
+    font-family:"Nimbus Roman";
+    font-weight:bold;
+    
+}
+    
+</style>
+</head>
+
+<body>
+    <div id="background">
+        <div id="overlay1">
+            <div id="a">24</div><div id="b"> Hours To Go</div>
+        </div>
+    </div>
+    
+</body>
+</html>
