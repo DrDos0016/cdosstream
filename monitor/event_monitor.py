@@ -253,8 +253,8 @@ class Event_Monitor():
         """ These messages ARE NOT shown in the stream itself. They do show up in actual chat. """
         if not self.gemrule:
             self.log_received_data(f"{Fore.RED}Gemrule is not attached to the event monitor! Can't send message.")
-        else:
-            await self.gemrule.chat.send_message(self.gemrule.channel, data["params"])
+        elif data.get("params"):
+            await self.gemrule.chat.send_message(self.gemrule.channel, data['params'])
             
     async def happy_zzt_day(self, data):
         # data = {"message": **, "dow": "Friday"}
