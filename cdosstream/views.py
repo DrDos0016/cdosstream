@@ -194,7 +194,8 @@ def get_art(request):
         "ownage": "Ownage Triangle (2004)",
         "rai": "R.E.S.T.A.R.T. (2000)",
         "tseng": "Stairway To Da Hood (2000)",
-        "xmas": "Season's Greetings (1992)"
+        "xmas": "Season's Greetings (1992)",
+        "if99": "IF 24 Artistic Hours of ZZT (1999)",
     }
     
     # TODO Move this

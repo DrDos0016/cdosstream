@@ -7,6 +7,7 @@ from django.core.cache import cache
 
 HOST = os.environ.get("WEBSOCKET_SERVER_HOST", "-UNDEFINED-")
 PORT = os.environ.get("WEBSOCKET_SERVER_PORT", "-UNDEFINED-")
+EXTRA_SUBS = 0
 
 def cdosstream_global(request):
     context = {}
@@ -17,7 +18,10 @@ def cdosstream_global(request):
     
     if not cache.get("STARTING_SUBS"):
         sub_info = Event.objects.get_subscriber_info()
-        cache.set("STARTING_SUBS", sub_info.get("sub_count"))
-        print("Initialized Starting Subs to", sub_info.get("sub_count"))
+        total = sub_info.get("sub_count") + EXTRA_SUBS
+        print("Subs in DB:", sub_info.get("sub_count"))
+        print("Manually added subs:", EXTRA_SUBS)
+        cache.set("STARTING_SUBS", sub_info.get("sub_count") + EXTRA_SUBS)
+        print("Initialized Starting Subs to:", total)
     
     return context
