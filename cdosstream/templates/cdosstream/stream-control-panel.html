@@ -35,7 +35,7 @@
             <div class="widget-button" data-widget="obsws" title="OBSWS Test">💡</div>
             <div class="widget-button" data-widget="twitch" title="Twitch"><img src="/static/cdosstream/image/twitch-16px.png"></div>
         </div>
-        <div id="sub-info" title="{{SUB_GOAL_REWARD}}">Subs: <span id="sub-count-value">----</span>/<span id="sub-goal-value">{{SUB_GOAL}}</span></div>
+        <div id="sub-info" title="{{SUB_GOAL_REWARD}}">Subs: <span id="sub-count-value">{{STARTING_SUBS|default:'----'}}</span>/<span id="sub-goal-value">{{SUB_GOAL}}</span></div>
         <div id="obs-scene-wrapper">🎥 <span class="obs-value truncate-text" data-obs-key="scene">----------</span></div>
         <div id="obs-mic-wrapper">🎤 <span class="obs-value" data-obs-key="microphone">------</span></div>
     </header>

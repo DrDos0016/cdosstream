@@ -23,5 +23,6 @@ def cdosstream_global(request):
         print("Manually added subs:", EXTRA_SUBS)
         cache.set("STARTING_SUBS", sub_info.get("sub_count") + EXTRA_SUBS)
         print("Initialized Starting Subs to:", total)
+    context["STARTING_SUBS"] = cache.get("STARTING_SUBS")
     
     return context
