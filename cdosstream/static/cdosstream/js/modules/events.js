@@ -345,7 +345,6 @@ export class Event_Set_Custom_Card extends Redeem_Event_Base
             </div>`;
         return output;
     }
-    
 }
 
 export class Event_Streeeeeeeeeetch extends Redeem_Event_Base
@@ -382,6 +381,25 @@ export class Event_Sub_Goal extends Redeem_Event_Base
         this.event_icon = {"fg": "ega-green", "bg": "", "char": "→"};
     }
 }*/
+
+export class Event_To_Greet extends Redeem_Event_Base
+{
+    constructor(event)
+    {
+        super(event);
+        this.event_icon = {"fg": "ega-yellow", "bg": "", "char": "!"};
+        this.username = "To Greet";
+    }
+    
+    get_scp_log_extra_row()
+    {
+        let to_greet = this.event.body.event.user_name
+        let output = `<div class="event-extra">
+                <div><span class="ega-yellow">Say hello to: ${to_greet}</div>
+            </div>`;
+        return output;
+    }
+}
 
 export class Event_Undefined_Event extends Redeem_Event_Base
 {

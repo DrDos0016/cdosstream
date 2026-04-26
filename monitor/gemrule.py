@@ -53,7 +53,7 @@ REGISTERED_COMMANDS = [
 CALL_AND_RESPONSE_COMMANDS = populate_call_and_response_commands()
 AUDIO_INFO = populate_audio_info()
 
-SCROLL_FH = open("scrolls-{}.txt".format(datetime.now().strftime("%b-%Y")).lower(), "a")
+SCROLL_FH = open("scrolls-{}.txt".format(datetime.now().strftime("%Y")).lower(), "a")
 
 
 class Gemrule_Bot():
@@ -69,6 +69,7 @@ class Gemrule_Bot():
         self.uuid = ""
         self.message_log = []
         self.happy_chatters = []
+        self.to_greet = []
 
     async def launch(self, twitch):
         print("[Gemrule] Booting up Gemrule")
@@ -153,7 +154,7 @@ async def scroll_that(cmd: ChatCommand):
     now = datetime.now(tz=ZoneInfo("America/Los_Angeles"))
     stamp = now.strftime("%c")
     requester = cmd.user.name
-    line = "{}: <{}> {}".format(stamp, requester, cmd.text)
+    line = "[] {}: <{}> {}".format(stamp, requester, cmd.text)
     SCROLL_FH.write(line + "\n")
     SCROLL_FH.flush()
     await cmd.reply("Writing that down...")

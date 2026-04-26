@@ -265,6 +265,10 @@ class Event_Monitor():
     async def set_event_position(self, data):
         card_data = {"subscription": {"type": "Set Event Position"}, "event": {"title": "Set Event Position", "position": data["params"]}}
         await self.log_event(card_data)
+        
+    async def to_greet(self, data):
+        card_data = {"subscription": {"type": "To Greet"}, "event": {"title": "To Greet", "user_name": data["message"].user.name}}
+        await self.log_event(card_data)
 
     async def obs_connect(self, data):
         self.log_received_data(f"{Fore.GREEN}I wanna connect to OBS's own server.")
