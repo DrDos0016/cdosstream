@@ -22,6 +22,8 @@ class Event_Player_Websocket_Connection extends Websocket_Connection
         this.connection_icon_selector = "#NOSELECTOR";
         this.connection_good_icon = "✅";
         this.connection_bad_icon = "❌";
+        
+        this.ignored_event_kinds = ["set-card", "stream-info", "set-custom-card", "to-greet"];
     }
 
     delegate_event(event)
@@ -38,7 +40,7 @@ class Event_Player_Websocket_Connection extends Websocket_Connection
         }
 
         // Discard irrelevant events
-        if ((event.meta.kind == "set-card") || (event.meta.kind == "stream-info") || (event.meta.kind == "set-custom-card"))
+        if (this.ignore_list_contains(event))
             return false;
 
         // Handle events that do not need to be queued
@@ -119,6 +121,14 @@ class Event_Player_Websocket_Connection extends Websocket_Connection
                 run_card(event);
             });
         });
+    }
+    
+    ignore_list_contains(event)
+    {
+        let kind = event.meta.kind;
+        if (this.ignored_event_kinds.indexOf(kind) != -1)
+            return true;
+        return false;
     }
 }
 
