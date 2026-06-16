@@ -78,35 +78,29 @@ main
     gap:1px;
     background:#000;
     grid-template-areas:
-        "header header"
-        "chat events"
-        "chat widget";
+        "header"
+        "events"
+        "widget";
 
 
     max-width:1510px;
     height:100vh;
-    grid-template-columns:360px 1fr;
-    grid-template-rows:20px 200px 1fr;
+    grid-template-columns:1fr;
+    grid-template-rows:auto 200px 1fr;
 }
 
-@media (max-width:899px) {
-    main
-    {
-        grid-template-columns:240px 1fr;
-    }
-
-    #touch-frame { display:none; }
+#header { grid-area:header; font-family:cp437; font-size:16px;}
+.header-row {
+    height:20px;  display:flex; justify-content: space-between; gap:3px;
 }
+.header-row div { display:flex; align-items:center; }
 
-#header { grid-area:header; }
 #chat-frame { grid-area:chat; background-color:#A0A; }
 #event-log { grid-area:events; }
-#touch-frame { grid-area:touch; }
 
 #event-log { background-color:var(--ega-darkcyan); overflow:auto; }
 
-#header { background: #D67FFF; display:flex; gap:1px; color:#FFA;}
-#header > div { background:#00A; padding-left:2px; padding-right:2px; min-width:2ch; display:flex; }
+#header { background: #D67FFF; color:#FFA;}
 
 .widget { grid-area:widget; background-color:#D67FFF; }
 .widget:not(.active) { display:none; }
@@ -209,6 +203,8 @@ table td
     "icon extra extra extra";
     grid-template-columns: 16px 5ch 6ch 1fr;
     border-bottom:1px solid var(--ega-white);
+    max-width:100vw;
+    overflow:clip;
 }
 
 .event-icon
@@ -387,7 +383,19 @@ button.shortcut-button
 
 .obs-value[data-obs-key=microphone] { width:6ch; text-align:center; }
 .obs-value[data-obs-key=scene] { width:10ch; }
-#obs-mic-wrapper.muted { background-color:#A00; color:#F55; }
+
+#obs-mic-wrapper { background-color:var(--ega-darkgreen); color:var(--ega-green);}
+#obs-mic-wrapper.muted {
+    background-color:var(--ega-darkred); color:var(--ega-red);
+    animation: blink-animation 1s steps(1, start) infinite;
+}
+
+@keyframes blink-animation {
+    50% {
+        /*visibility: hidden;*/
+        color:transparent;
+    }
+}
 
 #quick-events button {
     font-family:"cp437";
@@ -402,3 +410,9 @@ button.shortcut-button
 #quick-events button[disabled] { filter:grayscale(100%); cursor:not-allowed;}
 
 select { background-color:#CCF; }
+
+#to-greets { max-width:230px; overflow:clip; }
+.to-greet-name
+{
+    margin-right:1.ch;
+}

@@ -58,6 +58,14 @@ export class SCP_Websocket_Connection extends Websocket_Connection
             stream_info(event);
             return true;
         }
+        
+        if (event.meta.kind == "to-greet")
+        {
+            console.log("That was a to greet");
+            console.log(event);
+            add_to_greet(event.body.event.user_name);
+            return true;
+        }
 
         let event_class = raw_event_to_class(event, Registered_Events);
         console.log("Event Kind:", event_class.event_key, "Class:", event_class);
@@ -321,9 +329,15 @@ $(document).ready(function (){
     $(".connection-icon").click(ws_toggle_connection);
     $(".iframe-launcher").click(launch_iframe);
     $("input[type=submit]").click(post_form);
+    $("#open-notepad").change(change_notepad);
     
     $("#event-overview").on("click", ".event-icon", replay_clicked_event);
     $("#quick-events").on("click", ".event-button", replay_quick_event);
+    $("#to-greets").on("click", ".to-greet-name", remove_to_greet);
+    
+    $("#button-clear-greets").click(function (){
+        $("#to-greets").html("");
+    });
 
     // Test events
     render_test_events();
@@ -344,6 +358,10 @@ $(document).ready(function (){
     $("#world-overview-key").change(set_world_overview_key)
     $("#reset-stream").click(reset_stream);
     $("#wad").click(get_wad);
+    
+    $(window).blur(function (){
+        $(window).scrollTop(0);
+    })
 
     // Timer
     setInterval(gemrule_auto_plug, 1000 * 60 * 52);
@@ -420,4 +438,27 @@ function set_world_overview_key()
     let request = build_request("SetInputSettings", {inputName: "World Overview", inputSettings: {url: "https://museumofzzt.com/stream/overview/?key=" + key}});
     ws_connections.obsws.websocket.send(request);
     console.log("Request Sent!");
+}
+
+function add_to_greet(name)
+{
+    let output = `<div class="to-greet-name">${name}, </div>`;
+    $("#to-greets").append(output);
+}
+
+function remove_to_greet()
+{
+    $(this).remove();
+}
+
+function change_notepad()
+{
+    console.log("CHANGING NOTEPAD");
+    let filename = $("#open-notepad").val();
+    $.ajax({
+            url:"/static/cdosstream/notes/" + filename,
+            method:"GET",
+        }).done(function (response){
+            $("#notepad").val(response);
+        });
 }

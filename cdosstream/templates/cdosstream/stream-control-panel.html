@@ -17,28 +17,30 @@
 {% block content %}
 <main>
     <header id="header">
-        <div id="connection-wrapper">
-            <span id="ws-connection" class="connection-icon" title="Disconnected" data-key="scp">❌</span>
-            <span id="obs-connection" class="connection-icon" title="Disconnected" data-key="obsws">❌</span>
+        <div class="header-row ega-darkblue-bg">
+            <div id="widget-select-wrapper">
+                <div class="widget-button" data-widget="cards" title="Cards"><img src="/static/cdosstream/image/player.png" style="height:20px"></div>
+                <div class="widget-button" data-widget="notes" title="Notepad">📝</div>
+                <div class="widget-button" data-widget="forms" title="Forms">⚙️</div>
+                <div class="widget-button" data-widget="obsws" title="OBSWS Test">💡</div>
+                <div class="widget-button" data-widget="twitch" title="Twitch"><img src="/static/cdosstream/image/TwitchGlitchPurple.svg" style="height:20px;"></div>
+            </div>
+            <div id="stream-viewers">👀--</div>
+            <div id="sub-info" title="{{SUB_GOAL_REWARD}}"><img src="/static/cdosstream/image/purple-key.png" style="height:20px"><span id="sub-count-value">{{STARTING_SUBS|default:'----'}}</span>/<span id="sub-goal-value">{{SUB_GOAL}}</span></div>
+            <div id="connection-wrapper">
+                <span id="ws-connection" class="connection-icon" title="Disconnected" data-key="scp">❌</span>
+                <span id="obs-connection" class="connection-icon" title="Disconnected" data-key="obsws">❌</span>
+            </div>
         </div>
-        <div id="stream-viewers">---</div>
-        <div id="event-position">
-            <select id="event-position-select" title="Redeem Position">
-                <option value="position-standard">Standard</option>
-                <option value="position-centered">Center</option>
-            </select>
+        <div class="header-row ega-darkgray-bg">
+            <div id="obs-mic-wrapper">🎤 <span class="obs-value" data-obs-key="microphone">------</span></div>
+            <div id="obs-scene-wrapper">🎥 <span class="obs-value truncate-text" data-obs-key="scene">----------</span></div>
         </div>
-        <div id="widget-select-wrapper">
-            <div class="widget-button" data-widget="notes" title="Notepad">📝</div>
-            <div class="widget-button" data-widget="cards" title="Cards">📇</div>
-            <div class="widget-button" data-widget="forms" title="Forms">⚙️</div>
-            <div class="widget-button" data-widget="obsws" title="OBSWS Test">💡</div>
-            <div class="widget-button" data-widget="twitch" title="Twitch"><img src="/static/cdosstream/image/twitch-16px.png"></div>
+        <div class="header-row ega-darkblue-bg" style="justify-content:flex-start;">
+            <div id="button-clear-greets">👋</div><div>GREET:</div><div id="to-greets"></div>
         </div>
-        <div id="sub-info" title="{{SUB_GOAL_REWARD}}">Subs: <span id="sub-count-value">{{STARTING_SUBS|default:'----'}}</span>/<span id="sub-goal-value">{{SUB_GOAL}}</span></div>
-        <div id="obs-scene-wrapper">🎥 <span class="obs-value truncate-text" data-obs-key="scene">----------</span></div>
-        <div id="obs-mic-wrapper">🎤 <span class="obs-value" data-obs-key="microphone">------</span></div>
     </header>
+    {% comment %}
     <div id="chat-frame">
         <div class="flex-centered-wrapper">
             <button class="iframe-launcher" data-url="https://twitch.tv/[CHANNEL]/chat" data-target="#chat-frame" data-width="360px" data-height="600px">
@@ -49,10 +51,16 @@
             </button>
         </div>
     </div>
+    {% endcomment %}
 
 <!--Widgets-->
     <div id="notes" class="widget">
-        <section class="controls">Cntrl.</section>
+        <section class="controls">
+            <select id="open-notepad">
+                {% for note in available_notes %}<option{% if note.base == 'default.txt' %} selected{% endif %}>{{note.base}}</option>
+                {% endfor %}
+            </select>
+        </section>
         <textarea id="notepad" placeholder="Notes...">{{notes}}</textarea>
     </div>
     <div id="cards" class="widget">

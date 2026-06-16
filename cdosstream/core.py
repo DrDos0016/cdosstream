@@ -1,3 +1,4 @@
+import glob
 import os
 
 import requests
@@ -7,7 +8,7 @@ from django.views.generic.base import TemplateView
 from proj.settings import BASE_DIR
 
 
-STREAM_NOTES_FILE_PATH = os.path.join(BASE_DIR, "cdosstream", "static", "cdosstream", "stream-notes.txt")
+STREAM_NOTES_FILE_PATH = os.path.join(BASE_DIR, "cdosstream", "static", "cdosstream", "notes")
 
 #SUB_GOAL = 500  # Inc by 50 normally?
 SUB_GOAL = 50  # Inc by 50 normally?
@@ -160,10 +161,20 @@ def get_stub_event_data(event_title, username):
 
 
 def read_stream_notes():
-    if not os.path.isfile(STREAM_NOTES_FILE_PATH):
-        with open(STREAM_NOTES_FILE_PATH, "w") as fh:
+    default_notes_path = os.path.join(STREAM_NOTES_FILE_PATH, "default.txt")
+    if not os.path.isfile(default_notes_path):
+        with open(default_notes_path, "w") as fh:
             contents = ""
     else:
-        with open(STREAM_NOTES_FILE_PATH) as fh:
+        with open(default_notes_path) as fh:
             contents = fh.read()
     return contents
+
+def get_available_notes():
+    output = []
+    filepaths = sorted(glob.glob(os.path.join(STREAM_NOTES_FILE_PATH, "*.txt")))
+    for f in filepaths:
+        output.append({
+            "base": os.path.basename(f),
+        })
+    return output

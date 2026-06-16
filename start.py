@@ -25,10 +25,13 @@ parser = argparse.ArgumentParser(prog="Twitch Stream Monitor", description="Moni
 parser.add_argument("-s", "--streamer", help="Twitch username to monitor for events")
 parser.add_argument("-b", "--bot", help="Twitch username to run the chatbot from")
 parser.add_argument("-q", "--quick", action="store_true", help="Bypass eventsub connections for faster debugging")
+parser.add_argument("-tg", "--test-greet", action="store_true", help="Allow greeting the same account multiple times (for testing)")
+
 args = parser.parse_args()
 STREAMER = args.streamer if args.streamer else DEFAULT_STREAMER
 CHATBOT = args.bot if args.bot else DEFAULT_CHATBOT
 QUICK = args.quick if args.quick else DEFAULT_QUICK
+TEST_GREET = args.test_greet if args.test_greet else False
 
 
 async def main():
@@ -83,7 +86,7 @@ async def gemrule_messages(m):
                 #print(datetime.now(), m.gemrule.bot_name, log)
                 comp = message.text.upper()
                 # Check for Greets
-                if (message.user.name) not in m.gemrule.to_greet:
+                if ((message.user.name) not in m.gemrule.to_greet) or TEST_GREET:
                     m.gemrule.to_greet.append(message.user.name)
                     await m.to_greet({"message": message})
                 # Check for Happy ZZT Day

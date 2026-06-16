@@ -45,11 +45,12 @@ export class Notepad
         console.log("SAVING?", this);
         this.stop_timer();
         let to_write = $("#notepad").val();
+        let filename = $("#open-notepad").val();
         $("#notepad").css("background-color", "#FFFFFF");
         $.ajax({
             url:"/notepad/save/",
             method:"POST",
-            data:{"contents": to_write}
+            data:{"contents": to_write, "filename": filename}
         }).done(function (response){
             if (! response.success)
                 console.log(response);

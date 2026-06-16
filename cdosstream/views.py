@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import *
 from .forms import *
-from .core import get_stream_entries, read_stream_notes, SUB_GOAL, SUB_GOAL_REWARD, get_stub_event_data
+from .core import get_stream_entries, get_available_notes, read_stream_notes, SUB_GOAL, SUB_GOAL_REWARD, get_stub_event_data
 from .event_views import *
 
 @csrf_exempt
@@ -72,10 +72,11 @@ def get_event(request):
 @csrf_exempt
 def notepad_save(request):
     contents = request.POST.get("contents")
+    filename = request.POST.get("filename")
     if not contents:
         return JsonResponse({"success": False, "response": "Notepad contents were blank!"})
     else:
-        with open("/home/drdos/projects/stream/cdosstream/static/cdosstream/stream-notes.txt", "w") as fh:
+        with open("/home/drdos/projects/stream/cdosstream/static/cdosstream/notes/{}".format(filename), "w") as fh:
             fh.write(contents)
         return JsonResponse({"success": True, "response": "Notepad contents saved"})
 
@@ -177,6 +178,7 @@ def stream_control_panel(request):
     context["cards"] = cards
     context["recent_events"] = Event.objects.all().order_by("-id")[:5]
     context["notes"] = read_stream_notes()
+    context["available_notes"] = get_available_notes()
     return render(request, "cdosstream/stream-control-panel.html", context)
 
 def get_art(request):
