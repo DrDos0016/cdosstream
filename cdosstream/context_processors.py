@@ -15,6 +15,7 @@ def cdosstream_global(request):
     context["TIMESTAMP"] = int(time.time())
     context["WEBSOCKET_SERVER_HOST"] = HOST
     context["WEBSOCKET_SERVER_PORT"] = PORT
+    context["IS_OBS"] = "OBS/" in request.META.get("HTTP_USER_AGENT")
     
     if not cache.get("STARTING_SUBS"):
         sub_info = Event.objects.get_subscriber_info()
