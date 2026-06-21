@@ -117,6 +117,7 @@ class Send_Command_Form(forms.Form):
     
     COMMAND_CHOICES = (
         ("replay-event", "Replay Event <#>"),
+        ("show-score", "Show Score for <FILENAME> (no ext)"),
         ("gemrule-say", "Gemrule Says <text>"),
         ("clear-event-queue", "Clear Event Queue"),
         ("obs-connect", "Connect to OBS"),
