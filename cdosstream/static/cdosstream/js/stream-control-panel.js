@@ -66,6 +66,9 @@ export class SCP_Websocket_Connection extends Websocket_Connection
             add_to_greet(event.body.event.user_name);
             return true;
         }
+        
+        if (event.meta.kind == "show-score")
+            return true;
 
         let event_class = raw_event_to_class(event, Registered_Events);
         console.log("Event Kind:", event_class.event_key, "Class:", event_class);
