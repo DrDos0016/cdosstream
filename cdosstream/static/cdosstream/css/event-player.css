@@ -89,3 +89,16 @@ body
 
 #sub-progress-frame { position: absolute; top: 854px; left:0px; display:none; }
 #sub-progress-iframe { border:0px; }
+
+/* Jun 2026 - Score Card */
+#score-card
+{
+    display:none;
+    position:absolute;
+    top:30px;
+    left:0px;
+    z-index:10;
+    width:1440px;
+    height:1050px;
+    background-color:rgba(80, 80, 80, 0.5);
+}
