@@ -50,6 +50,12 @@ class Event_Player_Websocket_Connection extends Websocket_Connection
             return false;
         }
         
+        if (event.meta.kind == "show-score")
+        {
+            show_score(event.body.event.filename);
+            return false;
+        }
+        
         if (event.meta.kind == "sub-goal-progress")
         {
             console.log("SHOWING SUB GOAL PROGRESS");
@@ -248,3 +254,20 @@ function tick_timer()
 }
 
 
+function show_score(filename)
+{
+    if (filename == "")
+    {
+        score_card_animate_down(); // "Imported" from score-reveal.html
+        //$("#score-card").hide();
+        return true;
+    }
+        
+    $.ajax({
+        url:"/widget/score-reveal/?filename=" + filename.toUpperCase() + ".ZZT",
+    }).done(function (data){
+        $("#score-card").hide();
+        $("#score-card").html(data);
+        $("#score-card").show();
+    });
+}
