@@ -129,6 +129,20 @@ class Patron_Credits(TemplateView):
         context["title"] = "Patron Credits"
         return context
 
+class Score_Reveal(TemplateView):
+    template_name = "cdosstream/widget/score-reveal.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Score Reveal"
+        contest_data = json.load(open("/home/drdos/projects/stream/cdosstream/static/cdosstream/json/24hoz-violence.json"))
+        context["entry"] = None
+        for entry in contest_data["entries"]:
+                if entry.get("filename", "???").upper() == self.request.GET.get("filename", "").upper():
+                    context["entry"] = entry
+        if context["entry"] is None:
+            context["entry"] = contest_data["entries"][0]
+        return context
 
 def zeoguessr(request):
     context = {"card": None}

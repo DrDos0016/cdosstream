@@ -24,6 +24,7 @@ urlpatterns = [
     path("widget/event-player/", cdosstream.views.Event_Player_View.as_view()),
     path("widget/header/", cdosstream.views.Header.as_view()),
     path("widget/patron-credits/", cdosstream.views.Patron_Credits.as_view()),
+    path("widget/score-reveal/", cdosstream.views.Score_Reveal.as_view()),
 
     path("create-event/goal/", cdosstream.views.create_event_goal),
     path("create-event/sub-goal-progress/", cdosstream.views.create_event_sub_goal_progress),
