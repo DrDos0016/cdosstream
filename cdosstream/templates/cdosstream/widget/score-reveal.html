@@ -1,0 +1,167 @@
+{% extends "cdosstream/main.html" %}
+{% load static %}
+
+{% block local_css %}
+<style>
+body
+{
+    width:1440px;
+    font-family:sans-serif;
+    height:1050px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0px;
+    font-size:20pt;
+}
+.score-10 { background-color: #80ff80}
+.score-9 { background-color: #a0ff7a}
+.score-8 { background-color: #bcff77}
+.score-7 { background-color: #d4ff77}
+.score-6 { background-color: #ebff7a}
+.score-5 { background-color: #ffff80}
+.score-4 { background-color: #ffe472}
+.score-3 { background-color: #ffcb77}
+.score-2 { background-color: #ffb278}
+.score-1 { background-color: #ff9777}
+.score-0, .score--1 { background-color: #ff8080}
+.score- { background-color: #fff}
+
+.entry-wrapper
+{
+    width:1440px;
+    height:1050px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:clip;
+    color:#000;
+}
+
+.entry
+{
+    background:#FFF;
+    padding:10px;
+    border-radius:12px;
+    border:5px solid #000;
+    width:1024px;
+    position:relative;
+    top:1000px;
+}
+
+.meta
+{
+    display:flex;
+    flex-wrap:wrap;
+}
+
+.title, .author
+{
+    flex:1;
+}
+
+.filename, .id
+{
+    flex:0 0 auto;
+    font-family:monospace;
+}
+
+.title { font-size:28pt; font-weight:bold; }
+.author { font-style:oblique; }
+
+.judgment
+{
+    border:1px solid #000;
+    padding:4px;
+    display:grid;
+    grid-template-areas: "judge score" "comment score";
+    grid-template-columns:1fr auto;
+    grid-template-rows:auto 1fr;
+    justify-items:start;
+}
+
+.judge { font-weight:bold; padding-left:1ch; }
+.num { grid-area: score; font-size:24pt; font-weight:bold; justify-self:stretch;}
+.comment
+{
+    flex:1 0 100%;
+    padding-left:3ch;
+    max-width:800px;
+    font-size:18pt;
+}
+
+.judgment + .judgment
+{
+    margin-top:4px;
+}
+</style>
+{% endblock %}
+
+{% block local_scripts %}
+<script>
+$(document).ready(function (){
+    score_card_animate_up();
+});
+
+function score_card_animate_up()
+{
+    $(".entry").animate({
+        top: "-=1000",
+    }, 1500, function (){
+        console.log("Donezo");
+    });
+}
+
+function score_card_animate_down()
+{
+    $(".entry").animate({
+        top: "+=1000",
+    }, 1500, function (){
+        console.log("Donezo");
+        $("#score-card").hide(); // Wrapper from event-player.html
+    });
+}
+</script>
+{% endblock %}
+
+{% block body %}
+<div class="entry-wrapper">
+    <div class="entry">
+        <div class="meta">
+            <div class="title">{{entry.title}}</div><div class="filename">[{{entry.filename}}]</div>
+            <div style="flex:1 0 100%;"></div>
+            <div class="author">{{entry.author}}</div><div class="id">#{{entry.id}}</div>
+        </div>
+        <div class="judgment">
+            <div class="judge">Judge #1</div>
+            <div class="num">{{entry.score1}}</div>
+            <div class="comment">{{entry.comment1|default:'<i>No Comment</i>'}}</div>
+        </div>
+        <div class="judgment">
+            <div class="judge">Judge #2</div>
+            <div class="num">4.8</div>
+            <div class="comment">{{entry.comment1|default:'<i>No Comment</i>'}}</div>
+        </div>
+        <div class="judgment">
+            <div class="judge">Judge #3</div>
+            <div class="num">4.8</div>
+            <div class="comment">{{entry.comment1|default:'<i>No Comment</i>'}}</div>
+        </div>
+        <div class="judgment">
+            <div class="judge">Judge #4 (Lemmer)</div>
+            <div class="num">4.8</div>
+            <div class="comment">{{entry.comment1|default:'<i>No Comment</i>'}}</div>
+        </div>
+        <div class="judgment">
+            <div class="judge">Judge #5</div>
+            <div class="num">4.8</div>
+            <div class="comment">{{entry.comment1|default:'<i>No Comment</i>'}}</div>
+        </div>
+        <div class="judgment">
+            <div class="judge">Overall</div>
+            <div class="num">4.6</div>
+            <div class="comment">18th place</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
