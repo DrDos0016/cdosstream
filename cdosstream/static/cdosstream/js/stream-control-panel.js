@@ -240,6 +240,7 @@ function change_widget()
     $(".widget.active").removeClass("active");
     let widget_id = $(this).data("widget");
     $("#" + widget_id).addClass("active");
+    localStorage.setItem("opened_widget", widget_id);
 }
 
 function ws_toggle_connection()
@@ -368,6 +369,12 @@ $(document).ready(function (){
 
     // Timer
     setInterval(gemrule_auto_plug, 1000 * 60 * 52);
+    
+    // Open previous widget
+    let to_open = localStorage.getItem("opened_widget");
+    console.log("TO OPEN", to_open);
+    if (to_open)
+        $(".widget-button[data-widget=" + to_open + "]").click();
 });
 
 function render_test_events()
