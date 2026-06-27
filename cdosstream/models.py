@@ -71,3 +71,12 @@ class Audio_Info(models.Model):
 
     def __str__(self):
         return "[{}] {} - {}".format(self.key, self.artist, self.track)
+
+        
+class Game_Card(models.Model):
+    data = models.TextField(max_length=1024, blank=True)
+    
+    def __str__(self):
+        preview = self.data[:self.data.find("\n")]
+        return "[#{}] Game Card ({})".format(self.pk, preview)
+    

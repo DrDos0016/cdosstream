@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import *
 from .forms import *
-from .core import get_stream_entries, get_available_notes, read_stream_notes, SUB_GOAL, SUB_GOAL_REWARD, get_stub_event_data
+from .core import get_stream_entries, get_available_notes, read_stream_notes, SUB_GOAL, SUB_GOAL_REWARD, get_stub_event_data, process_game_cards
 from .event_views import *
 
 @csrf_exempt
@@ -24,6 +24,16 @@ def capture_event(request):
     event = Event(raw=event_data)
     event.prepare()
     event.save()
+    
+    if event.kind == "set-custom-card":
+        game_card_data = event_data["event"].get("basic", "")
+        if game_card_data.find("PK=") != -1:
+            gc_pk = game_card_data[game_card_data.find("PK="):]
+            gc_pk = gc_pk[3:].strip()
+            gc = Game_Card.objects.get(pk=gc_pk)
+        else:
+            gc = Game_Card(data=game_card_data)
+        gc.save()
     return JsonResponse(event.jsonized())
 
 
@@ -142,6 +152,14 @@ class Score_Reveal(TemplateView):
                     context["entry"] = entry
         if context["entry"] is None:
             context["entry"] = contest_data["entries"][0]
+            
+        # Copy scores to int variant
+        context["entry"]["score1int"] = context["entry"]["score1"].split(".")[0]
+        context["entry"]["score2int"] = context["entry"]["score2"].split(".")[0]
+        context["entry"]["score3int"] = context["entry"]["score3"].split(".")[0]
+        context["entry"]["score4int"] = context["entry"]["score4"].split(".")[0]
+        context["entry"]["score5int"] = context["entry"]["score5"].split(".")[0]
+        context["entry"]["score_avgint"] = context["entry"]["score_avg"].split(".")[0]
         return context
 
 def zeoguessr(request):
@@ -187,8 +205,10 @@ def stream_control_panel(request):
         Timer_Form(),
     ]
 
-    # Get cards from Musuem
-    cards = get_stream_entries()
+    # Import cards from Musuem
+    
+    # Get cards in DB
+    cards = process_game_cards(Game_Card.objects.all().order_by("-id")[:30])
     context["cards"] = cards
     context["recent_events"] = Event.objects.all().order_by("-id")[:5]
     context["notes"] = read_stream_notes()

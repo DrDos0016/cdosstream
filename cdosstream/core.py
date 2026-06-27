@@ -178,3 +178,18 @@ def get_available_notes():
             "base": os.path.basename(f),
         })
     return output
+
+def process_game_cards(qs):
+    output = []
+    for c in qs:
+        lines = c.data.split("\n")
+        procced_card = {"raw": c.data, "pk": c.pk}
+        for line in lines:
+            if not line:
+                continue
+            (key, value) = line.split("=")
+            key = key.lower()
+            procced_card[key] = value.strip()
+        output.append(procced_card)
+    print(output)
+    return output

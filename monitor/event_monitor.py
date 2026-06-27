@@ -168,9 +168,11 @@ class Event_Monitor():
                 await self.set_timer(data)
             elif command == "set-event-position": # Not yet rehandled
                 await self.set_event_position(data)
+            elif command == "show-score":
+                await self.show_score(data)
             else:  # Unknown Command
                 command = data.get("command", "NO COMMAND")
-                self.log_received_data(f"{Fore.RED}Unknown command: {command}")
+                self.log_received_data(f"{Fore.RED}[EVENT-MONITOR] Unknown command: {command}")
 
             self.display_data()
 
@@ -299,3 +301,8 @@ class Event_Monitor():
             else:
                 self.log_received_data("OBSWS TIME")
                 await asyncio.Future()
+
+    async def show_score(self, data):
+        # Create an event to show a 24HoZ or related score card
+        card_data = {"subscription": {"type": "Show Score"}, "event": {"title": "Show Score", "filename": data["params"]}}
+        await self.log_event(card_data)

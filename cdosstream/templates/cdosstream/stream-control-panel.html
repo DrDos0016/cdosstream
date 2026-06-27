@@ -69,12 +69,12 @@
             {% for card in cards %}
                 <tr data-pk="{{card.pk}}">
                     <td>
-                        <div class="card-title">{{card.title.value|striptags}}</div>
-                        <div class="card-author">{{card.authors.value|striptags}}</div>
-                        <div class="card-company">{{card.companies.value|striptags}}</div>
+                        <div class="card-title">{{card.world}}</div>
+                        <div class="card-author">{{card.author}}</div>
+                        <div class="card-company">{{card.company}}</div>
                     </td>
                     <td class="cramped">
-                        <div class="card-date">{{card.date.value|striptags}}</div><a href="" class="card-url" id="card-url-{{card.pk}}" target="_blank">View</a>
+                        <div class="card-date">{{card.date}}</div><a href="" class="card-url" id="card-url-{{card.pk}}" target="_blank">View</a>
                     </td>
                 </tr>
             {% endfor %}
